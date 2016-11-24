@@ -4,6 +4,7 @@
  */
 package com.bekvon.bukkit.residence.protection;
 
+import cn.nukkit.level.Location;
 import org.bukkit.ChatColor;
 
 import com.bekvon.bukkit.residence.Residence;

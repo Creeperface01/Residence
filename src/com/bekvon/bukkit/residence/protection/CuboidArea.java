@@ -5,6 +5,7 @@
 
 package com.bekvon.bukkit.residence.protection;
 
+import cn.nukkit.level.Location;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.protection.ResidenceManager.ChunkRef;
 

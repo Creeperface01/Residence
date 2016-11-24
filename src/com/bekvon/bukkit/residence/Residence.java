@@ -4,13 +4,7 @@
  */
 package com.bekvon.bukkit.residence;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +18,7 @@ import java.util.logging.Logger;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.level.Location;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.plugin.PluginManager;
@@ -251,9 +246,11 @@ public class Residence extends PluginBase {
                         System.out.println("[Residence] Found Vault using economy system: " + vault.getEconomyName());
                     }
                 }
-                if (economy == null) {
+                /*if (economy == null) {
                     this.loadVaultEconomy();
-                }
+                }*/
+
+                //TODO: economy
                 if (economy == null) {
                     this.loadBOSEconomy();
                 }
@@ -325,15 +322,15 @@ public class Residence extends PluginBase {
                 autosaveInt = 1;
             }
             autosaveInt = autosaveInt * 60 * 20;
-            autosaveBukkitId = server.getScheduler().scheduleSyncRepeatingTask(this, autoSave, autosaveInt, autosaveInt);
-            healBukkitId = server.getScheduler().scheduleSyncRepeatingTask(this, doHeals, 20, 20);
+            autosaveBukkitId = server.getScheduler().scheduleDelayedRepeatingTask(autoSave, autosaveInt, autosaveInt).getTaskId();
+            healBukkitId = server.getScheduler().scheduleDelayedRepeatingTask(doHeals, 20, 20).getTaskId();
             if (cmanager.useLeases()) {
                 int leaseInterval = cmanager.getLeaseCheckInterval();
                 if (leaseInterval < 1) {
                     leaseInterval = 1;
                 }
                 leaseInterval = leaseInterval * 60 * 20;
-                leaseBukkitId = server.getScheduler().scheduleSyncRepeatingTask(this, leaseExpire, leaseInterval, leaseInterval);
+                leaseBukkitId = server.getScheduler().scheduleDelayedRepeatingTask(leaseExpire, leaseInterval, leaseInterval).getTaskId();
             }
             if (cmanager.enabledRentSystem()) {
                 int rentint = cmanager.getRentCheckInterval();
@@ -341,7 +338,7 @@ public class Residence extends PluginBase {
                     rentint = 1;
                 }
                 rentint = rentint * 60 * 20;
-                rentBukkitId = server.getScheduler().scheduleSyncRepeatingTask(this, rentExpire, rentint, rentint);
+                rentBukkitId = server.getScheduler().scheduleDelayedRepeatingTask(rentExpire, rentint, rentint).getTaskId();
             }
             for (Player player : getServer().getOnlinePlayers().values()) {
                 if (Residence.getPermissionManager().isResidenceAdmin(player)) {
@@ -466,7 +463,7 @@ public class Residence extends PluginBase {
         if (res != null) {
             return res.getPermissions();
         } else {
-            return wmanager.getPerms(loc.getWorld().getName());
+            return wmanager.getPerms(loc.getLevel().getName());
         }
     }
 
@@ -479,7 +476,7 @@ public class Residence extends PluginBase {
             if (player != null)
                 return wmanager.getPerms(player);
             else
-                return wmanager.getPerms(loc.getWorld().getName());
+                return wmanager.getPerms(loc.getLevel().getName());
         }
     }
 
@@ -530,7 +527,7 @@ public class Residence extends PluginBase {
         }
     }
 
-    private void loadVaultEconomy() {
+    /*private void loadVaultEconomy() {
         Plugin p = getServer().getPluginManager().getPlugin("Vault");
         if (p != null) {
             ResidenceVaultAdapter vault = new ResidenceVaultAdapter(getServer());
@@ -543,7 +540,7 @@ public class Residence extends PluginBase {
         } else {
             Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Vault NOT found!");
         }
-    }
+    }*/
 
     public static boolean isResAdminOn(Player player) {
         if (resadminToggle.contains(player.getName())) {
@@ -574,7 +571,7 @@ public class Residence extends PluginBase {
             File tmpFile = new File(worldFolder, "tmp_res_" + entry.getKey() + ".yml");
             yml = new YMLSaveHelper(tmpFile);
             yml.getRoot().put("Version", saveVersion);
-            World world = server.getWorld(entry.getKey());
+            cn.nukkit.level.Level world = server.getLevelByName(entry.getKey());
             if (world != null)
                 yml.getRoot().put("Seed", world.getSeed());
             yml.getRoot().put("Residences", (Map) entry.getValue());
@@ -682,7 +679,7 @@ public class Residence extends PluginBase {
             YMLSaveHelper yml;
             File loadFile;
             HashMap<String, Object> worlds = new HashMap<>();
-            for (World world : getServ().getWorlds()) {
+            for (cn.nukkit.level.Level world : getServ().getLevels().values()) {
                 loadFile = new File(worldFolder, "res_" + world.getName() + ".yml");
                 if (loadFile.isFile()) {
                 	time = System.currentTimeMillis();
@@ -740,18 +737,18 @@ public class Residence extends PluginBase {
         }
     }
 
-    private boolean checkNewLanguageVersion(String lang) throws IOException, FileNotFoundException, InvalidConfigurationException {
+    private boolean checkNewLanguageVersion(String lang) throws IOException, FileNotFoundException {
         File outFile = new File(new File(this.getDataFolder(), "Language"), lang + ".yml");
         File checkFile = new File(new File(this.getDataFolder(), "Language"), "temp-" + lang + ".yml");
         if (outFile.isFile()) {
-            FileConfiguration testconfig = new YamlConfiguration();
-            testconfig.load(outFile);
+            Config testconfig = new Config();
+            testconfig.load(new FileInputStream(outFile));
             int oldversion = testconfig.getInt("FieldsVersion", 0);
             if (!this.writeDefaultFileFromJar(checkFile, "resources/languagefiles/" + lang + ".yml", false)) {
                 return false;
             }
-            FileConfiguration testconfig2 = new YamlConfiguration();
-            testconfig2.load(checkFile);
+            Config testconfig2 = new Config();
+            testconfig2.load(new FileInputStream(checkFile));
             int newversion = testconfig2.getInt("FieldsVersion", oldversion);
             if (checkFile.isFile()) {
                 checkFile.delete();

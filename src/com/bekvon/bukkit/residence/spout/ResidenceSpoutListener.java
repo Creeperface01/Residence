@@ -5,6 +5,7 @@
 
 package com.bekvon.bukkit.residence.spout;
 
+import cn.nukkit.event.Listener;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.spout.ResidencePopup.PopupType;

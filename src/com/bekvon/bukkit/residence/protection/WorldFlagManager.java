@@ -5,6 +5,7 @@
 
 package com.bekvon.bukkit.residence.protection;
 
+import cn.nukkit.Player;
 import cn.nukkit.utils.Config;
 import com.bekvon.bukkit.residence.Residence;
 import java.util.HashMap;
@@ -40,7 +41,7 @@ public class WorldFlagManager {
 
     public FlagPermissions getPerms(Player player)
     {
-        return this.getPerms(player.getWorld().getName(), Residence.getPermissionManager().getGroupNameByPlayer(player));
+        return this.getPerms(player.getLevel().getName(), Residence.getPermissionManager().getGroupNameByPlayer(player));
     }
 
     public FlagPermissions getPerms(String world, String group)

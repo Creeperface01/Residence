@@ -99,7 +99,7 @@ public class PermissionManager {
 
     private void checkPermissions() {
         Server server = Residence.getServ();
-        Plugin p = server.getPluginManager().getPlugin("Vault");
+        /*Plugin p = server.getPluginManager().getPlugin("Vault");
         if (p != null) {
             ResidenceVaultAdapter vault = new ResidenceVaultAdapter(server);
             if (vault.permissionsOK()) {
@@ -109,8 +109,8 @@ public class PermissionManager {
             } else {
                 Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Found Vault, but Vault reported no usable permissions system...");
             }
-        }
-        p = server.getPluginManager().getPlugin("PermissionsBukkit");
+        }*/
+        Plugin p = server.getPluginManager().getPlugin("PermissionsBukkit");
         if (p != null) {
             perms = new PermissionsBukkitAdapter((PermissionsPlugin) p);
             Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Found PermissionsBukkit Plugin!");

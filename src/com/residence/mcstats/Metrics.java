@@ -27,6 +27,8 @@
 */
 package com.residence.mcstats;
 
+import cn.nukkit.plugin.Plugin;
+import cn.nukkit.scheduler.Task;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -119,7 +121,7 @@ public class Metrics {
     /**
 * The scheduled task
 */
-    private volatile BukkitTask task = null;
+    private volatile Task task = null;
 
     public Metrics(final Plugin plugin) throws IOException {
         if (plugin == null) {

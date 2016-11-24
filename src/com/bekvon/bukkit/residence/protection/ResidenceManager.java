@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import cn.nukkit.level.Location;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -48,7 +49,7 @@ public class ResidenceManager {
         if (loc == null)
             return null;
         ClaimedResidence res = null;
-        String world = loc.getWorld().getName();
+        String world = loc.getLevel().getName();
         ChunkRef chunk = new ChunkRef(loc);
         if (chunkResidences.containsKey(world)) {
             if (chunkResidences.get(world).containsKey(chunk)) {
