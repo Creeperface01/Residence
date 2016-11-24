@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import cn.nukkit.block.Block;
+import cn.nukkit.utils.ConfigSection;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -30,15 +32,15 @@ public class FlagPermissions {
     protected static ArrayList<String> validFlags = new ArrayList<>();
     protected static ArrayList<String> validPlayerFlags = new ArrayList<>();
     protected static ArrayList<String> validAreaFlags = new ArrayList<>();
-    final static Map<Material, String> matUseFlagList = new EnumMap<>(Material.class);
+    final static Map<Integer, String> matUseFlagList = new HashMap<>();
     protected Map<String, String> cachedPlayerNameUUIDs;
     protected Map<String, Map<String, Boolean>> playerFlags;
     protected Map<String, Map<String, Boolean>> groupFlags;
     protected Map<String, Boolean> cuboidFlags;
     protected FlagPermissions parent;
 
-    public static void addMaterialToUseFlag(Material mat, String flag) {
-        matUseFlagList.put(mat, flag);
+    public static void addMaterialToUseFlag(int blockId, String flag) {
+        matUseFlagList.put(blockId, flag);
     }
 
     public static void removeMaterialFromUseFlag(Material mat) {
@@ -180,55 +182,56 @@ public class FlagPermissions {
         addFlagToFlagGroup("trusted", "move");
         addFlagToFlagGroup("fire", "ignite");
         addFlagToFlagGroup("fire", "firespread");
-        addMaterialToUseFlag(Material.DIODE, "diode");
-        addMaterialToUseFlag(Material.DIODE_BLOCK_OFF, "diode");
-        addMaterialToUseFlag(Material.DIODE_BLOCK_ON, "diode");
-        addMaterialToUseFlag(Material.WORKBENCH, "table");
-        addMaterialToUseFlag(Material.WOODEN_DOOR, "door");
+        //addMaterialToUseFlag(Block.DIODE, "diode");
+        //addMaterialToUseFlag(Block.DIODE_BLOCK_OFF, "diode");
+        //addMaterialToUseFlag(Block.DIODE_BLOCK_ON, "diode");
+        addMaterialToUseFlag(Block.WORKBENCH, "table");
+        addMaterialToUseFlag(Block.WOODEN_DOOR_BLOCK, "door");
         /* 1.8 Doors */
-        addMaterialToUseFlag(Material.SPRUCE_DOOR, "door");
-        addMaterialToUseFlag(Material.BIRCH_DOOR, "door");
-        addMaterialToUseFlag(Material.JUNGLE_DOOR, "door");
-        addMaterialToUseFlag(Material.ACACIA_DOOR, "door");
-        addMaterialToUseFlag(Material.DARK_OAK_DOOR, "door");
+        addMaterialToUseFlag(Block.SPRUCE_DOOR_BLOCK, "door");
+        addMaterialToUseFlag(Block.BIRCH_DOOR_BLOCK, "door");
+        addMaterialToUseFlag(Block.JUNGLE_DOOR_BLOCK, "door");
+        addMaterialToUseFlag(Block.ACACIA_DOOR_BLOCK, "door");
+        addMaterialToUseFlag(Block.DARK_OAK_DOOR_BLOCK, "door");
         
         /* 1.8 Fence Gates */
-        addMaterialToUseFlag(Material.SPRUCE_FENCE_GATE, "door");
-        addMaterialToUseFlag(Material.BIRCH_FENCE_GATE, "door");
-        addMaterialToUseFlag(Material.JUNGLE_FENCE_GATE, "door");
-        addMaterialToUseFlag(Material.ACACIA_FENCE_GATE, "door");
-        addMaterialToUseFlag(Material.DARK_OAK_FENCE_GATE, "door");
+        addMaterialToUseFlag(Block.FENCE_GATE, "door");
+        addMaterialToUseFlag(Block.FENCE_GATE_BIRCH, "door");
+        addMaterialToUseFlag(Block.FENCE_GATE_JUNGLE, "door");
+        addMaterialToUseFlag(Block.FENCE_GATE_ACACIA, "door");
+        addMaterialToUseFlag(Block.FENCE_GATE_DARK_OAK, "door");
         
-        addMaterialToUseFlag(Material.FENCE_GATE, "door");
-        addMaterialToUseFlag(Material.NETHER_FENCE, "door");
-        addMaterialToUseFlag(Material.TRAP_DOOR, "door");
-        addMaterialToUseFlag(Material.ENCHANTMENT_TABLE, "enchant");
-        addMaterialToUseFlag(Material.STONE_BUTTON, "button");
-        addMaterialToUseFlag(Material.LEVER, "lever");
-        addMaterialToUseFlag(Material.BED_BLOCK, "bed");
-        addMaterialToUseFlag(Material.BREWING_STAND, "brew");
-        addMaterialToUseFlag(Material.CAKE, "cake");
-        addMaterialToUseFlag(Material.NOTE_BLOCK, "note");
-        addMaterialToUseFlag(Material.DRAGON_EGG, "egg");
-        addMaterialToUseFlag(Material.COMMAND, "commandblock");
-        addMaterialToUseFlag(Material.WOOD_BUTTON, "button");
-        addMaterialToUseFlag(Material.ANVIL, "anvil");
-        addMaterialToUseFlag(Material.FLOWER_POT, "flowerpot");
-        addMaterialToUseFlag(Material.BEACON, "beacon");
-        addMaterialToUseFlag(Material.JUKEBOX, "container");
-        addMaterialToUseFlag(Material.CHEST, "container");
-        addMaterialToUseFlag(Material.TRAPPED_CHEST, "container");
-        addMaterialToUseFlag(Material.HOPPER, "container");
-        addMaterialToUseFlag(Material.DROPPER, "container");
-        addMaterialToUseFlag(Material.FURNACE, "container");
-        addMaterialToUseFlag(Material.BURNING_FURNACE, "container");
-        addMaterialToUseFlag(Material.DISPENSER, "container");
-        addMaterialToUseFlag(Material.CAKE_BLOCK, "cake");
+        addMaterialToUseFlag(Block.FENCE_GATE, "door");
+        addMaterialToUseFlag(Block.NETHER_BRICK_FENCE, "door");
+        addMaterialToUseFlag(Block.TRAPDOOR, "door");
+        addMaterialToUseFlag(Block.IRON_TRAPDOOR, "door");
+        addMaterialToUseFlag(Block.ENCHANTMENT_TABLE, "enchant");
+        //addMaterialToUseFlag(Block.STONE_BUTTON, "button");
+        addMaterialToUseFlag(Block.LEVER, "lever");
+        addMaterialToUseFlag(Block.BED_BLOCK, "bed");
+        addMaterialToUseFlag(Block.BREWING_STAND_BLOCK, "brew");
+        addMaterialToUseFlag(Block.CAKE_BLOCK, "cake");
+        addMaterialToUseFlag(Block.NOTEBLOCK, "note");
+        //addMaterialToUseFlag(Block.DRAGON_EGG, "egg");
+        //addMaterialToUseFlag(Block.COMMAND, "commandblock");
+        //addMaterialToUseFlag(Block.WOOD_BUTTON, "button");
+        addMaterialToUseFlag(Block.ANVIL, "anvil");
+        addMaterialToUseFlag(Block.FLOWER_POT_BLOCK, "flowerpot");
+        addMaterialToUseFlag(Block.BEACON, "beacon");
+        //addMaterialToUseFlag(Block.JUKEBOX, "container");
+        addMaterialToUseFlag(Block.CHEST, "container");
+        addMaterialToUseFlag(Block.TRAPPED_CHEST, "container");
+        addMaterialToUseFlag(Block.HOPPER_BLOCK, "container");
+        //addMaterialToUseFlag(Block.DROPPER, "container");
+        addMaterialToUseFlag(Block.FURNACE, "container");
+        addMaterialToUseFlag(Block.BURNING_FURNACE, "container");
+        addMaterialToUseFlag(Block.DISPENSER, "container");
+        addMaterialToUseFlag(Block.CAKE_BLOCK, "cake");
     }
 
-    public static FlagPermissions parseFromConfigNode(String name, ConfigurationSection node) {
+    public static FlagPermissions parseFromConfigNode(String name, ConfigSection node) {
         FlagPermissions list = new FlagPermissions();
-        Set<String> keys = node.getConfigurationSection(name).getKeys(false);
+        Set<String> keys = node.getSection(name).getKeys(false);
         if (keys != null) {
             for (String key : keys) {
                 boolean state = node.getBoolean(name + "." + key, false);

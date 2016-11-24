@@ -4,6 +4,7 @@
  */
 
 package com.bekvon.bukkit.residence.text.help;
+import cn.nukkit.utils.Config;
 import org.bukkit.ChatColor;
 
 import com.bekvon.bukkit.residence.Residence;
@@ -172,12 +173,12 @@ public class HelpEntry {
         return subentrys.size();
     }
 
-    public static HelpEntry parseHelp(FileConfiguration node, String key)
+    public static HelpEntry parseHelp(Config node, String key)
     {
         String split[] = key.split("\\.");
         String thisname = split[split.length-1];
         HelpEntry entry = new HelpEntry(thisname);
-        ConfigurationSection keysnode = node.getConfigurationSection(key);
+        Config keysnode = node.getConfigurationSection(key);
         Set<String> keys = null;
         if(keysnode!=null)
             keys = keysnode.getKeys(false);

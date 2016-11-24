@@ -22,6 +22,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
+import cn.nukkit.Player;
+import cn.nukkit.Server;
+import cn.nukkit.plugin.Plugin;
+import cn.nukkit.plugin.PluginBase;
+import cn.nukkit.plugin.PluginManager;
+import cn.nukkit.utils.Config;
+import cn.nukkit.utils.LogLevel;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Server;
@@ -75,9 +82,9 @@ import fr.crafter.tickleman.realplugin.RealPlugin;
 /**
  * 
  * @author Gary Smoak - bekvon
- * 
+ *
  */
-public class Residence extends JavaPlugin {
+public class Residence extends PluginBase {
 
     protected static ResidenceManager rmanager;
     protected static SelectionManager smanager;
@@ -187,14 +194,8 @@ public class Residence extends JavaPlugin {
                 dataFolder.mkdirs();
             }
 
-            if (!new File(dataFolder, "config.yml").isFile()) {
-                this.writeDefaultConfigFromJar();
-            }
-            if (this.getConfig().getInt("ResidenceVersion", 0) == 0) {
-                this.writeDefaultConfigFromJar();
-                this.getConfig().load("config.yml");
-                System.out.println("[Residence] Config Invalid, wrote default...");
-            }
+            saveDefaultConfig();
+
             cmanager = new ConfigManager(this.getConfig());
             String multiworld = cmanager.getMultiworldPlugin();
             if (multiworld != null) {
@@ -225,8 +226,7 @@ public class Residence extends JavaPlugin {
             try {
                 File langFile = new File(new File(dataFolder, "Language"), cmanager.getLanguage() + ".yml");
                 if (langFile.isFile()) {
-                    FileConfiguration langconfig = new YamlConfiguration();
-                    langconfig.load(langFile);
+                    Config langconfig = new Config(langFile);
                     helppages = HelpEntry.parseHelp(langconfig, "CommandHelp");
                     HelpEntry.setLinesPerPage(langconfig.getInt("HelpLinesPerPage", 7));
                     InformationPager.setLinesPerPage(langconfig.getInt("HelpLinesPerPage", 7));
@@ -273,7 +273,7 @@ public class Residence extends JavaPlugin {
             try {
                 this.loadYml();
             } catch (Exception e) {
-                this.getLogger().log(Level.SEVERE, "Unable to load save file", e);
+                this.getLogger().log(LogLevel.ALERT, "Unable to load save file", e);
                 throw e;
             }
             if (rmanager == null) {
@@ -343,7 +343,7 @@ public class Residence extends JavaPlugin {
                 rentint = rentint * 60 * 20;
                 rentBukkitId = server.getScheduler().scheduleSyncRepeatingTask(this, rentExpire, rentint, rentint);
             }
-            for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+            for (Player player : getServer().getOnlinePlayers().values()) {
                 if (Residence.getPermissionManager().isResidenceAdmin(player)) {
                     turnResAdminOn(player);
                 }
@@ -367,8 +367,7 @@ public class Residence extends JavaPlugin {
     }
 
     public void consoleMessage(String message){
-	    ConsoleCommandSender console = Bukkit.getConsoleSender();
-	    console.sendMessage("[Residence] " + message);
+	    getLogger().info(message);
 	}
     
     public static boolean validName(String name)
@@ -728,7 +727,7 @@ public class Residence extends JavaPlugin {
     }
 
     private void writeDefaultConfigFromJar() {
-        if (this.writeDefaultFileFromJar(new File(this.getDataFolder(), "config.yml"), "config.yml", true)) {
+        if (this.writeDefaultFileFromJar(new File(this.getDataFolder(), "resources/config.yml"), "resources/config.yml", true)) {
             System.out.println("[Residence] Wrote default config...");
         }
     }
@@ -736,7 +735,7 @@ public class Residence extends JavaPlugin {
     private void writeDefaultLanguageFile(String lang) {
         File outFile = new File(new File(this.getDataFolder(), "Language"), lang + ".yml");
         outFile.getParentFile().mkdirs();
-        if (this.writeDefaultFileFromJar(outFile, "languagefiles/" + lang + ".yml", true)) {
+        if (this.writeDefaultFileFromJar(outFile, "resources/languagefiles/" + lang + ".yml", true)) {
             System.out.println("[Residence] Wrote default " + lang + " Language file...");
         }
     }
@@ -748,7 +747,7 @@ public class Residence extends JavaPlugin {
             FileConfiguration testconfig = new YamlConfiguration();
             testconfig.load(outFile);
             int oldversion = testconfig.getInt("FieldsVersion", 0);
-            if (!this.writeDefaultFileFromJar(checkFile, "languagefiles/" + lang + ".yml", false)) {
+            if (!this.writeDefaultFileFromJar(checkFile, "resources/languagefiles/" + lang + ".yml", false)) {
                 return false;
             }
             FileConfiguration testconfig2 = new YamlConfiguration();

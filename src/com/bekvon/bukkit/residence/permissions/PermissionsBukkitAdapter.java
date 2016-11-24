@@ -5,6 +5,7 @@
 
 package com.bekvon.bukkit.residence.permissions;
 
+import cn.nukkit.Player;
 import com.bekvon.bukkit.residence.Residence;
 import com.platymuus.bukkit.permissions.Group;
 import com.platymuus.bukkit.permissions.PermissionsPlugin;
@@ -24,7 +25,7 @@ public class PermissionsBukkitAdapter implements PermissionsInterface {
     }
 
     public String getPlayerGroup(Player player) {
-        return this.getPlayerGroup(player.getName(), player.getWorld().getName());
+        return this.getPlayerGroup(player.getName(), player.getLevel().getName());
     }
 
     public String getPlayerGroup(String player, String world) {

@@ -8,6 +8,8 @@ package com.bekvon.bukkit.residence.itemlist;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import cn.nukkit.utils.Config;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -18,7 +20,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 public class WorldItemManager {
     protected List<WorldItemList> lists;
 
-    public WorldItemManager(FileConfiguration config)
+    public WorldItemManager(Config config)
     {
         lists = new ArrayList<WorldItemList>();
         this.readLists(config);

@@ -5,6 +5,7 @@
 
 package com.bekvon.bukkit.residence.protection;
 
+import cn.nukkit.utils.Config;
 import com.bekvon.bukkit.residence.Residence;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class WorldFlagManager {
         groupperms = new HashMap<>();
     }
 
-    public WorldFlagManager(FileConfiguration config)
+    public WorldFlagManager(Config config)
     {
         this();
         this.parsePerms(config);
@@ -76,7 +77,7 @@ public class WorldFlagManager {
         return list;
     }
 
-    public final void parsePerms(FileConfiguration config) {
+    public final void parsePerms(Config config) {
         try {
             
             Set<String> keys = config.getConfigurationSection("Global.Flags").getKeys(false);

@@ -5,6 +5,13 @@
 
 package com.bekvon.bukkit.residence.listeners;
 
+import cn.nukkit.Player;
+import cn.nukkit.block.Block;
+import cn.nukkit.event.EventHandler;
+import cn.nukkit.event.EventPriority;
+import cn.nukkit.event.Listener;
+import cn.nukkit.event.block.BlockBreakEvent;
+import cn.nukkit.utils.TextFormat;
 import org.bukkit.ChatColor;
 
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
@@ -40,7 +47,7 @@ public class ResidenceBlockListener implements Listener {
         if (Residence.isResAdminOn(player)) {
             return;
         }
-        Material mat = event.getBlock().getType();
+        int mat = event.getBlock().getId();
         String world = event.getBlock().getWorld().getName();
         String group = Residence.getPermissionManager().getGroupNameByPlayer(player);
         if (Residence.getItemManager().isIgnored(mat, group, world)) {
@@ -51,7 +58,7 @@ public class ResidenceBlockListener implements Listener {
             if (res != null) {
                 String resname = res.getName();
                 if (Residence.getConfigManager().preventRentModify() && Residence.getRentManager().isRented(resname)) {
-                    player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("RentedModifyDeny"));
+                    player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("RentedModifyDeny"));
                     event.setCancelled(true);
                     return;
                 }
@@ -64,11 +71,11 @@ public class ResidenceBlockListener implements Listener {
                 return;
             }
         }
-        boolean hasdestroy = perms.playerHas(pname, player.getWorld().getName(), "destroy", perms.playerHas(pname, player.getWorld().getName(), "build", true));
-        boolean hasContainer = perms.playerHas(pname, player.getWorld().getName(), "container", true);
-        if (!hasdestroy || (!hasContainer && mat == Material.CHEST)) {
+        boolean hasdestroy = perms.playerHas(pname, player.getLevel().getName(), "destroy", perms.playerHas(pname, player.getWorld().getName(), "build", true));
+        boolean hasContainer = perms.playerHas(pname, player.getLevel().getName(), "container", true);
+        if (!hasdestroy || (!hasContainer && mat == Block.CHEST)) {
             event.setCancelled(true);
-            player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("NoPermission"));
+            player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("NoPermission"));
             return;
         }
     }

@@ -4,6 +4,8 @@
  */
 
 package com.bekvon.bukkit.residence.selection;
+import cn.nukkit.Server;
+import cn.nukkit.level.Location;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.permissions.PermissionGroup;
 import com.bekvon.bukkit.residence.protection.CuboidArea;

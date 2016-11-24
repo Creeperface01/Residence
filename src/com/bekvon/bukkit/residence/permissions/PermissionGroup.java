@@ -5,7 +5,9 @@
 
 package com.bekvon.bukkit.residence.permissions;
 
-import org.bukkit.ChatColor;
+import cn.nukkit.Player;
+import cn.nukkit.utils.ConfigSection;
+import cn.nukkit.utils.TextFormat;
 
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.protection.CuboidArea;
@@ -16,8 +18,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
 /**
  * 
@@ -66,17 +66,17 @@ public class PermissionGroup {
         groupname = name;
     }
 
-    public PermissionGroup(String name, ConfigurationSection node) {
+    public PermissionGroup(String name, ConfigSection node) {
         this(name);
         this.parseGroup(node);
     }
 
-    public PermissionGroup(String name, ConfigurationSection node, FlagPermissions parentFlagPerms) {
+    public PermissionGroup(String name, ConfigSection node, FlagPermissions parentFlagPerms) {
         this(name, node);
         flagPerms.setParent(parentFlagPerms);
     }
 
-    private void parseGroup(ConfigurationSection limits) {
+    private void parseGroup(ConfigSection limits) {
         if (limits == null) {
             return;
         }
@@ -106,7 +106,7 @@ public class PermissionGroup {
         kick = limits.getBoolean("Residence.Kick", false);
         selectCommandAccess = limits.getBoolean("Residence.SelectCommandAccess", true);
         itemListAccess = limits.getBoolean("Residence.ItemListAccess", true);
-        ConfigurationSection node = limits.getConfigurationSection("Flags.Permission");
+        ConfigSection node = limits.getSection("Flags.Permission");
         Set<String> flags = null;
         if (node != null) {
             flags = node.getKeys(false);
@@ -119,7 +119,7 @@ public class PermissionGroup {
                 flagPerms.setFlag(flagname, access ? FlagState.TRUE : FlagState.FALSE);
             }
         }
-        node = limits.getConfigurationSection("Flags.CreatorDefault");
+        node = limits.getSection("Flags.CreatorDefault");
         if (node != null) {
             flags = node.getKeys(false);
         }
@@ -132,7 +132,7 @@ public class PermissionGroup {
             }
 
         }
-        node = limits.getConfigurationSection("Flags.Default");
+        node = limits.getSection("Flags.Default");
         if (node != null) {
             flags = node.getKeys(false);
         }
@@ -144,7 +144,7 @@ public class PermissionGroup {
                 residenceDefaultFlags.put(flagname, access);
             }
         }
-        node = limits.getConfigurationSection("Flags.GroupDefault");
+        node = limits.getSection("Flags.GroupDefault");
         Set<String> groupDef = null;
         if (node != null) {
             groupDef = node.getKeys(false);
@@ -154,7 +154,7 @@ public class PermissionGroup {
             while (groupit.hasNext()) {
                 String name = groupit.next();
                 Map<String, Boolean> gflags = new HashMap<String, Boolean>();
-                flags = limits.getConfigurationSection("Flags.GroupDefault." + name).getKeys(false);
+                flags = limits.getSection("Flags.GroupDefault." + name).getKeys(false);
                 Iterator<String> flagit = flags.iterator();
                 while (flagit.hasNext()) {
                     String flagname = flagit.next();
@@ -292,29 +292,29 @@ public class PermissionGroup {
     }
 
     public void printLimits(Player player) {
-        player.sendMessage(ChatColor.GRAY + "---------------------------");
-        player.sendMessage(ChatColor.YELLOW + "Permissions Group:" + ChatColor.DARK_AQUA + " " + Residence.getPermissionManager().getPermissionsGroup(player));
-        player.sendMessage(ChatColor.YELLOW + "Residence Group:" + ChatColor.DARK_AQUA + " " + groupname);
-        player.sendMessage(ChatColor.YELLOW + "Residence Admin:" + ChatColor.DARK_AQUA + " " + Residence.getPermissionManager().isResidenceAdmin(player));
-        player.sendMessage(ChatColor.YELLOW + "Can Create Residences:" + ChatColor.DARK_AQUA + " " + cancreate);
-        player.sendMessage(ChatColor.YELLOW + "Max Residences:" + ChatColor.DARK_AQUA + " " + resmax);
-        player.sendMessage(ChatColor.YELLOW + "Max East/West Size:" + ChatColor.DARK_AQUA + " " + xmax);
-        player.sendMessage(ChatColor.YELLOW + "Max North/South Size:" + ChatColor.DARK_AQUA + " " + zmax);
-        player.sendMessage(ChatColor.YELLOW + "Max Up/Down Size:" + ChatColor.DARK_AQUA + " " + ymax);
-        player.sendMessage(ChatColor.YELLOW + "Min/Max Protection Height:" + ChatColor.DARK_AQUA + " " + minHeight + " to " + maxHeight);
-        player.sendMessage(ChatColor.YELLOW + "Max Subzone Depth:" + ChatColor.DARK_AQUA + " " + subzonedepth);
-        player.sendMessage(ChatColor.YELLOW + "Can Set Enter/Leave Messages:" + ChatColor.DARK_AQUA + " " + messageperms);
-        player.sendMessage(ChatColor.YELLOW + "Number of Residences you own:" + ChatColor.DARK_AQUA + " " + Residence.getResidenceManager().getOwnedZoneCount(player.getName()));
+        player.sendMessage(TextFormat.GRAY + "---------------------------");
+        player.sendMessage(TextFormat.YELLOW + "Permissions Group:" + TextFormat.DARK_AQUA + " " + Residence.getPermissionManager().getPermissionsGroup(player));
+        player.sendMessage(TextFormat.YELLOW + "Residence Group:" + TextFormat.DARK_AQUA + " " + groupname);
+        player.sendMessage(TextFormat.YELLOW + "Residence Admin:" + TextFormat.DARK_AQUA + " " + Residence.getPermissionManager().isResidenceAdmin(player));
+        player.sendMessage(TextFormat.YELLOW + "Can Create Residences:" + TextFormat.DARK_AQUA + " " + cancreate);
+        player.sendMessage(TextFormat.YELLOW + "Max Residences:" + TextFormat.DARK_AQUA + " " + resmax);
+        player.sendMessage(TextFormat.YELLOW + "Max East/West Size:" + TextFormat.DARK_AQUA + " " + xmax);
+        player.sendMessage(TextFormat.YELLOW + "Max North/South Size:" + TextFormat.DARK_AQUA + " " + zmax);
+        player.sendMessage(TextFormat.YELLOW + "Max Up/Down Size:" + TextFormat.DARK_AQUA + " " + ymax);
+        player.sendMessage(TextFormat.YELLOW + "Min/Max Protection Height:" + TextFormat.DARK_AQUA + " " + minHeight + " to " + maxHeight);
+        player.sendMessage(TextFormat.YELLOW + "Max Subzone Depth:" + TextFormat.DARK_AQUA + " " + subzonedepth);
+        player.sendMessage(TextFormat.YELLOW + "Can Set Enter/Leave Messages:" + TextFormat.DARK_AQUA + " " + messageperms);
+        player.sendMessage(TextFormat.YELLOW + "Number of Residences you own:" + TextFormat.DARK_AQUA + " " + Residence.getResidenceManager().getOwnedZoneCount(player.getName()));
         if (Residence.getEconomyManager() != null) {
-            player.sendMessage(ChatColor.YELLOW + "Residence Cost Per Block:" + ChatColor.DARK_AQUA + " " + costperarea);
+            player.sendMessage(TextFormat.YELLOW + "Residence Cost Per Block:" + TextFormat.DARK_AQUA + " " + costperarea);
         }
-        player.sendMessage(ChatColor.YELLOW + "Flag Permissions:" + ChatColor.DARK_AQUA + " " + flagPerms.listFlags());
+        player.sendMessage(TextFormat.YELLOW + "Flag Permissions:" + TextFormat.DARK_AQUA + " " + flagPerms.listFlags());
         if (Residence.getConfigManager().useLeases()) {
-            player.sendMessage(ChatColor.YELLOW + "Max Lease Days:" + ChatColor.DARK_AQUA + " " + maxLeaseTime);
-            player.sendMessage(ChatColor.YELLOW + "Lease Time Given on Renew:" + ChatColor.DARK_AQUA + " " + leaseGiveTime);
-            player.sendMessage(ChatColor.YELLOW + "Renew Cost Per Block:" + ChatColor.DARK_AQUA + " " + renewcostperarea);
+            player.sendMessage(TextFormat.YELLOW + "Max Lease Days:" + TextFormat.DARK_AQUA + " " + maxLeaseTime);
+            player.sendMessage(TextFormat.YELLOW + "Lease Time Given on Renew:" + TextFormat.DARK_AQUA + " " + leaseGiveTime);
+            player.sendMessage(TextFormat.YELLOW + "Renew Cost Per Block:" + TextFormat.DARK_AQUA + " " + renewcostperarea);
         }
-        player.sendMessage(ChatColor.GRAY + "---------------------------");
+        player.sendMessage(TextFormat.GRAY + "---------------------------");
     }
 
 }

@@ -8,7 +8,8 @@ package com.bekvon.bukkit.residence.text;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.bukkit.configuration.file.FileConfiguration;
+
+import cn.nukkit.utils.Config;
 
 /**
  * 
@@ -71,9 +72,9 @@ public class Language {
         return sentence;
     }
 
-    public static Language parseText(FileConfiguration node, String topkey) {
+    public static Language parseText(Config node, String topkey) {
         Language newholder = new Language();
-        Set<String> keys = node.getConfigurationSection(topkey).getKeys(false);
+        Set<String> keys = node.getSection(topkey).getKeys(false);
         for (String key : keys) {
             newholder.text.put(key, node.getString(topkey + "." + key));
         }

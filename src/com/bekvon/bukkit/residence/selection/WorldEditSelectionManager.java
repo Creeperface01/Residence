@@ -4,15 +4,13 @@
  */
 package com.bekvon.bukkit.residence.selection;
 
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
-import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
-import com.sk89q.worldedit.bukkit.selections.Selection;
-import com.sk89q.worldedit.regions.CuboidRegion;
-
-import org.bukkit.Location;
-import org.bukkit.Server;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
+import WorldEdit.WorldEdit;
+import WorldEdit.Selection;
+import WorldEdit.PlayerData;
+import cn.nukkit.Player;
+import cn.nukkit.Server;
+import cn.nukkit.level.Level;
+import cn.nukkit.level.Location;
 
 /**
  *
@@ -27,18 +25,21 @@ public class WorldEditSelectionManager extends SelectionManager {
 
     @Override
     public boolean worldEdit(Player player) {
-        WorldEditPlugin wep = (WorldEditPlugin) server.getPluginManager().getPlugin("WorldEdit");
-        Selection sel = wep.getSelection(player);
-        if(sel!=null)
+        WorldEdit wep = (WorldEdit) server.getPluginManager().getPlugin("WorldEdit");
+
+        PlayerData data = wep.getPlayerData(player);
+        Selection sel = null;
+
+        if(data != null){
+            sel = data.getSelection();
+        }
+
+        if(sel!= null)
         {
-            Location pos1 = sel.getMinimumPoint();
-            Location pos2 = sel.getMaximumPoint();    
-            try{
-    			CuboidRegion region = (CuboidRegion) sel.getRegionSelector().getRegion();
-    			pos1 = new Location(player.getWorld(), region.getPos1().getX(), region.getPos1().getY(), region.getPos1().getZ());
-    			pos2 = new Location(player.getWorld(), region.getPos2().getX(), region.getPos2().getY(), region.getPos2().getZ());
-            }catch(Exception e){
-            }
+
+            Location pos1 = new Location(Math.min(sel.pos1.x, sel.pos2.x), Math.min(sel.pos1.y, sel.pos2.y), Math.min(sel.pos1.z, sel.pos2.z), 0, 0, sel.pos1.getLevel());
+            Location pos2 = new Location(Math.max(sel.pos1.x, sel.pos2.x), Math.max(sel.pos1.y, sel.pos2.y), Math.max(sel.pos1.z, sel.pos2.z), 0, 0, sel.pos1.getLevel());
+
             this.playerLoc1.put(player.getName(), pos1);
             this.playerLoc2.put(player.getName(), pos2);
             return true;
@@ -50,10 +51,15 @@ public class WorldEditSelectionManager extends SelectionManager {
     {
     	if (hasPlacedBoth(player.getName()))
     	{
-            WorldEditPlugin wep = (WorldEditPlugin) server.getPluginManager().getPlugin("WorldEdit");
-            World world = playerLoc1.get(player.getName()).getWorld();
-            Selection selection = new CuboidSelection(world, playerLoc1.get(player.getName()), playerLoc2.get(player.getName()));
-            wep.setSelection(player, selection);
+            WorldEdit wep = (WorldEdit) server.getPluginManager().getPlugin("WorldEdit");
+            Level level = playerLoc1.get(player.getName()).getLevel();
+
+            PlayerData data = wep.getPlayerData(player);
+
+            if(data != null){
+                data.getSelection().pos1 = playerLoc1.get(player.getName()).clone();
+                data.getSelection().pos2 = playerLoc2.get(player.getName()).clone();
+            }
     	}
     }
 

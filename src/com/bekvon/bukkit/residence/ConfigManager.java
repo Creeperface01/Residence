@@ -3,16 +3,15 @@
  * and open the template in the editor.
  */
 package com.bekvon.bukkit.residence;
-import org.bukkit.ChatColor;
+import cn.nukkit.item.Item;
+import cn.nukkit.utils.Config;
+import cn.nukkit.utils.TextFormat;
 
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 
 /**
  *
@@ -35,7 +34,7 @@ public class ConfigManager {
     protected int leaseCheckInterval;
     protected int autoSaveInt;
     protected boolean flagsInherit;
-    protected ChatColor chatColor;
+    protected TextFormat chatColor;
     protected boolean chatEnable;
     protected boolean actionBar;
     protected int minMoveUpdate;
@@ -57,7 +56,7 @@ public class ConfigManager {
     protected List<Integer> customRightClick;
     private boolean enforceAreaInsideArea;
 
-    public ConfigManager(FileConfiguration config)
+    public ConfigManager(Config config)
     {
         globalCreatorDefaults = new FlagPermissions();
         globalResidenceDefaults = new FlagPermissions();
@@ -65,15 +64,15 @@ public class ConfigManager {
         this.load(config);
     }
 
-    private void load(FileConfiguration config) {
+    private void load(Config config) {
         defaultGroup = config.getString("Global.DefaultGroup", "default").toLowerCase();
         adminsOnly = config.getBoolean("Global.AdminOnlyCommands", false);
         useLeases = config.getBoolean("Global.UseLeaseSystem", false);
         leaseAutoRenew = config.getBoolean("Global.LeaseAutoRenew", true);
         enableEconomy = config.getBoolean("Global.EnableEconomy", false);
         economySystem = config.getString("Global.EconomySystem", "iConomy");
-        infoToolId = config.getInt("Global.InfoToolId", Material.STRING.getId());
-        selectionToolId = config.getInt("Global.SelectionToolId", Material.WOOD_AXE.getId());
+        infoToolId = config.getInt("Global.InfoToolId", Item.STRING);
+        selectionToolId = config.getInt("Global.SelectionToolId", Item.WOODEN_AXE);
         adminOps = config.getBoolean("Global.AdminOPs", true);
         multiworldPlugin = config.getString("Global.MultiWorldPlugin");
         enableRentSystem = config.getBoolean("Global.EnableRentSystem", false);
@@ -86,8 +85,8 @@ public class ConfigManager {
         actionBar = config.getBoolean("Global.UseActionBar", true);
         enforceAreaInsideArea = config.getBoolean("Global.EnforceAreaInsideArea", false);
         language = config.getString("Global.Language","English");
-        globalCreatorDefaults = FlagPermissions.parseFromConfigNode("CreatorDefault", config.getConfigurationSection("Global"));
-        globalResidenceDefaults = FlagPermissions.parseFromConfigNode("ResidenceDefault", config.getConfigurationSection("Global"));
+        globalCreatorDefaults = FlagPermissions.parseFromConfigNode("CreatorDefault", config.getSection("Global"));
+        globalResidenceDefaults = FlagPermissions.parseFromConfigNode("ResidenceDefault", config.getSection("Global"));
         preventBuildInRent = config.getBoolean("Global.PreventRentModify", true);
         stopOnSaveError = config.getBoolean("Global.StopOnSaveFault",true);
         legacyperms = config.getBoolean("Global.LegacyPermissions",false);
