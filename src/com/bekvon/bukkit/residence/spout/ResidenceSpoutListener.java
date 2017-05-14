@@ -2,30 +2,32 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bekvon.bukkit.residence.spout;
 
+import cn.nukkit.Player;
+import cn.nukkit.event.EventHandler;
+import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
+
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.spout.ResidencePopup.PopupType;
-import java.util.HashMap;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.gui.Button;
 import org.getspout.spoutapi.gui.GenericLabel;
 import org.getspout.spoutapi.gui.GenericPopup;
 import org.getspout.spoutapi.gui.GenericTextField;
+
+import java.util.HashMap;
+
 /**
  *
  * @author Administrator
  */
 public class ResidenceSpoutListener implements Listener {
 
-    protected HashMap<Player,GenericPopup> popups;
+    protected HashMap<Player, GenericPopup> popups;
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onButtonClick(ButtonClickEvent event) {
@@ -40,7 +42,7 @@ public class ResidenceSpoutListener implements Listener {
                 String player = null;
                 ClaimedResidence res = null;
                 String group = null;
-                boolean resadmin = (Boolean)popup.getMetaData().get("admin");
+                boolean resadmin = (Boolean) popup.getMetaData().get("admin");
                 Button button = event.getButton();
                 if (button.getText().equalsIgnoreCase("Close")) {
                     event.getPlayer().getMainScreen().removeWidget(screen);
@@ -55,27 +57,26 @@ public class ResidenceSpoutListener implements Listener {
                     flagval = "remove";
                 }
                 player = ((GenericTextField) popup.getWidget("PlayerName")).getText();
-                group = ((GenericTextField)popup.getWidget("GroupName")).getText();
+                group = ((GenericTextField) popup.getWidget("GroupName")).getText();
                 flag = ((GenericTextField) popup.getWidget("FlagName")).getText();
                 res = Residence.getResidenceManager().getByName(((GenericLabel) popup.getWidget("ResidenceName")).getText());
-                if(res==null || flagval == null || flagval.equalsIgnoreCase("") || ((flag == null || flag.equalsIgnoreCase("")) && !flagval.equalsIgnoreCase("removeall")))
+                if (res == null || flagval == null || flagval.equalsIgnoreCase("") || ((flag == null || flag.equalsIgnoreCase("")) && !flagval.equalsIgnoreCase("removeall"))) {
                     return;
-                if((player==null || player.equalsIgnoreCase("")) && (group == null || group.equalsIgnoreCase("")))
-                {
+                }
+                if ((player == null || player.equalsIgnoreCase("")) && (group == null || group.equalsIgnoreCase(""))) {
                     res.getPermissions().setFlag(p, flag, flagval, resadmin);
-                }
-                else if(group!=null && !group.equalsIgnoreCase("")) {
-                    if(flagval.equalsIgnoreCase("removeall"))
+                } else if (group != null && !group.equalsIgnoreCase("")) {
+                    if (flagval.equalsIgnoreCase("removeall")) {
                         res.getPermissions().removeAllGroupFlags(p, group, resadmin);
-                    else
+                    } else {
                         res.getPermissions().setGroupFlag(p, group, flag, flagval, resadmin);
-                }
-                else if(player!=null && !player.equalsIgnoreCase(""))
-                {
-                    if(flagval.equalsIgnoreCase("removeall"))
+                    }
+                } else if (player != null && !player.equalsIgnoreCase("")) {
+                    if (flagval.equalsIgnoreCase("removeall")) {
                         res.getPermissions().removeAllPlayerFlags(p, player, resadmin);
-                    else
+                    } else {
                         res.getPermissions().setPlayerFlag(p, player, flag, flagval, resadmin);
+                    }
                 }
             }
         }

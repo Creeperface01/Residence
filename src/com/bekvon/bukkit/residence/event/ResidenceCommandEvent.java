@@ -2,13 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bekvon.bukkit.residence.event;
 
-import org.bukkit.command.CommandSender;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
+import cn.nukkit.command.CommandSender;
+import cn.nukkit.event.Cancellable;
+import cn.nukkit.event.Event;
+import cn.nukkit.event.HandlerList;
 
 /**
  *
@@ -17,7 +16,7 @@ import org.bukkit.event.HandlerList;
 public class ResidenceCommandEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
-    @Override
+
     public HandlerList getHandlers() {
         return handlers;
     }
@@ -31,8 +30,7 @@ public class ResidenceCommandEvent extends Event implements Cancellable {
     protected String arglist[];
     CommandSender commandsender;
 
-    public ResidenceCommandEvent(String command, String args[], CommandSender sender)
-    {
+    public ResidenceCommandEvent(String command, String args[], CommandSender sender) {
         super();
         cancelled = false;
         arglist = args;
@@ -40,26 +38,25 @@ public class ResidenceCommandEvent extends Event implements Cancellable {
         commandsender = sender;
     }
 
+    @Override
     public boolean isCancelled() {
         return cancelled;
     }
 
+    @Override
     public void setCancelled(boolean bln) {
         cancelled = bln;
     }
 
-    public String getCommand()
-    {
+    public String getCommand() {
         return cmd;
     }
 
-    public String[] getArgs()
-    {
+    public String[] getArgs() {
         return arglist;
     }
 
-    public CommandSender getSender()
-    {
+    public CommandSender getSender() {
         return commandsender;
     }
 

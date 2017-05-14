@@ -4,18 +4,6 @@
  */
 package com.bekvon.bukkit.residence;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.level.Location;
@@ -24,18 +12,6 @@ import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.plugin.PluginManager;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.LogLevel;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Server;
-import org.bukkit.World;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import com.bekvon.bukkit.residence.chat.ChatManager;
 import com.bekvon.bukkit.residence.economy.BOSEAdapter;
@@ -74,8 +50,19 @@ import cosine.boseconomy.BOSEconomy;
 import fr.crafter.tickleman.realeconomy.RealEconomy;
 import fr.crafter.tickleman.realplugin.RealPlugin;
 
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- * 
+ *
  * @author Gary Smoak - bekvon
  *
  */
@@ -111,14 +98,13 @@ public class Residence extends PluginBase {
     protected static boolean initsuccess = false;
     protected Map<String, String> deleteConfirm;
     protected static List<String> resadminToggle;
-    private final static String[] validLanguages = { "English", "German", "French", "Hungarian", "Spanish", "Chinese", "Czech", "Brazilian", "Polish" };
+    private final static String[] validLanguages = {"English", "German", "French", "Hungarian", "Spanish", "Chinese", "Czech", "Brazilian", "Polish"};
     private Runnable doHeals = new Runnable() {
         public void run() {
             plistener.doHeals();
         }
     };
-    private Runnable rentExpire = new Runnable()
-    {
+    private Runnable rentExpire = new Runnable() {
         public void run() {
             rentmanager.checkCurrentRents();
             if (cmanager.showIntervalMessages()) {
@@ -240,8 +226,7 @@ public class Residence extends PluginBase {
                 System.out.println("[Residence] Scanning for economy systems...");
                 if (gmanager.getPermissionsPlugin() instanceof ResidenceVaultAdapter) {
                     ResidenceVaultAdapter vault = (ResidenceVaultAdapter) gmanager.getPermissionsPlugin();
-                    if (vault.economyOK())
-                    {
+                    if (vault.economyOK()) {
                         economy = vault;
                         System.out.println("[Residence] Found Vault using economy system: " + vault.getEconomyName());
                     }
@@ -363,12 +348,11 @@ public class Residence extends PluginBase {
         versionChecker.VersionCheck(null);
     }
 
-    public void consoleMessage(String message){
-	    getLogger().info(message);
-	}
-    
-    public static boolean validName(String name)
-    {
+    public void consoleMessage(String message) {
+        getLogger().info(message);
+    }
+
+    public static boolean validName(String name) {
         if (name.contains(":") || name.contains(".")) {
             return false;
         }
@@ -382,11 +366,11 @@ public class Residence extends PluginBase {
             return true;
         }
     }
-    
+
     public static VersionChecker getVersionChecker() {
         return versionChecker;
     }
-    
+
     public static File getDataLocation() {
         return dataFolder;
     }
@@ -467,16 +451,16 @@ public class Residence extends PluginBase {
         }
     }
 
-    public static FlagPermissions getPermsByLocForPlayer(Location loc, Player player)
-    {
+    public static FlagPermissions getPermsByLocForPlayer(Location loc, Player player) {
         ClaimedResidence res = rmanager.getByLoc(loc);
         if (res != null) {
             return res.getPermissions();
         } else {
-            if (player != null)
+            if (player != null) {
                 return wmanager.getPerms(player);
-            else
+            } else {
                 return wmanager.getPerms(loc.getLevel().getName());
+            }
         }
     }
 
@@ -541,7 +525,6 @@ public class Residence extends PluginBase {
             Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Vault NOT found!");
         }
     }*/
-
     public static boolean isResAdminOn(Player player) {
         if (resadminToggle.contains(player.getName())) {
             return true;
@@ -572,8 +555,9 @@ public class Residence extends PluginBase {
             yml = new YMLSaveHelper(tmpFile);
             yml.getRoot().put("Version", saveVersion);
             cn.nukkit.level.Level world = server.getLevelByName(entry.getKey());
-            if (world != null)
+            if (world != null) {
                 yml.getRoot().put("Seed", world.getSeed());
+            }
             yml.getRoot().put("Residences", (Map) entry.getValue());
             yml.save();
             if (ymlSaveLoc.isFile()) {
@@ -682,8 +666,8 @@ public class Residence extends PluginBase {
             for (cn.nukkit.level.Level world : getServ().getLevels().values()) {
                 loadFile = new File(worldFolder, "res_" + world.getName() + ".yml");
                 if (loadFile.isFile()) {
-                	time = System.currentTimeMillis();
-                	this.getLogger().info("Loading save data for world " + world.getName() + "...");
+                    time = System.currentTimeMillis();
+                    this.getLogger().info("Loading save data for world " + world.getName() + "...");
                     yml = new YMLSaveHelper(loadFile);
                     yml.load();
                     worlds.put(world.getName(), yml.getRoot().get("Residences"));
@@ -801,4 +785,3 @@ public class Residence extends PluginBase {
         }
     }
 }
-

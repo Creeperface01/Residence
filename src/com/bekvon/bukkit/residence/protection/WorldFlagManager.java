@@ -2,50 +2,46 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bekvon.bukkit.residence.protection;
 
 import cn.nukkit.Player;
 import cn.nukkit.utils.Config;
+
 import com.bekvon.bukkit.residence.Residence;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 
 /**
  *
  * @author Administrator
  */
 public class WorldFlagManager {
-    protected Map<String, Map<String,FlagPermissions>> groupperms;
-    protected Map<String,FlagPermissions> worldperms;
+
+    protected Map<String, Map<String, FlagPermissions>> groupperms;
+    protected Map<String, FlagPermissions> worldperms;
     protected FlagPermissions globaldefaults;
 
-    public WorldFlagManager()
-    {
+    public WorldFlagManager() {
         globaldefaults = new FlagPermissions();
         worldperms = new HashMap<>();
         groupperms = new HashMap<>();
     }
 
-    public WorldFlagManager(Config config)
-    {
+    public WorldFlagManager(Config config) {
         this();
         this.parsePerms(config);
     }
 
-    public FlagPermissions getPerms(Player player)
-    {
+    public FlagPermissions getPerms(Player player) {
         return this.getPerms(player.getLevel().getName(), Residence.getPermissionManager().getGroupNameByPlayer(player));
     }
 
-    public FlagPermissions getPerms(String world, String group)
-    {
+    public FlagPermissions getPerms(String world, String group) {
         world = world.toLowerCase();
         group = group.toLowerCase();
         Map<String, FlagPermissions> groupworldperms = groupperms.get(group);
@@ -65,22 +61,22 @@ public class WorldFlagManager {
         return list;
     }
 
-    public FlagPermissions getPerms(String world)
-    {
+    public FlagPermissions getPerms(String world) {
         world = world.toLowerCase();
         FlagPermissions list = worldperms.get(world);
         if (list == null) {
-            if (globaldefaults == null)
+            if (globaldefaults == null) {
                 return new FlagPermissions();
-            else
+            } else {
                 return globaldefaults;
+            }
         }
         return list;
     }
 
     public final void parsePerms(Config config) {
         try {
-            
+
             Set<String> keys = config.getConfigurationSection("Global.Flags").getKeys(false);
             if (keys != null) {
                 for (String key : keys) {
@@ -97,24 +93,20 @@ public class WorldFlagManager {
             keys = config.getConfigurationSection("Groups").getKeys(false);
             if (keys != null) {
                 for (String key : keys) {
-                    Set<String> worldkeys = config.getConfigurationSection("Groups." + key + ".Flags.World").getKeys(false); 
+                    Set<String> worldkeys = config.getConfigurationSection("Groups." + key + ".Flags.World").getKeys(false);
                     if (worldkeys != null) {
                         Map<String, FlagPermissions> perms = new HashMap<>();
                         for (String wkey : worldkeys) {
                             FlagPermissions list = FlagPermissions.parseFromConfigNode(wkey, config.getConfigurationSection("Groups." + key + ".Flags.World"));
-                            if(wkey.equalsIgnoreCase("global"))
-                            {
+                            if (wkey.equalsIgnoreCase("global")) {
                                 list.setParent(globaldefaults);
                                 perms.put(wkey.toLowerCase(), list);
-                                for(Entry<String, FlagPermissions> worldperm : worldperms.entrySet())
-                                {
+                                for (Entry<String, FlagPermissions> worldperm : worldperms.entrySet()) {
                                     list = FlagPermissions.parseFromConfigNode(wkey, config.getConfigurationSection("Groups." + key + ".Flags.World"));
                                     list.setParent(worldperm.getValue());
-                                    perms.put("global."+worldperm.getKey().toLowerCase(), list);
+                                    perms.put("global." + worldperm.getKey().toLowerCase(), list);
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 perms.put(wkey.toLowerCase(), list);
                             }
                         }
@@ -122,12 +114,11 @@ public class WorldFlagManager {
                             String wkey = entry.getKey();
                             FlagPermissions list = entry.getValue();
                             if (!wkey.startsWith("global.")) {
-                                list.setParent(perms.get("global."+wkey));
+                                list.setParent(perms.get("global." + wkey));
                                 if (list.getParent() == null) {
                                     list.setParent(worldperms.get(wkey));
                                 }
-                                if(list.getParent()==null)
-                                {
+                                if (list.getParent() == null) {
                                     list.setParent(globaldefaults);
                                 }
                             }

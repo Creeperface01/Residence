@@ -2,12 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bekvon.bukkit.residence.protection;
-
-import cn.nukkit.level.Location;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.protection.ResidenceManager.ChunkRef;
+
+import cn.nukkit.level.Location;
+import cn.nukkit.Server;
+import cn.nukkit.level.Level;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -17,15 +18,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Location;
-import org.bukkit.Server;
-import org.bukkit.World;
-
 /**
- * 
+ *
  * @author Administrator
  */
 public class CuboidArea {
+
     protected Location highPoints;
     protected Location lowPoints;
 

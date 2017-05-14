@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bekvon.bukkit.residence.permissions;
 
 import cn.nukkit.Player;
@@ -20,10 +19,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * 
+ *
  * @author Administrator
  */
 public class PermissionManager {
+
     protected static PermissionsInterface perms;
     protected Map<String, PermissionGroup> groups;
     protected Map<String, String> playersGroup;
@@ -88,8 +88,9 @@ public class PermissionManager {
     }
 
     public String getPermissionsGroup(String player, String world) {
-        if (perms == null)
+        if (perms == null) {
             return Residence.getConfigManager().getDefaultGroup();
+        }
         return perms.getPlayerGroup(player, world);
     }
 

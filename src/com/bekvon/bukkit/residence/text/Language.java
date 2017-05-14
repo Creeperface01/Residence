@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bekvon.bukkit.residence.text;
 
 import java.util.HashMap;
@@ -12,10 +11,11 @@ import java.util.Set;
 import cn.nukkit.utils.Config;
 
 /**
- * 
+ *
  * @author Administrator
  */
 public class Language {
+
     public Map<String, String> text;
 
     public Language() {

@@ -4,6 +4,14 @@
  */
 package com.bekvon.bukkit.residence.protection;
 
+import cn.nukkit.block.Block;
+import cn.nukkit.utils.ConfigSection;
+import cn.nukit.utils.TextFormat;
+import cn.nukkit.Material;
+import cn.nukkit.Player;
+
+import com.bekvon.bukkit.residence.Residence;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -14,17 +22,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import cn.nukkit.block.Block;
-import cn.nukkit.utils.ConfigSection;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
-
-import com.bekvon.bukkit.residence.Residence;
-
 /**
- * 
+ *
  * @author Administrator
  */
 public class FlagPermissions {
@@ -139,11 +138,11 @@ public class FlagPermissions {
         addFlag("bucket");
         addFlag("bank");
         addFlag("beacon");
-        
+
         /* New flags */
         addFlag("animalkilling");
         addFlag("trade");
-        
+
         addResidenceOnlyFlag("trample");
         addResidenceOnlyFlag("pvp");
         addResidenceOnlyFlag("fireball");
@@ -193,14 +192,14 @@ public class FlagPermissions {
         addMaterialToUseFlag(Block.JUNGLE_DOOR_BLOCK, "door");
         addMaterialToUseFlag(Block.ACACIA_DOOR_BLOCK, "door");
         addMaterialToUseFlag(Block.DARK_OAK_DOOR_BLOCK, "door");
-        
+
         /* 1.8 Fence Gates */
         addMaterialToUseFlag(Block.FENCE_GATE, "door");
         addMaterialToUseFlag(Block.FENCE_GATE_BIRCH, "door");
         addMaterialToUseFlag(Block.FENCE_GATE_JUNGLE, "door");
         addMaterialToUseFlag(Block.FENCE_GATE_ACACIA, "door");
         addMaterialToUseFlag(Block.FENCE_GATE_DARK_OAK, "door");
-        
+
         addMaterialToUseFlag(Block.FENCE_GATE, "door");
         addMaterialToUseFlag(Block.NETHER_BRICK_FENCE, "door");
         addMaterialToUseFlag(Block.TRAPDOOR, "door");
@@ -252,71 +251,66 @@ public class FlagPermissions {
         groupFlags = Collections.synchronizedMap(new HashMap<String, Map<String, Boolean>>());
         cachedPlayerNameUUIDs = Collections.synchronizedMap(new HashMap<String, String>());
     }
-    
-    protected Map<String,Boolean> getPlayerFlags(String player, boolean allowCreate) //this function works with uuid in string format as well, instead of player name
+
+    protected Map<String, Boolean> getPlayerFlags(String player, boolean allowCreate) //this function works with uuid in string format as well, instead of player name
     {
         player = player.toLowerCase();
         String uuids;
         Map<String, Boolean> flags = null;
-        
-        if(player.length() == 36)
-        {
+
+        if (player.length() == 36) {
             uuids = player;
             String resolvedName = Residence.getPlayerName(uuids);
-            if(resolvedName != null)
+            if (resolvedName != null) {
                 player = resolvedName;
-            else if(cachedPlayerNameUUIDs.containsKey(player))
+            } else if (cachedPlayerNameUUIDs.containsKey(player)) {
                 player = cachedPlayerNameUUIDs.get(player);
-        }
-        else
+            }
+        } else {
             uuids = Residence.getPlayerUUIDString(player);
+        }
 
-        if(uuids==null)
-        {
+        if (uuids == null) {
             Set<Entry<String, String>> values = cachedPlayerNameUUIDs.entrySet();
-            for(Entry<String, String> value : values)
-            {
-                if(value.getValue().equals(player))
+            for (Entry<String, String> value : values) {
+                if (value.getValue().equals(player)) {
                     uuids = value.getKey();
+                }
             }
         }
-        
-        if(uuids!=null)
+
+        if (uuids != null) {
             flags = playerFlags.get(uuids);
-        if(flags==null)
-        {
+        }
+        if (flags == null) {
             flags = playerFlags.get(player);
-            if(uuids!=null && flags != null)
-            {
+            if (uuids != null && flags != null) {
                 flags = playerFlags.remove(player);
                 playerFlags.put(uuids, flags);
                 cachedPlayerNameUUIDs.put(uuids, player);
             }
-        }
-        else
+        } else {
             cachedPlayerNameUUIDs.put(uuids, player);
-        
-        if(flags == null && allowCreate)
-        {
-            if(uuids!=null)
-            {
+        }
+
+        if (flags == null && allowCreate) {
+            if (uuids != null) {
                 flags = Collections.synchronizedMap(new HashMap<String, Boolean>());
                 playerFlags.put(uuids, flags);
                 cachedPlayerNameUUIDs.put(uuids, player);
-            }
-            else
-            {
+            } else {
                 flags = Collections.synchronizedMap(new HashMap<String, Boolean>());
                 playerFlags.put(player, flags);
             }
         }
         return flags;
     }
-    
+
     public boolean setPlayerFlag(String player, String flag, FlagState state) {
         Map<String, Boolean> map = this.getPlayerFlags(player, state != FlagState.NEITHER);
-        if(map==null)
+        if (map == null) {
             return true;
+        }
         if (state == FlagState.FALSE) {
             map.put(flag, false);
         } else if (state == FlagState.TRUE) {
@@ -326,21 +320,24 @@ public class FlagPermissions {
                 map.remove(flag);
             }
         }
-        if(map.isEmpty())
+        if (map.isEmpty()) {
             this.removeAllPlayerFlags(player);
+        }
         return true;
     }
 
     public void removeAllPlayerFlags(String player) { //this function works with uuid in string format as well, instead of player name
         player = player.toLowerCase();
         String uuids = Residence.getPlayerUUIDString(player);
-        if(uuids == null)
-            for(Entry<String, String> entry : cachedPlayerNameUUIDs.entrySet())
-                if(entry.getValue().equals(player))
+        if (uuids == null) {
+            for (Entry<String, String> entry : cachedPlayerNameUUIDs.entrySet()) {
+                if (entry.getValue().equals(player)) {
                     uuids = entry.getKey();
+                }
+            }
+        }
 
-        if(uuids!=null)
-        {
+        if (uuids != null) {
             playerFlags.remove(uuids);
             cachedPlayerNameUUIDs.remove(uuids);
         }
@@ -451,8 +448,9 @@ public class FlagPermissions {
 
     public boolean isPlayerSet(String player, String flag) {
         Map<String, Boolean> flags = this.getPlayerFlags(player, false);
-        if (flags == null)
+        if (flags == null) {
             return false;
+        }
         return flags.containsKey(flag);
     }
 
@@ -521,36 +519,33 @@ public class FlagPermissions {
     }
 
     protected static FlagPermissions load(Map<String, Object> root, FlagPermissions newperms) throws Exception {
-        if(root.containsKey("LastKnownPlayerNames"))
+        if (root.containsKey("LastKnownPlayerNames")) {
             newperms.cachedPlayerNameUUIDs = (Map) root.get("LastKnownPlayerNames");
+        }
         newperms.playerFlags = (Map) root.get("PlayerFlags");
         newperms.groupFlags = (Map) root.get("GroupFlags");
         newperms.cuboidFlags = (Map) root.get("AreaFlags");
         newperms.convertPlayerNamesToUUIDs();
         return newperms;
     }
-    
-    private void convertPlayerNamesToUUIDs()
-    {
-        HashMap<String,String> converts = new HashMap<>();
-        for( String keyset : playerFlags.keySet())
-        {
-            if(keyset.length()!=36)
-            {
+
+    private void convertPlayerNamesToUUIDs() {
+        HashMap<String, String> converts = new HashMap<>();
+        for (String keyset : playerFlags.keySet()) {
+            if (keyset.length() != 36) {
                 String uuid = Residence.getPlayerUUIDString(keyset);
-                if(uuid != null)
+                if (uuid != null) {
                     converts.put(keyset, uuid);
-            }
-            else
-            {
+                }
+            } else {
                 String pname = Residence.getPlayerName(keyset);
-                if(pname != null)
+                if (pname != null) {
                     this.cachedPlayerNameUUIDs.put(keyset, pname);
+                }
             }
-                
+
         }
-        for(Entry<String, String> convert : converts.entrySet())
-        {
+        for (Entry<String, String> convert : converts.entrySet()) {
             playerFlags.put(convert.getValue(), playerFlags.remove(convert.getKey()));
             cachedPlayerNameUUIDs.put(convert.getValue(), convert.getKey());
         }
@@ -590,32 +585,31 @@ public class FlagPermissions {
             return "none";
         }
     }
-    
-    protected String printPlayerFlags(Map<String,Boolean> flags)
-    {
-            StringBuilder sbuild = new StringBuilder();
-            Set<Entry<String, Boolean>> set = flags.entrySet();
-            synchronized (flags) {
-                Iterator<Entry<String, Boolean>> it = set.iterator();
-                while (it.hasNext()) {
-                    Entry<String, Boolean> next = it.next();
-                    if (next.getValue()) {
-                        sbuild.append("+").append(next.getKey());
-                        if (it.hasNext()) {
-                            sbuild.append(" ");
-                        }
-                    } else {
-                        sbuild.append("-").append(next.getKey());
-                        if (it.hasNext()) {
-                            sbuild.append(" ");
-                        }
+
+    protected String printPlayerFlags(Map<String, Boolean> flags) {
+        StringBuilder sbuild = new StringBuilder();
+        Set<Entry<String, Boolean>> set = flags.entrySet();
+        synchronized (flags) {
+            Iterator<Entry<String, Boolean>> it = set.iterator();
+            while (it.hasNext()) {
+                Entry<String, Boolean> next = it.next();
+                if (next.getValue()) {
+                    sbuild.append("+").append(next.getKey());
+                    if (it.hasNext()) {
+                        sbuild.append(" ");
+                    }
+                } else {
+                    sbuild.append("-").append(next.getKey());
+                    if (it.hasNext()) {
+                        sbuild.append(" ");
                     }
                 }
             }
-            if (sbuild.length() == 0) {
-                sbuild.append("none");
-            }
-            return sbuild.toString();
+        }
+        if (sbuild.length() == 0) {
+            sbuild.append("none");
+        }
+        return sbuild.toString();
     }
 
     public String listOtherPlayersFlags(String player) {
@@ -630,19 +624,17 @@ public class FlagPermissions {
                 String next = nextEnt.getKey();
                 if (!next.equals(player) && !next.equals(uuids)) {
                     String perms = printPlayerFlags(nextEnt.getValue());
-                    if(next.length() == 36)
-                    {
+                    if (next.length() == 36) {
                         String resolvedName = Residence.getPlayerName(next);
-                        if(resolvedName != null)
-                        {
+                        if (resolvedName != null) {
                             this.cachedPlayerNameUUIDs.put(next, resolvedName);
                             next = resolvedName;
+                        } else if (this.cachedPlayerNameUUIDs.containsKey(next)) {
+                            next = this.cachedPlayerNameUUIDs.get(next);
                         }
-                        else if(this.cachedPlayerNameUUIDs.containsKey(next))
-                            next = this.cachedPlayerNameUUIDs.get(next);                        
                     }
                     if (!perms.equals("none")) {
-                        sbuild.append(next).append("[").append(ChatColor.DARK_AQUA).append(perms).append(ChatColor.RED).append("] ");
+                        sbuild.append(next).append("[").append(TextFormat.DARK_AQUA).append(perms).append(TextFormat.RED).append("] ");
                     }
                 }
             }
@@ -659,7 +651,7 @@ public class FlagPermissions {
                 String next = it.next();
                 String perms = listGroupFlags(next);
                 if (!perms.equals("none")) {
-                    sbuild.append(next).append("[").append(ChatColor.DARK_AQUA).append(perms).append(ChatColor.RED).append("] ");
+                    sbuild.append(next).append("[").append(TextFormat.DARK_AQUA).append(perms).append(TextFormat.RED).append("] ");
                 }
             }
         }
@@ -706,10 +698,10 @@ public class FlagPermissions {
     }
 
     public void printFlags(Player player) {
-        player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Flags") + ":" + ChatColor.BLUE + " " + listFlags());
-        player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Your.Flags") + ":" + ChatColor.GREEN + " " + listPlayerFlags(player.getName()));
-        player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Group.Flags") + ":" + ChatColor.RED + " " + listGroupFlags());
-        player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Others.Flags") + ":" + ChatColor.RED + " " + listOtherPlayersFlags(player.getName()));
+        player.sendMessage(TextFormat.YELLOW + Residence.getLanguage().getPhrase("Flags") + ":" + TextFormat.BLUE + " " + listFlags());
+        player.sendMessage(TextFormat.YELLOW + Residence.getLanguage().getPhrase("Your.Flags") + ":" + TextFormat.GREEN + " " + listPlayerFlags(player.getName()));
+        player.sendMessage(TextFormat.YELLOW + Residence.getLanguage().getPhrase("Group.Flags") + ":" + TextFormat.RED + " " + listGroupFlags());
+        player.sendMessage(TextFormat.YELLOW + Residence.getLanguage().getPhrase("Others.Flags") + ":" + TextFormat.RED + " " + listOtherPlayersFlags(player.getName()));
     }
 
     public void copyUserPermissions(String fromUser, String toUser) {

@@ -2,17 +2,17 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bekvon.bukkit.residence.permissions;
 
 import com.bekvon.bukkit.residence.Residence;
-import org.bukkit.entity.Player;
+
+import cn.nukkit.Player;
 
 import de.bananaco.bpermissions.api.ApiLayer;
 import de.bananaco.bpermissions.api.util.CalculableType;
 
 /**
- * 
+ *
  * @author Administrator
  */
 public class BPermissionsAdapter implements PermissionsInterface {
@@ -21,7 +21,7 @@ public class BPermissionsAdapter implements PermissionsInterface {
     }
 
     public String getPlayerGroup(Player player) {
-        return this.getPlayerGroup(player.getName(), player.getWorld().getName());
+        return this.getPlayerGroup(player.getName(), player.getLevel().getName());
     }
 
     public String getPlayerGroup(String player, String world) {
@@ -37,4 +37,5 @@ public class BPermissionsAdapter implements PermissionsInterface {
         }
         return null;
     }
+
 }

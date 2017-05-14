@@ -2,18 +2,18 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bekvon.bukkit.residence.permissions;
 
 import cn.nukkit.Player;
+
 import com.bekvon.bukkit.residence.Residence;
 import com.platymuus.bukkit.permissions.Group;
 import com.platymuus.bukkit.permissions.PermissionsPlugin;
+
 import java.util.List;
-import org.bukkit.entity.Player;
 
 /**
- * 
+ *
  * @author Administrator
  */
 public class PermissionsBukkitAdapter implements PermissionsInterface {

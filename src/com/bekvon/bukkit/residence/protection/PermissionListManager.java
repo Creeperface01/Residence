@@ -2,9 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bekvon.bukkit.residence.protection;
-import org.bukkit.ChatColor;
+
+import cn.nukkit.Player;
+import cn.nukkit.utils.TextFormat;
 
 import com.bekvon.bukkit.residence.Residence;
 import java.util.Collections;
@@ -12,7 +13,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.bukkit.entity.Player;
 
 /**
  *
@@ -20,112 +20,93 @@ import org.bukkit.entity.Player;
  */
 public class PermissionListManager {
 
-    private final Map<String,Map<String,FlagPermissions>> lists;
+    private final Map<String, Map<String, FlagPermissions>> lists;
 
-    public PermissionListManager()
-    {
-        lists = Collections.synchronizedMap(new HashMap<String,Map<String,FlagPermissions>>());
+    public PermissionListManager() {
+        lists = Collections.synchronizedMap(new HashMap<String, Map<String, FlagPermissions>>());
     }
-    
-    public FlagPermissions getList(String player, String listname)
-    {
+
+    public FlagPermissions getList(String player, String listname) {
         Map<String, FlagPermissions> get = lists.get(player);
-        if(get==null)
-        {
+        if (get == null) {
             return null;
         }
         return get.get(listname);
     }
-    
-    public void makeList(Player player, String listname)
-    {
+
+    public void makeList(Player player, String listname) {
         Map<String, FlagPermissions> get = lists.get(player.getName());
-        if(get==null)
-        {
-            get=new HashMap<>();
+        if (get == null) {
+            get = new HashMap<>();
             lists.put(player.getName(), get);
         }
         FlagPermissions perms = get.get(listname);
-        if(perms == null)
-        {
+        if (perms == null) {
             perms = new FlagPermissions();
             get.put(listname, perms);
-            player.sendMessage(ChatColor.GREEN+Residence.getLanguage().getPhrase("ListCreate", listname));
-        }
-        else
-        {
-            player.sendMessage(ChatColor.RED+Residence.getLanguage().getPhrase("ListExists"));
+            player.sendMessage(TextFormat.GREEN + Residence.getLanguage().getPhrase("ListCreate", listname));
+        } else {
+            player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("ListExists"));
         }
     }
 
-    public void removeList(Player player, String listname)
-    {
+    public void removeList(Player player, String listname) {
         Map<String, FlagPermissions> get = lists.get(player.getName());
-        if(get==null)
-        {
-            player.sendMessage(ChatColor.RED+Residence.getLanguage().getPhrase("InvalidList"));
+        if (get == null) {
+            player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("InvalidList"));
             return;
         }
         FlagPermissions list = get.get(listname);
-        if(list==null)
-        {
-            player.sendMessage(ChatColor.RED+Residence.getLanguage().getPhrase("InvalidList"));
+        if (list == null) {
+            player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("InvalidList"));
             return;
         }
         get.remove(listname);
-        player.sendMessage(ChatColor.RED+Residence.getLanguage().getPhrase("ListRemoved"));
+        player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("ListRemoved"));
     }
-    
-    public void applyListToResidence(Player player, String listname, String areaname, boolean resadmin)
-    {
+
+    public void applyListToResidence(Player player, String listname, String areaname, boolean resadmin) {
         FlagPermissions list = this.getList(player.getName(), listname);
-        if(list == null)
-        {
-             player.sendMessage(ChatColor.RED+Residence.getLanguage().getPhrase("InvalidList"));
-             return;
+        if (list == null) {
+            player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("InvalidList"));
+            return;
         }
         ClaimedResidence res = Residence.getResidenceManager().getByName(areaname);
-        if(res == null)
-        {
-            player.sendMessage(ChatColor.RED+Residence.getLanguage().getPhrase("InvalidResidence"));
+        if (res == null) {
+            player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("InvalidResidence"));
             return;
         }
         res.getPermissions().applyTemplate(player, list, resadmin);
     }
 
-    public void printList(Player player, String listname)
-    {
+    public void printList(Player player, String listname) {
         FlagPermissions list = this.getList(player.getName(), listname);
-        if(list==null)
-        {
-            player.sendMessage(ChatColor.RED+Residence.getLanguage().getPhrase("InvalidList"));
+        if (list == null) {
+            player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("InvalidList"));
             return;
         }
-        player.sendMessage(ChatColor.LIGHT_PURPLE+"------Permission Template------");
-        player.sendMessage(Residence.getLanguage().getPhrase("Name")+": "+ChatColor.GREEN + listname);
+        player.sendMessage(TextFormat.LIGHT_PURPLE + "------Permission Template------");
+        player.sendMessage(Residence.getLanguage().getPhrase("Name") + ": " + TextFormat.GREEN + listname);
         list.printFlags(player);
     }
 
-    public Map<String,Object> save()
-    {
+    public Map<String, Object> save() {
         Map root = new LinkedHashMap<>();
-        for(Entry<String, Map<String, FlagPermissions>> players : lists.entrySet())
-        {
+        for (Entry<String, Map<String, FlagPermissions>> players : lists.entrySet()) {
             Map saveMap = new LinkedHashMap<>();
             Map<String, FlagPermissions> map = players.getValue();
-            for(Entry<String, FlagPermissions> list : map.entrySet())
-            {
+            for (Entry<String, FlagPermissions> list : map.entrySet()) {
                 saveMap.put(list.getKey(), list.getValue().save());
             }
             root.put(players.getKey(), saveMap);
         }
         return root;
     }
+
     public static PermissionListManager load(Map<String, Object> root) {
-        
+
         PermissionListManager p = new PermissionListManager();
-        if(root != null)
-        {
+        if (root != null) {
             for (Entry<String, Object> players : root.entrySet()) {
                 try {
                     Map<String, Object> value = (Map<String, Object>) players.getValue();
@@ -142,19 +123,15 @@ public class PermissionListManager {
         return p;
     }
 
-    public void printLists(Player player)
-    {
+    public void printLists(Player player) {
         StringBuilder sbuild = new StringBuilder();
         Map<String, FlagPermissions> get = lists.get(player.getName());
-        sbuild.append(ChatColor.YELLOW).append(Residence.getLanguage().getPhrase("Lists")).append(":").append(ChatColor.DARK_AQUA).append(" ");
-        if(get!=null)
-        {
-            for( Entry<String, FlagPermissions> thislist : get.entrySet())
-            {
-            sbuild.append(thislist.getKey()).append(" ");
+        sbuild.append(TextFormat.YELLOW).append(Residence.getLanguage().getPhrase("Lists")).append(":").append(TextFormat.DARK_AQUA).append(" ");
+        if (get != null) {
+            for (Entry<String, FlagPermissions> thislist : get.entrySet()) {
+                sbuild.append(thislist.getKey()).append(" ");
             }
         }
         player.sendMessage(sbuild.toString());
     }
 }
-

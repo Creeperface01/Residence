@@ -6,7 +6,7 @@
 package com.bekvon.bukkit.residence.event;
 
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
-import org.bukkit.event.Cancellable;
+import cn.nukkit.event.Cancellable;
 
 /**
  *
@@ -27,6 +27,11 @@ public class CancellableResidenceEvent extends ResidenceEvent implements Cancell
 
     public void setCancelled(boolean bln) {
         cancelled = bln;
+    }
+
+    @Override
+    public void setCancelled() {
+        //todo
     }
 
 }

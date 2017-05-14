@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bekvon.bukkit.residence.economy.rent;
 
 import java.util.HashMap;
@@ -28,9 +27,9 @@ public class RentableLand {
 
     public static RentableLand load(Map<String, Object> map) {
         RentableLand newland = new RentableLand();
-        newland.cost = (Integer)map.get("Cost");
-        newland.days = (Integer)map.get("Days");
-        newland.repeatable = (Boolean)map.get("Repeatable");
+        newland.cost = (Integer) map.get("Cost");
+        newland.days = (Integer) map.get("Days");
+        newland.repeatable = (Boolean) map.get("Repeatable");
         return newland;
     }
 }

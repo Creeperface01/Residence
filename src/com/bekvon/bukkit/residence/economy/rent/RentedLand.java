@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bekvon.bukkit.residence.economy.rent;
 
 import java.util.HashMap;
@@ -27,13 +26,13 @@ public class RentedLand {
         rentables.put("AutoRefresh", autoRefresh);
         return rentables;
     }
-    public static RentedLand load(Map<String,Object> map)
-    {
+
+    public static RentedLand load(Map<String, Object> map) {
         RentedLand newland = new RentedLand();
         newland.player = (String) map.get("Player");
-        newland.startTime = (Long)map.get("StartTime");
-        newland.endTime = (Long)map.get("EndTime");
-        newland.autoRefresh = (Boolean)map.get("AutoRefresh");
+        newland.startTime = (Long) map.get("StartTime");
+        newland.endTime = (Long) map.get("EndTime");
+        newland.autoRefresh = (Boolean) map.get("AutoRefresh");
         return newland;
     }
 }

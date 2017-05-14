@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bekvon.bukkit.residence.economy;
 
 import com.earth2me.essentials.Essentials;
@@ -11,7 +10,7 @@ import com.earth2me.essentials.api.NoLoanPermittedException;
 import com.earth2me.essentials.api.UserDoesNotExistException;
 
 /**
- * 
+ *
  * @author Administrator
  */
 public class EssentialsEcoAdapter implements EconomyInterface {
@@ -52,7 +51,7 @@ public class EssentialsEcoAdapter implements EconomyInterface {
     }
 
     @Override
-    public boolean add(String playerName, double amount) {
+    public boolean addMoney(String playerName, double amount) {
         if (Economy.playerExists(playerName)) {
             try {
                 Economy.add(playerName, amount);
@@ -87,8 +86,9 @@ public class EssentialsEcoAdapter implements EconomyInterface {
     public boolean transfer(String playerFrom, String playerTo, double amount) {
         try {
             if (Economy.playerExists(playerFrom) && Economy.playerExists(playerTo) && Economy.hasEnough(playerFrom, amount)) {
-                if (!subtract(playerFrom, amount))
+                if (!subtract(playerFrom, amount)) {
                     return false;
+                }
                 if (!add(playerTo, amount)) {
                     add(playerFrom, amount);
                     return false;

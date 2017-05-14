@@ -2,12 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bekvon.bukkit.residence.event;
 
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
+import cn.nukkit.Player;
+import cn.nukkit.event.Cancellable;
 
 /**
  *
@@ -17,8 +16,7 @@ public class CancellableResidencePlayerFlagEvent extends ResidencePlayerFlagEven
 
     protected boolean cancelled;
 
-    public CancellableResidencePlayerFlagEvent(String eventName, ClaimedResidence resref, Player player, String flag, FlagType type, String target)
-    {
+    public CancellableResidencePlayerFlagEvent(String eventName, ClaimedResidence resref, Player player, String flag, FlagType type, String target) {
         super(eventName, resref, player, flag, type, target);
     }
 
@@ -28,6 +26,11 @@ public class CancellableResidencePlayerFlagEvent extends ResidencePlayerFlagEven
 
     public void setCancelled(boolean bln) {
         cancelled = bln;
+    }
+
+    @Override
+    public void setCancelled() {
+        //tood
     }
 
 }

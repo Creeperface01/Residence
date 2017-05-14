@@ -2,14 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bekvon.bukkit.residence.permissions;
 
 import com.nijiko.permissions.PermissionHandler;
-import org.bukkit.entity.Player;
+import cn.nukkit.Player;
 
 /**
- * 
+ *
  * @author Administrator
  */
 public class OriginalPermissions implements PermissionsInterface {
@@ -21,7 +20,7 @@ public class OriginalPermissions implements PermissionsInterface {
     }
 
     public String getPlayerGroup(Player player) {
-        return this.getPlayerGroup(player.getName(), player.getWorld().getName());
+        return this.getPlayerGroup(player.getName(), player.getLevel().getName());
     }
 
     public String getPlayerGroup(String player, String world) {

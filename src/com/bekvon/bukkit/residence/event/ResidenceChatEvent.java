@@ -5,9 +5,9 @@
 package com.bekvon.bukkit.residence.event;
 
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
+import cn.nukkit.utils.TextFormat;
+import cn.nukkit.Player;
+import cn.nukkit.event.HandlerList;
 
 /**
  *
@@ -16,6 +16,7 @@ import org.bukkit.event.HandlerList;
 public class ResidenceChatEvent extends CancellableResidencePlayerEvent {
 
     private static final HandlerList handlers = new HandlerList();
+
     @Override
     public HandlerList getHandlers() {
         return handlers;
@@ -26,31 +27,27 @@ public class ResidenceChatEvent extends CancellableResidencePlayerEvent {
     }
 
     protected String message;
-    ChatColor color;
-    
-    public ResidenceChatEvent(ClaimedResidence resref, Player player, String message, ChatColor color) {
+    TextFormat color;
+
+    public ResidenceChatEvent(ClaimedResidence resref, Player player, String message, TextFormat color) {
         super("RESIDENCE_CHAT_EVENT", resref, player);
         this.message = message;
         this.color = color;
     }
-    
-    public String getChatMessage()
-    {
+
+    public String getChatMessage() {
         return message;
     }
-    
-    public void setChatMessage(String newmessage)
-    {
+
+    public void setChatMessage(String newmessage) {
         message = newmessage;
     }
-    
-    public ChatColor getColor()
-    {
+
+    public TextFormat getColor() {
         return color;
     }
-    
-    public void setColor(ChatColor c)
-    {
+
+    public void setColor(TextFormat c) {
         color = c;
     }
 }

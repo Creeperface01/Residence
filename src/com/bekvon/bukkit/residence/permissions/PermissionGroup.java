@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bekvon.bukkit.residence.permissions;
 
 import cn.nukkit.Player;
@@ -13,6 +12,7 @@ import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.protection.CuboidArea;
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
 import com.bekvon.bukkit.residence.protection.FlagPermissions.FlagState;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -20,12 +20,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- * 
+ *
  * @author Administrator
- * 
- *         changed by inori 03/17/2012 line 91:limits MaxHeight changed to 255
+ *
+ * changed by inori 03/17/2012 line 91:limits MaxHeight changed to 255
  */
 public class PermissionGroup {
+
     protected int xmax;
     protected int ymax;
     protected int zmax;
@@ -249,9 +250,11 @@ public class PermissionGroup {
     public boolean hasUnstuckAccess() {
         return unstuck;
     }
+
     public boolean hasKickAccess() {
-	return kick;
+        return kick;
     }
+
     public int getMaxPhysicalPerResidence() {
         return maxPhysical;
     }

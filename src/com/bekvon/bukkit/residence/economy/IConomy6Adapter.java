@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bekvon.bukkit.residence.economy;
 
 import com.iCo6.iConomy;
@@ -10,10 +9,9 @@ import com.iCo6.system.Account;
 import com.iCo6.system.Accounts;
 
 /**
- * 
+ *
  * @author Administrator
  */
-
 public class IConomy6Adapter implements EconomyInterface {
 
     iConomy icon;

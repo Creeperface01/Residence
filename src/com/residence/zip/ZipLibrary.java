@@ -12,19 +12,19 @@ import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.bukkit.World;
+import cn.nukkit.level.Level;
 
 import com.bekvon.bukkit.residence.Residence;
 
 public class ZipLibrary {
+
     private static File BackupDir = new File(Residence.getDataLocation(), "Backup");
 
     public static void backup() throws IOException {
         try {
             BackupDir.mkdir();
-            
-        }
-        catch (Exception e) {
+
+        } catch (Exception e) {
             e.printStackTrace();
             return;
         }
@@ -50,7 +50,6 @@ public class ZipLibrary {
             }
         }
 
-
         packZip(fileZip, sources);
     }
 
@@ -61,8 +60,7 @@ public class ZipLibrary {
         for (File source : sources) {
             if (source.isDirectory()) {
                 zipDir(zipOut, "", source);
-            }
-            else {
+            } else {
                 zipFile(zipOut, "", source);
             }
         }
@@ -90,8 +88,7 @@ public class ZipLibrary {
         for (File source : files) {
             if (source.isDirectory()) {
                 zipDir(zos, path, source);
-            }
-            else {
+            } else {
                 zipFile(zos, path, source);
             }
         }
