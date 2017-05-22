@@ -6,6 +6,7 @@ package com.bekvon.bukkit.residence;
 
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.Config;
+import cn.nukkit.utils.ConfigSection;
 import cn.nukkit.utils.TextFormat;
 
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
@@ -100,12 +101,12 @@ public class ConfigManager {
         customContainers = config.getIntegerList("Global.CustomContainers");
         customBothClick = config.getIntegerList("Global.CustomBothClick");
         customRightClick = config.getIntegerList("Global.CustomRightClick");
-        ConfigurationSection node = config.getConfigurationSection("Global.GroupDefault");
+        ConfigSection node = config.getSection("Global.GroupDefault");
         if (node != null) {
-            Set<String> keys = node.getConfigurationSection(defaultGroup).getKeys(false);
+            Set<String> keys = node.getSection(defaultGroup).getKeys(false);
             if (keys != null) {
                 for (String key : keys) {
-                    globalGroupDefaults.put(key, FlagPermissions.parseFromConfigNode(key, config.getConfigurationSection("Global.GroupDefault")));
+                    globalGroupDefaults.put(key, FlagPermissions.parseFromConfigNode(key, config.getSection("Global.GroupDefault")));
                 }
             }
         }

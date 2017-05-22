@@ -6,7 +6,6 @@ package com.bekvon.bukkit.residence.event;
 
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import cn.nukkit.event.Event;
-import cn.nukkit.event.HandlerList;
 
 /**
  *
@@ -14,16 +13,7 @@ import cn.nukkit.event.HandlerList;
  */
 public class ResidenceEvent extends Event {
 
-    private static final HandlerList handlers = new HandlerList();
     private String message;
-
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
 
     ClaimedResidence res;
 

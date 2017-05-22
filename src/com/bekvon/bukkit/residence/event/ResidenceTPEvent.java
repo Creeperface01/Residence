@@ -4,6 +4,7 @@
  */
 package com.bekvon.bukkit.residence.event;
 
+import cn.nukkit.level.Position;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import cn.nukkit.level.Location;
 import cn.nukkit.Player;
@@ -17,19 +18,14 @@ public class ResidenceTPEvent extends CancellableResidencePlayerEvent {
 
     private static final HandlerList handlers = new HandlerList();
 
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
+    public static HandlerList getHandlers() {
         return handlers;
     }
 
     Player reqPlayer;
-    Location loc;
+    Position loc;
 
-    public ResidenceTPEvent(ClaimedResidence resref, Location teleloc, Player player, Player reqplayer) {
+    public ResidenceTPEvent(ClaimedResidence resref, Position teleloc, Player player, Player reqplayer) {
         super("RESIDENCE_TP", resref, player);
         reqPlayer = reqplayer;
         loc = teleloc;
@@ -39,7 +35,7 @@ public class ResidenceTPEvent extends CancellableResidencePlayerEvent {
         return reqPlayer;
     }
 
-    public Location getTeleportLocation() {
+    public Position getTeleportLocation() {
         return loc;
     }
 }

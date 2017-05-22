@@ -10,6 +10,8 @@ import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
+import cn.nukkit.event.block.BlockIgniteEvent.BlockIgniteCause;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.utils.TextFormat;
 import cn.nukkit.level.Location;
 import cn.nukkit.item.Item;
@@ -23,9 +25,6 @@ import com.bekvon.bukkit.residence.protection.FlagPermissions;
 import cn.nukkit.event.block.BlockBurnEvent;
 import cn.nukkit.event.block.BlockFromToEvent;
 import cn.nukkit.event.block.BlockIgniteEvent;
-import cn.nukkit.event.block.BlockIgniteEvent.IgniteCause;
-import cn.nukkit.event.block.BlockPistonExtendEvent;
-import cn.nukkit.event.block.BlockPistonRetractEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
 
 import com.bekvon.bukkit.residence.Residence;
@@ -43,10 +42,11 @@ public class ResidenceBlockListener implements Listener {
         if (Residence.isResAdminOn(player)) {
             return;
         }
-        int mat = event.getBlock().getId();
-        String world = event.getBlock().getLevel().getName();
+        Block b = event.getBlock();
+
+        String level = b.getLevel().getName();
         String group = Residence.getPermissionManager().getGroupNameByPlayer(player);
-        if (Residence.getItemManager().isIgnored(mat, group, world)) {
+        if (Residence.getItemManager().isIgnored(b.getId(), group, level)) {
             return;
         }
         ClaimedResidence res = Residence.getResidenceManager().getByLoc(event.getBlock().getLocation());
@@ -63,13 +63,13 @@ public class ResidenceBlockListener implements Listener {
         FlagPermissions perms = Residence.getPermsByLocForPlayer(event.getBlock().getLocation(), player);
         String pname = player.getName();
         if (res != null) {
-            if (res.getItemIgnoreList().isListed(mat)) {
+            if (res.getItemIgnoreList().isListed(b.getId())) {
                 return;
             }
         }
         boolean hasdestroy = perms.playerHas(pname, player.getLevel().getName(), "destroy", perms.playerHas(pname, player.getLevel().getName(), "build", true));
         boolean hasContainer = perms.playerHas(pname, player.getLevel().getName(), "container", true);
-        if (!hasdestroy || (!hasContainer && mat == Block.CHEST)) {
+        if (!hasdestroy || (!hasContainer && b.getId() == Block.CHEST)) {
             event.setCancelled(true);
             player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("NoPermission"));
             return;
@@ -82,10 +82,10 @@ public class ResidenceBlockListener implements Listener {
         if (Residence.isResAdminOn(player)) {
             return;
         }
-        Item mat = event.getBlock().getType();
+        Block b = event.getBlock();
         String world = event.getBlock().getLevel().getName();
         String group = Residence.getPermissionManager().getGroupNameByPlayer(player);
-        if (Residence.getItemManager().isIgnored(mat, group, world)) {
+        if (Residence.getItemManager().isIgnored(b.getId(), group, world)) {
             return;
         }
         ClaimedResidence res = Residence.getResidenceManager().getByLoc(event.getBlock().getLocation());
@@ -101,7 +101,7 @@ public class ResidenceBlockListener implements Listener {
         }
         String pname = player.getName();
         if (res != null) {
-            if (!res.getItemBlacklist().isAllowed(mat)) {
+            if (!res.getItemBlacklist().isAllowed(b.getId())) {
                 player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("ItemBlacklisted"));
                 event.setCancelled(true);
                 return;
@@ -125,7 +125,7 @@ public class ResidenceBlockListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    /*@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true) //TODO: piston
     public void onBlockPistonRetract(BlockPistonRetractEvent event) {
         FlagPermissions perms = Residence.getPermsByLoc(event.getBlock().getLocation());
         if (!perms.has("piston", true)) {
@@ -159,24 +159,24 @@ public class ResidenceBlockListener implements Listener {
                 return;
             }
         }
-    }
+    }*/
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockFromTo(BlockFromToEvent event) {
-        FlagPermissions perms = Residence.getPermsByLoc(event.getToBlock().getLocation());
+        FlagPermissions perms = Residence.getPermsByLoc(event.getTo().getLocation());
         boolean hasflow = perms.has("flow", true);
-        Block mat = event.getBlock().getType();
+        Block b = event.getBlock();
         if (!hasflow) {
             event.setCancelled(true);
             return;
         }
-        if (mat == Block.LAVA || mat == Block.STILL_LAVA) {
+        if (b.getId() == Block.LAVA || b.getId() == Block.STILL_LAVA) {
             if (!perms.has("lavaflow", hasflow)) {
                 event.setCancelled(true);
             }
             return;
         }
-        if (mat == Block.WATER || mat == Block.STILL_WATER) {
+        if (b.getId() == Block.WATER || b.getId() == Block.STILL_WATER) {
             if (!perms.has("waterflow", hasflow)) {
                 event.setCancelled(true);
             }
@@ -194,14 +194,15 @@ public class ResidenceBlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockIgnite(BlockIgniteEvent event) {
-        FlagPermissions perms = Residence.getPermsByLocForPlayer(event.getBlock().getLocation(), event.getPlayer());
-        IgniteCause cause = event.getCause();
-        if (cause == IgniteCause.SPREAD) {
+        Player player = (Player) event.getEntity();
+
+        FlagPermissions perms = Residence.getPermsByLocForPlayer(event.getBlock().getLocation(), player);
+        BlockIgniteCause cause = event.getCause();
+        if (cause == BlockIgniteCause.SPREAD) {
             if (!perms.has("firespread", true)) {
                 event.setCancelled(true);
             }
-        } else if (cause == IgniteCause.FLINT_AND_STEEL) {
-            Player player = event.getPlayer();
+        } else if (cause == BlockIgniteCause.FLINT_AND_STEEL) {
             if (player != null && !perms.playerHas(player.getName(), player.getLevel().getName(), "ignite", true) && !Residence.isResAdminOn(player)) {
                 event.setCancelled(true);
                 player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("NoPermission"));

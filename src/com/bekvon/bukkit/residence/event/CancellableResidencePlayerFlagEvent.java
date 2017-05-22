@@ -14,23 +14,7 @@ import cn.nukkit.event.Cancellable;
  */
 public class CancellableResidencePlayerFlagEvent extends ResidencePlayerFlagEvent implements Cancellable {
 
-    protected boolean cancelled;
-
     public CancellableResidencePlayerFlagEvent(String eventName, ClaimedResidence resref, Player player, String flag, FlagType type, String target) {
         super(eventName, resref, player, flag, type, target);
     }
-
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    public void setCancelled(boolean bln) {
-        cancelled = bln;
-    }
-
-    @Override
-    public void setCancelled() {
-        //tood
-    }
-
 }

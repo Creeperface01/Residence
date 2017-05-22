@@ -15,12 +15,7 @@ public class ResidenceOwnerChangeEvent extends ResidenceEvent {
 
     private static final HandlerList handlers = new HandlerList();
 
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
+    public static HandlerList getHandlers() {
         return handlers;
     }
 

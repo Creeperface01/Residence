@@ -17,11 +17,7 @@ public class ResidenceCommandEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
 
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
+    public static HandlerList getHandlers() {
         return handlers;
     }
 

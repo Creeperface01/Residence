@@ -14,17 +14,6 @@ import cn.nukkit.event.HandlerList;
  */
 public class ResidenceFlagEvent extends ResidenceEvent {
 
-    private static final HandlerList handlers = new HandlerList();
-
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
-
     public enum FlagType {
         RESIDENCE, GROUP, PLAYER
     }

@@ -1,6 +1,7 @@
 package com.bekvon.bukkit.residence.event;
 
 import cn.nukkit.Player;
+import cn.nukkit.block.Block;
 import cn.nukkit.event.HandlerList;
 
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
@@ -32,6 +33,10 @@ import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 public class ResidenceChangedEvent extends ResidencePlayerEvent {
 
     private static final HandlerList handlers = new HandlerList();
+
+    public static HandlerList getHandlers() {
+        return handlers;
+    }
 
     private ClaimedResidence from = null;
     private ClaimedResidence to = null;
@@ -70,14 +75,5 @@ public class ResidenceChangedEvent extends ResidencePlayerEvent {
      */
     public ClaimedResidence getTo() {
         return to;
-    }
-
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
     }
 }

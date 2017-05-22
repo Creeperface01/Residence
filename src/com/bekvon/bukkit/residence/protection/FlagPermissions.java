@@ -6,15 +6,13 @@ package com.bekvon.bukkit.residence.protection;
 
 import cn.nukkit.block.Block;
 import cn.nukkit.utils.ConfigSection;
-import cn.nukit.utils.TextFormat;
-import cn.nukkit.Material;
 import cn.nukkit.Player;
 
+import cn.nukkit.utils.TextFormat;
 import com.bekvon.bukkit.residence.Residence;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -32,7 +30,7 @@ public class FlagPermissions {
     protected static ArrayList<String> validPlayerFlags = new ArrayList<>();
     protected static ArrayList<String> validAreaFlags = new ArrayList<>();
     final static Map<Integer, String> matUseFlagList = new HashMap<>();
-    protected Map<String, String> cachedPlayerNameUUIDs;
+    //protected Map<String, String> cachedPlayerNameUUIDs;
     protected Map<String, Map<String, Boolean>> playerFlags;
     protected Map<String, Map<String, Boolean>> groupFlags;
     protected Map<String, Boolean> cuboidFlags;
@@ -42,12 +40,12 @@ public class FlagPermissions {
         matUseFlagList.put(blockId, flag);
     }
 
-    public static void removeMaterialFromUseFlag(Material mat) {
+    public static void removeMaterialFromUseFlag(int mat) {
         matUseFlagList.remove(mat);
     }
 
-    public static EnumMap<Material, String> getMaterialUseFlagList() {
-        return (EnumMap<Material, String>) matUseFlagList;
+    public static Map<Integer, String> getMaterialUseFlagList() {
+        return (Map<Integer, String>) matUseFlagList;
     }
 
     public static void addFlag(String flag) {
@@ -249,59 +247,19 @@ public class FlagPermissions {
         cuboidFlags = Collections.synchronizedMap(new HashMap<String, Boolean>());
         playerFlags = Collections.synchronizedMap(new HashMap<String, Map<String, Boolean>>());
         groupFlags = Collections.synchronizedMap(new HashMap<String, Map<String, Boolean>>());
-        cachedPlayerNameUUIDs = Collections.synchronizedMap(new HashMap<String, String>());
+        //cachedPlayerNameUUIDs = Collections.synchronizedMap(new HashMap<String, String>());
     }
 
     protected Map<String, Boolean> getPlayerFlags(String player, boolean allowCreate) //this function works with uuid in string format as well, instead of player name
     {
         player = player.toLowerCase();
-        String uuids;
         Map<String, Boolean> flags = null;
 
-        if (player.length() == 36) {
-            uuids = player;
-            String resolvedName = Residence.getPlayerName(uuids);
-            if (resolvedName != null) {
-                player = resolvedName;
-            } else if (cachedPlayerNameUUIDs.containsKey(player)) {
-                player = cachedPlayerNameUUIDs.get(player);
-            }
-        } else {
-            uuids = Residence.getPlayerUUIDString(player);
-        }
-
-        if (uuids == null) {
-            Set<Entry<String, String>> values = cachedPlayerNameUUIDs.entrySet();
-            for (Entry<String, String> value : values) {
-                if (value.getValue().equals(player)) {
-                    uuids = value.getKey();
-                }
-            }
-        }
-
-        if (uuids != null) {
-            flags = playerFlags.get(uuids);
-        }
-        if (flags == null) {
-            flags = playerFlags.get(player);
-            if (uuids != null && flags != null) {
-                flags = playerFlags.remove(player);
-                playerFlags.put(uuids, flags);
-                cachedPlayerNameUUIDs.put(uuids, player);
-            }
-        } else {
-            cachedPlayerNameUUIDs.put(uuids, player);
-        }
+        flags = playerFlags.get(player);
 
         if (flags == null && allowCreate) {
-            if (uuids != null) {
-                flags = Collections.synchronizedMap(new HashMap<String, Boolean>());
-                playerFlags.put(uuids, flags);
-                cachedPlayerNameUUIDs.put(uuids, player);
-            } else {
-                flags = Collections.synchronizedMap(new HashMap<String, Boolean>());
-                playerFlags.put(player, flags);
-            }
+            flags = Collections.synchronizedMap(new HashMap<String, Boolean>());
+            playerFlags.put(player, flags);
         }
         return flags;
     }
@@ -328,22 +286,9 @@ public class FlagPermissions {
 
     public void removeAllPlayerFlags(String player) { //this function works with uuid in string format as well, instead of player name
         player = player.toLowerCase();
-        String uuids = Residence.getPlayerUUIDString(player);
-        if (uuids == null) {
-            for (Entry<String, String> entry : cachedPlayerNameUUIDs.entrySet()) {
-                if (entry.getValue().equals(player)) {
-                    uuids = entry.getKey();
-                }
-            }
-        }
-
-        if (uuids != null) {
-            playerFlags.remove(uuids);
-            cachedPlayerNameUUIDs.remove(uuids);
-        }
 
         playerFlags.remove(player);
-        cachedPlayerNameUUIDs.remove(player);
+        //cachedPlayerNameUUIDs.remove(player);
     }
 
     public void removeAllGroupFlags(String group) {
@@ -506,7 +451,7 @@ public class FlagPermissions {
 
     public Map<String, Object> save() {
         Map<String, Object> root = new LinkedHashMap<>();
-        root.put("LastKnownPlayerNames", cachedPlayerNameUUIDs);
+        //root.put("LastKnownPlayerNames", cachedPlayerNameUUIDs);
         root.put("PlayerFlags", playerFlags);
         root.put("GroupFlags", groupFlags);
         root.put("AreaFlags", cuboidFlags);
@@ -519,36 +464,14 @@ public class FlagPermissions {
     }
 
     protected static FlagPermissions load(Map<String, Object> root, FlagPermissions newperms) throws Exception {
-        if (root.containsKey("LastKnownPlayerNames")) {
+        /*if (root.containsKey("LastKnownPlayerNames")) {
             newperms.cachedPlayerNameUUIDs = (Map) root.get("LastKnownPlayerNames");
-        }
+        }*/
         newperms.playerFlags = (Map) root.get("PlayerFlags");
         newperms.groupFlags = (Map) root.get("GroupFlags");
         newperms.cuboidFlags = (Map) root.get("AreaFlags");
-        newperms.convertPlayerNamesToUUIDs();
+        //newperms.convertPlayerNamesToUUIDs();
         return newperms;
-    }
-
-    private void convertPlayerNamesToUUIDs() {
-        HashMap<String, String> converts = new HashMap<>();
-        for (String keyset : playerFlags.keySet()) {
-            if (keyset.length() != 36) {
-                String uuid = Residence.getPlayerUUIDString(keyset);
-                if (uuid != null) {
-                    converts.put(keyset, uuid);
-                }
-            } else {
-                String pname = Residence.getPlayerName(keyset);
-                if (pname != null) {
-                    this.cachedPlayerNameUUIDs.put(keyset, pname);
-                }
-            }
-
-        }
-        for (Entry<String, String> convert : converts.entrySet()) {
-            playerFlags.put(convert.getValue(), playerFlags.remove(convert.getKey()));
-            cachedPlayerNameUUIDs.put(convert.getValue(), convert.getKey());
-        }
     }
 
     public String listFlags() {
@@ -614,7 +537,7 @@ public class FlagPermissions {
 
     public String listOtherPlayersFlags(String player) {
         player = player.toLowerCase();
-        String uuids = Residence.getPlayerUUIDString(player);
+
         StringBuilder sbuild = new StringBuilder();
         Set<Entry<String, Map<String, Boolean>>> set = playerFlags.entrySet();
         synchronized (set) {
@@ -622,17 +545,9 @@ public class FlagPermissions {
             while (it.hasNext()) {
                 Entry<String, Map<String, Boolean>> nextEnt = it.next();
                 String next = nextEnt.getKey();
-                if (!next.equals(player) && !next.equals(uuids)) {
+                if (!next.equals(player) && !next.equals(player)) {
                     String perms = printPlayerFlags(nextEnt.getValue());
-                    if (next.length() == 36) {
-                        String resolvedName = Residence.getPlayerName(next);
-                        if (resolvedName != null) {
-                            this.cachedPlayerNameUUIDs.put(next, resolvedName);
-                            next = resolvedName;
-                        } else if (this.cachedPlayerNameUUIDs.containsKey(next)) {
-                            next = this.cachedPlayerNameUUIDs.get(next);
-                        }
-                    }
+
                     if (!perms.equals("none")) {
                         sbuild.append(next).append("[").append(TextFormat.DARK_AQUA).append(perms).append(TextFormat.RED).append("] ");
                     }

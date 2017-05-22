@@ -12,7 +12,7 @@ import cn.nukkit.Player;
  *
  * @author Administrator
  */
-public class ResidencePlayerEvent extends ResidenceEvent implements ResidencePlayerEventInterface {
+public abstract class ResidencePlayerEvent extends ResidenceEvent implements ResidencePlayerEventInterface {
 
     Player p;
 

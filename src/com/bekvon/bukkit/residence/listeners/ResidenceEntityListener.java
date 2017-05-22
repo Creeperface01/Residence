@@ -5,60 +5,14 @@
 package com.bekvon.bukkit.residence.listeners;
 
 import cn.nukkit.event.Listener;
-import cn.nukkit.Nukkit;
-import cn.nukkit.utils.TextFormat;
-import cn.nukkit.level.Location;
-import cn.nukkit.Material;
-import cn.nukkit.item.Arrow;
-import cn.nukkit.entity.passive.EntityChicken;
-import cn.nukkit.entity.passive.EntityCow;
-import cn.nukkit.entity.mob.EntityCreeper;
-import cn.nukkit.entity.passove.EntityHorse;
-import cn.nukkit.entity.EntityCreature;
-import cn.nukkit.entity.passive.EntityOcelot;
-import cn.nukkit.entity.passive.EntityPig;
-import cn.nukkit.entity.projectile.EntityProjectile;
-import cn.nukkit.entity.passive.EntityRabbit;
-import cn.nukkit.entity.passive.EntitySheep;
-import cn.nukkit.entity.passive.EntityVillager;
-import cn.nukkit.entity.passive.EntityWolf;
-import cn.nukkit.entity.mob.EntitySlime;
-import cn.nukkit.entity.mob.EntityGhast;
-import cn.nukkit.event.EventHandler;
-import cn.nukkit.event.EventPriority;
-import cn.nukkit.event.Listener;
-import cn.nukkit.event.entity.ExplosionPrimeEvent;
-import cn.nukkit.event.hanging.HangingBreakByEntityEvent;
-import cn.nukkit.event.hanging.HangingBreakEvent;
-import cn.nukkit.event.hanging.HangingPlaceEvent;
-import cn.nukkit.block.Block;
-import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.EntityAgeable;
-import cn.nukkit.Player;
-import cn.nukkit.event.entity.CreatureSpawnEvent;
-import cn.nukkit.event.entity.EntityChangeBlockEvent;
-import cn.nukkit.event.entity.EntityCombustEvent;
-import cn.nukkit.event.entity.EntityDamageByEntityEvent;
-import cn.nukkit.event.entity.EntityDamageEvent;
-import cn.nukkit.event.entity.EntityExplodeEvent;
-import cn.nukkit.event.entity.EntityInteractEvent;
-import cn.nukkit.event.entity.PotionSplashEvent;
-
-import com.bekvon.bukkit.residence.protection.FlagPermissions;
-import com.bekvon.bukkit.residence.Residence;
-import com.bekvon.bukkit.residence.protection.ClaimedResidence;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  *
  * @author Administrator
  */
-public class ResidenceEntityListener implements Listener {
+public class ResidenceEntityListener implements Listener { //TODO: mobs
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    /*@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onEndermanChangeBlock(EntityChangeBlockEvent event) {
         if (event.getEntityType() != EntityType.ENDERMAN && event.getEntityType() != EntityType.WITHER) {
             return;
@@ -87,11 +41,13 @@ public class ResidenceEntityListener implements Listener {
     }
 
     private boolean isMonster(Entity ent) {
-        return (ent instanceof Monster || ent instanceof Slime || ent instanceof Ghast);
+        //return (ent instanceof Monster || ent instanceof Slime || ent instanceof Ghast);
+        return false;
     }
 
     private boolean isAnimal(Entity ent) {
-        return (ent instanceof Horse || ent instanceof Bat || ent instanceof Snowman || ent instanceof IronGolem || ent instanceof Ocelot || ent instanceof Pig || ent instanceof Sheep || ent instanceof Chicken || ent instanceof Wolf || ent instanceof Cow || ent instanceof Squid || ent instanceof Villager || ent instanceof Rabbit);
+        return false;
+        //return (ent instanceof Horse || ent instanceof Bat || ent instanceof Snowman || ent instanceof IronGolem || ent instanceof Ocelot || ent instanceof Pig || ent instanceof Sheep || ent instanceof Chicken || ent instanceof Wolf || ent instanceof Cow || ent instanceof Squid || ent instanceof Villager || ent instanceof Rabbit);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -341,7 +297,7 @@ public class ResidenceEntityListener implements Listener {
         }
         boolean tamedWolf = ent instanceof Wolf ? ((Wolf) ent).isTamed() : false;
         ClaimedResidence area = Residence.getResidenceManager().getByLoc(ent.getLocation());
-        /* Living Entities */
+        // Living Entities
         if (event instanceof EntityDamageByEntityEvent) {
             EntityDamageByEntityEvent attackevent = (EntityDamageByEntityEvent) event;
             Entity damager = attackevent.getDamager();
@@ -366,15 +322,15 @@ public class ResidenceEntityListener implements Listener {
                     event.setCancelled(true);
                     return;
                 }
-                /* Check for Player vs Player */
+                // Check for Player vs Player
                 if (area == null) {
-                    /* World PvP */
+                    // World PvP
                     if (!Residence.getWorldFlags().getPerms(damager.getLevel().getName()).has("pvp", true)) {
                         //attacker.sendMessage(TextFormat.RED+Residence.getLanguage().getPhrase("WorldPVPDisabled"));
                         event.setCancelled(true);
                     }
                 } else {
-                    /* Normal PvP */
+                    // Normal PvP
                     if (!area.getPermissions().has("pvp", true)) {
                         //attacker.sendMessage(TextFormat.RED+Residence.getLanguage().getPhrase("NoPVPZone"));
                         event.setCancelled(true);
@@ -403,12 +359,12 @@ public class ResidenceEntityListener implements Listener {
             }
         }
         if (event.isCancelled()) {
-            /* Put out a fire on a player */
+            // Put out a fire on a player
             if ((ent instanceof Player || tamedWolf)
                     && (event.getCause() == EntityDamageEvent.DamageCause.FIRE
                     || event.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK)) {
                 ent.setFireTicks(0);
             }
         }
-    }
+    }*/
 }

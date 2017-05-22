@@ -15,11 +15,7 @@ public class ResidenceFlagCheckEvent extends ResidenceFlagEvent {
 
     private static final HandlerList handlers = new HandlerList();
 
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
+    public static HandlerList getHandlers() {
         return handlers;
     }
 

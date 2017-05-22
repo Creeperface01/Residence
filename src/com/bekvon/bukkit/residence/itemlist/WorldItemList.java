@@ -32,21 +32,21 @@ public class WorldItemList extends ItemList {
         return group;
     }
 
-    public boolean isAllowed(Item mat, String inworld, String ingroup) {
+    public boolean isAllowed(int mat, String inworld, String ingroup) {
         if (!listApplicable(inworld, ingroup)) {
             return true;
         }
         return super.isAllowed(mat);
     }
 
-    public boolean isIgnored(Item mat, String inworld, String ingroup) {
+    public boolean isIgnored(int mat, String inworld, String ingroup) {
         if (!listApplicable(inworld, ingroup)) {
             return false;
         }
         return super.isIgnored(mat);
     }
 
-    public boolean isListed(Item mat, String inworld, String ingroup) {
+    public boolean isListed(int mat, String inworld, String ingroup) {
         if (!listApplicable(inworld, ingroup)) {
             return false;
         }

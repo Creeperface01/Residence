@@ -4,9 +4,11 @@
  */
 package com.bekvon.bukkit.residence;
 
+import cn.nukkit.OfflinePlayer;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.level.Location;
+import cn.nukkit.level.Position;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.plugin.PluginManager;
@@ -14,12 +16,7 @@ import cn.nukkit.utils.Config;
 import cn.nukkit.utils.LogLevel;
 
 import com.bekvon.bukkit.residence.chat.ChatManager;
-import com.bekvon.bukkit.residence.economy.BOSEAdapter;
 import com.bekvon.bukkit.residence.economy.EconomyInterface;
-import com.bekvon.bukkit.residence.economy.EssentialsEcoAdapter;
-import com.bekvon.bukkit.residence.economy.IConomy5Adapter;
-import com.bekvon.bukkit.residence.economy.IConomy6Adapter;
-import com.bekvon.bukkit.residence.economy.RealShopEconomy;
 import com.bekvon.bukkit.residence.economy.TransactionManager;
 import com.bekvon.bukkit.residence.economy.rent.RentManager;
 import com.bekvon.bukkit.residence.itemlist.WorldItemManager;
@@ -41,20 +38,11 @@ import com.bekvon.bukkit.residence.text.Language;
 import com.bekvon.bukkit.residence.text.help.HelpEntry;
 import com.bekvon.bukkit.residence.text.help.InformationPager;
 import com.bekvon.bukkit.residence.utils.VersionChecker;
-import com.bekvon.bukkit.residence.vaultinterface.ResidenceVaultAdapter;
-import com.earth2me.essentials.Essentials;
 import com.residence.mcstats.Metrics;
 import com.residence.zip.ZipLibrary;
 
-import cosine.boseconomy.BOSEconomy;
-import fr.crafter.tickleman.realeconomy.RealEconomy;
-import fr.crafter.tickleman.realplugin.RealPlugin;
-
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -224,13 +212,13 @@ public class Residence extends PluginBase {
             economy = null;
             if (this.getConfig().getBoolean("Global.EnableEconomy", false)) {
                 System.out.println("[Residence] Scanning for economy systems...");
-                if (gmanager.getPermissionsPlugin() instanceof ResidenceVaultAdapter) {
+                /*if (gmanager.getPermissionsPlugin() instanceof ResidenceVaultAdapter) {
                     ResidenceVaultAdapter vault = (ResidenceVaultAdapter) gmanager.getPermissionsPlugin();
                     if (vault.economyOK()) {
                         economy = vault;
                         System.out.println("[Residence] Found Vault using economy system: " + vault.getEconomyName());
                     }
-                }
+                }*/
                 /*if (economy == null) {
                     this.loadVaultEconomy();
                 }*/
@@ -451,7 +439,7 @@ public class Residence extends PluginBase {
         }
     }
 
-    public static FlagPermissions getPermsByLocForPlayer(Location loc, Player player) {
+    public static FlagPermissions getPermsByLocForPlayer(Position loc, Player player) {
         ClaimedResidence res = rmanager.getByLoc(loc);
         if (res != null) {
             return res.getPermissions();
@@ -465,7 +453,7 @@ public class Residence extends PluginBase {
     }
 
     private void loadIConomy() {
-        Plugin p = getServer().getPluginManager().getPlugin("iConomy");
+        /*Plugin p = getServer().getPluginManager().getPlugin("iConomy");
         if (p != null) {
             if (p.getDescription().getVersion().startsWith("6")) {
                 economy = new IConomy6Adapter((com.iCo6.iConomy) p);
@@ -478,37 +466,37 @@ public class Residence extends PluginBase {
             Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Successfully linked with iConomy! Version: " + p.getDescription().getVersion());
         } else {
             Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] iConomy NOT found!");
-        }
+        }*/
     }
 
     private void loadBOSEconomy() {
-        Plugin p = getServer().getPluginManager().getPlugin("BOSEconomy");
+        /*Plugin p = getServer().getPluginManager().getPlugin("BOSEconomy");
         if (p != null) {
             economy = new BOSEAdapter((BOSEconomy) p);
             Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Successfully linked with BOSEconomy!");
         } else {
             Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] BOSEconomy NOT found!");
-        }
+        }*/
     }
 
     private void loadEssentialsEconomy() {
-        Plugin p = getServer().getPluginManager().getPlugin("Essentials");
+        /*Plugin p = getServer().getPluginManager().getPlugin("Essentials");
         if (p != null) {
             economy = new EssentialsEcoAdapter((Essentials) p);
             Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Successfully linked with Essentials Economy!");
         } else {
             Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Essentials Economy NOT found!");
-        }
+        }*/
     }
 
     private void loadRealEconomy() {
-        Plugin p = getServer().getPluginManager().getPlugin("RealPlugin");
+        /*Plugin p = getServer().getPluginManager().getPlugin("RealPlugin");
         if (p != null) {
             economy = new RealShopEconomy(new RealEconomy((RealPlugin) p));
             Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Successfully linked with RealShop Economy!");
         } else {
             Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] RealShop Economy NOT found!");
-        }
+        }*/
     }
 
     /*private void loadVaultEconomy() {
@@ -784,4 +772,28 @@ public class Residence extends PluginBase {
             return false;
         }
     }
+
+    /*public static UUID getPlayerUUID(String playername)
+    {
+        Player p = Residence.getServ().getPlayer(playername);
+        if(p == null)
+        {
+            OfflinePlayer pl = Residence.getServ().getOfflinePlayer(playername);
+            return pl.get
+        }
+        else
+            return p.getUniqueId();
+        return null;
+    }
+
+    public static String getPlayerName(UUID uuid)
+    {
+        OfflinePlayer p = Residence.getServ().getPlayer(uuid);
+        if(p==null)
+            p = Residence.getServ().getOfflinePlayer(uuid);
+        if(p!=null)
+            return p.getName();
+        else
+            return null;
+    }*/
 }

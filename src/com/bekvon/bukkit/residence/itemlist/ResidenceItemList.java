@@ -31,13 +31,13 @@ public class ResidenceItemList extends ItemList {
 
     }
 
-    public void playerListChange(Player player, Item mat, boolean resadmin) {
+    public void playerListChange(Player player, int mat, boolean resadmin) {
         PermissionGroup group = Residence.getPermissionManager().getGroup(player);
         if (resadmin || (res.getPermissions().hasResidencePermission(player, true) && group.itemListAccess())) {
             if (super.toggle(mat)) {
-                player.sendMessage(TextFormat.YELLOW + Residence.getLanguage().getPhrase("ListItemAdd", TextFormat.GREEN + mat.toString() + TextFormat.YELLOW + "." + TextFormat.GREEN + type.toString().toLowerCase() + TextFormat.YELLOW));
+                player.sendMessage(TextFormat.YELLOW + Residence.getLanguage().getPhrase("ListItemAdd", TextFormat.GREEN + ItemList.getNameFromId(mat) + TextFormat.YELLOW + "." + TextFormat.GREEN + type.toString().toLowerCase() + TextFormat.YELLOW));
             } else {
-                player.sendMessage(TextFormat.YELLOW + Residence.getLanguage().getPhrase("ListItemRemove", TextFormat.GREEN + mat.toString() + TextFormat.YELLOW + "." + TextFormat.GREEN + type.toString().toLowerCase() + TextFormat.YELLOW));
+                player.sendMessage(TextFormat.YELLOW + Residence.getLanguage().getPhrase("ListItemRemove", TextFormat.GREEN + ItemList.getNameFromId(mat) + TextFormat.YELLOW + "." + TextFormat.GREEN + type.toString().toLowerCase() + TextFormat.YELLOW));
             }
         } else {
             player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("NoPermission"));

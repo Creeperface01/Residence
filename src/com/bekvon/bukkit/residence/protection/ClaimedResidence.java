@@ -4,11 +4,11 @@
  */
 package com.bekvon.bukkit.residence.protection;
 
-import cn.nukkit.Nukkit;
+import cn.nukkit.Server;
 import cn.nukkit.level.Location;
 import cn.nukkit.level.Level;
 import cn.nukkit.Player;
-import cn.nukkit.level.Location;
+import cn.nukkit.level.Position;
 import cn.nukkit.utils.TextFormat;
 
 import com.bekvon.bukkit.residence.Residence;
@@ -38,7 +38,7 @@ public class ClaimedResidence {
     protected Map<String, ClaimedResidence> subzones;
     protected ResidencePermissions perms;
     protected ResidenceBank bank;
-    protected Location tpLoc;
+    protected Position tpLoc;
     protected String enterMessage;
     protected String leaveMessage;
     protected ResidenceItemList ignorelist;
@@ -94,7 +94,7 @@ public class ClaimedResidence {
                 return false;
             }
         }
-        if (!area.getLevel().getName().equalsIgnoreCase(perms.getWorld())) {
+        if (!area.getWorld().getName().equalsIgnoreCase(perms.getWorld())) {
             if (player != null) {
                 player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("AreaDiffWorld"));
             }
@@ -150,11 +150,11 @@ public class ClaimedResidence {
                 player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("AreaSizeLimit"));
                 return false;
             }
-            if (group.getMinHeight() > area.getLowLoc().getBlockY()) {
+            if (group.getMinHeight() > area.getLowLoc().getFloorY()) {
                 player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("AreaLowLimit", TextFormat.YELLOW + String.format("%d", group.getMinHeight())));
                 return false;
             }
-            if (group.getMaxHeight() < area.getHighLoc().getBlockY()) {
+            if (group.getMaxHeight() < area.getHighLoc().getFloorY()) {
                 player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("AreaHighLimit", TextFormat.YELLOW + String.format("%d", group.getMaxHeight())));
                 return false;
             }
@@ -186,7 +186,7 @@ public class ClaimedResidence {
             return false;
         }
         CuboidArea oldarea = areas.get(name);
-        if (!newarea.getLevel().getName().equalsIgnoreCase(perms.getWorld())) {
+        if (!newarea.getWorld().getName().equalsIgnoreCase(perms.getWorld())) {
             if (player != null) {
                 player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("AreaDiffWorld"));
             }
@@ -262,11 +262,11 @@ public class ClaimedResidence {
                 player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("AreaSizeLimit"));
                 return false;
             }
-            if (group.getMinHeight() > newarea.getLowLoc().getBlockY()) {
+            if (group.getMinHeight() > newarea.getLowLoc().getFloorY()) {
                 player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("AreaLowLimit", TextFormat.YELLOW + String.format("%d", group.getMinHeight())));
                 return false;
             }
-            if (group.getMaxHeight() < newarea.getHighLoc().getBlockY()) {
+            if (group.getMaxHeight() < newarea.getHighLoc().getFloorY()) {
                 player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("AreaHighLimit", TextFormat.YELLOW + String.format("%d", group.getMaxHeight())));
                 return false;
             }
@@ -290,11 +290,11 @@ public class ClaimedResidence {
         return true;
     }
 
-    public boolean addSubzone(String name, Location loc1, Location loc2) {
+    public boolean addSubzone(String name, Position loc1, Position loc2) {
         return this.addSubzone(null, loc1, loc2, name, true);
     }
 
-    public boolean addSubzone(Player player, Location loc1, Location loc2, String name, boolean resadmin) {
+    public boolean addSubzone(Player player, Position loc1, Position loc2, String name, boolean resadmin) {
         if (player == null) {
             return this.addSubzone(null, "Server Land", loc1, loc2, name, resadmin);
         } else {
@@ -302,7 +302,7 @@ public class ClaimedResidence {
         }
     }
 
-    public boolean addSubzone(Player player, String owner, Location loc1, Location loc2, String name, boolean resadmin) {
+    public boolean addSubzone(Player player, String owner, Position loc1, Position loc2, String name, boolean resadmin) {
         if (!Residence.validName(name)) {
             if (player != null) {
                 player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("InvalidNameCharacters"));
@@ -376,7 +376,7 @@ public class ClaimedResidence {
         }
     }
 
-    public String getSubzoneNameByLoc(Location loc) {
+    public String getSubzoneNameByLoc(Position loc) {
         Set<Entry<String, ClaimedResidence>> set = subzones.entrySet();
         ClaimedResidence res = null;
         String key = null;
@@ -398,7 +398,7 @@ public class ClaimedResidence {
         return key;
     }
 
-    public ClaimedResidence getSubzoneByLoc(Location loc) {
+    public ClaimedResidence getSubzoneByLoc(Position loc) {
         Set<Entry<String, ClaimedResidence>> set = subzones.entrySet();
         ClaimedResidence res = null;
         for (Entry<String, ClaimedResidence> entry : set) {
@@ -471,7 +471,7 @@ public class ClaimedResidence {
         return false;
     }
 
-    public boolean containsLoc(Location loc) {
+    public boolean containsLoc(Position loc) {
         Collection<CuboidArea> keys = areas.values();
         for (CuboidArea key : keys) {
             if (key.containsLoc(loc)) {
@@ -580,35 +580,36 @@ public class ClaimedResidence {
         player.sendMessage(TextFormat.GREEN + Residence.getLanguage().getPhrase("MessageChange"));
     }
 
-    public Location getOutsideFreeLoc(Location insideLoc) {
+    public Position getOutsideFreeLoc(Position insideLoc) {
         int maxIt = 100;
         CuboidArea area = this.getAreaByLoc(insideLoc);
         if (area == null) {
             return insideLoc;
         }
-        Location highLoc = area.getHighLoc();
-        Location newLoc = new Location(highLoc.getLevel(), highLoc.getBlockX(), highLoc.getBlockY(), highLoc.getBlockZ());
+        Position highLoc = area.getHighLoc();
+        Position newLoc = new Position(highLoc.getFloorX(), highLoc.getFloorY(), highLoc.getFloorZ(), highLoc.getLevel());
         boolean found = false;
         int it = 0;
         while (!found && it < maxIt) {
             it++;
-            Location lowLoc;
-            newLoc.setX(newLoc.getBlockX() + 1);
-            newLoc.setZ(newLoc.getBlockZ() + 1);
-            lowLoc = new Location(newLoc.getLevel(), newLoc.getBlockX(), 254, newLoc.getBlockZ());
-            newLoc.setY(255);
-            while ((newLoc.getBlock().getTypeId() != 0 || lowLoc.getBlock().getTypeId() == 0) && lowLoc.getBlockY() > -126) {
-                newLoc.setY(newLoc.getY() - 1);
-                lowLoc.setY(lowLoc.getY() - 1);
+            Position lowLoc;
+            newLoc.x = newLoc.getFloorX() + 1;
+            newLoc.z = newLoc.getFloorZ() + 1;
+            lowLoc = new Position(newLoc.getFloorX(), 254, newLoc.getFloorZ(), newLoc.getLevel());
+            newLoc.y = 255;
+
+            while ((newLoc.level.getBlockIdAt(newLoc.getFloorX(), newLoc.getFloorY(), newLoc.getFloorZ()) != 0 || lowLoc.level.getBlockIdAt(lowLoc.getFloorX(), lowLoc.getFloorY(), lowLoc.getFloorZ()) == 0) && lowLoc.getFloorY() > -126) {
+                newLoc.y = newLoc.getY() - 1;
+                lowLoc.y = lowLoc.getY() - 1;
             }
-            if (newLoc.getBlock().getTypeId() == 0 && lowLoc.getBlock().getTypeId() != 0) {
+            if (newLoc.level.getBlockIdAt(newLoc.getFloorX(), newLoc.getFloorY(), newLoc.getFloorZ()) == 0 && lowLoc.level.getBlockIdAt(lowLoc.getFloorX(), lowLoc.getFloorY(), lowLoc.getFloorZ()) != 0) {
                 found = true;
             }
         }
         if (found) {
             return newLoc;
         } else {
-            World world = Residence.getServ().getLevel(perms.getLevel());
+            Level world = Residence.getServ().getLevelByName(perms.getWorld());
             if (world != null) {
                 return world.getSpawnLocation();
             }
@@ -616,7 +617,7 @@ public class ClaimedResidence {
         }
     }
 
-    protected CuboidArea getAreaByLoc(Location loc) {
+    protected CuboidArea getAreaByLoc(Position loc) {
         for (CuboidArea thisarea : areas.values()) {
             if (thisarea.containsLoc(loc)) {
                 return thisarea;
@@ -655,9 +656,9 @@ public class ClaimedResidence {
         ArrayList<String> temp = new ArrayList<>();
         for (Entry<String, CuboidArea> entry : areas.entrySet()) {
             CuboidArea a = entry.getValue();
-            Location h = a.getHighLoc();
-            Location l = a.getLowLoc();
-            temp.add(TextFormat.GREEN + "{" + TextFormat.YELLOW + "ID:" + TextFormat.RED + entry.getKey() + " " + TextFormat.YELLOW + "P1:" + TextFormat.RED + "(" + h.getBlockX() + "," + h.getBlockY() + "," + h.getBlockZ() + ") " + TextFormat.YELLOW + "P2:" + TextFormat.RED + "(" + l.getBlockX() + "," + l.getBlockY() + "," + l.getBlockZ() + ") " + TextFormat.YELLOW + "(Size:" + TextFormat.RED + a.getSize() + TextFormat.YELLOW + ")" + TextFormat.GREEN + "} ");
+            Position h = a.getHighLoc();
+            Position l = a.getLowLoc();
+            temp.add(TextFormat.GREEN + "{" + TextFormat.YELLOW + "ID:" + TextFormat.RED + entry.getKey() + " " + TextFormat.YELLOW + "P1:" + TextFormat.RED + "(" + h.getFloorX() + "," + h.getFloorY() + "," + h.getFloorZ() + ") " + TextFormat.YELLOW + "P2:" + TextFormat.RED + "(" + l.getFloorX() + "," + l.getFloorY() + "," + l.getFloorZ() + ") " + TextFormat.YELLOW + "(Size:" + TextFormat.RED + a.getSize() + TextFormat.YELLOW + ")" + TextFormat.GREEN + "} ");
         }
         InformationPager.printInfo(player, Residence.getLanguage().getPhrase("PhysicalAreas"), temp, page);
     }
@@ -687,11 +688,11 @@ public class ClaimedResidence {
             player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("NoPermission"));
             return;
         }
-        if (!this.containsLoc(player.getLocation())) {
+        if (!this.containsLoc(player.getPosition())) {
             player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("NotInResidence"));
             return;
         }
-        tpLoc = player.getLocation();
+        tpLoc = player.getPosition();
         player.sendMessage(TextFormat.GREEN + Residence.getLanguage().getPhrase("SetTeleportLocation"));
     }
 
@@ -724,7 +725,7 @@ public class ClaimedResidence {
                 reqPlayer.sendMessage(TextFormat.RED + "Could not find area to teleport to...");
                 return;
             }
-            Location targloc = this.getOutsideFreeLoc(area.getHighLoc());
+            Position targloc = this.getOutsideFreeLoc(area.getHighLoc());
             ResidenceTPEvent tpevent = new ResidenceTPEvent(this, targloc, targetPlayer, reqPlayer);
             Residence.getServ().getPluginManager().callEvent(tpevent);
             if (!tpevent.isCancelled()) {
@@ -734,7 +735,7 @@ public class ClaimedResidence {
         }
     }
 
-    public String getAreaIDbyLoc(Location loc) {
+    public String getAreaIDbyLoc(Position loc) {
         for (Entry<String, CuboidArea> area : areas.entrySet()) {
             if (area.getValue().containsLoc(loc)) {
                 return area.getKey();
@@ -787,9 +788,9 @@ public class ClaimedResidence {
         root.put("Permissions", perms.save());
         if (tpLoc != null) {
             Map<String, Object> tpmap = new HashMap<>();
-            tpmap.put("X", tpLoc.getBlockX());
-            tpmap.put("Y", tpLoc.getBlockY());
-            tpmap.put("Z", tpLoc.getBlockZ());
+            tpmap.put("X", tpLoc.getFloorX());
+            tpmap.put("Y", tpLoc.getFloorY());
+            tpmap.put("Z", tpLoc.getFloorZ());
             root.put("TPLoc", tpmap);
         }
         return root;
@@ -813,7 +814,7 @@ public class ClaimedResidence {
         }
         Map<String, Object> areamap = (Map<String, Object>) root.get("Areas");
         res.perms = ResidencePermissions.load(res, (Map<String, Object>) root.get("Permissions"));
-        World world = Residence.getServ().getWorld(res.perms.getWorld());
+        Level world = Residence.getServ().getLevelByName(res.perms.getWorld());
         if (world == null) {
             throw new Exception("Cant Find World: " + res.perms.getWorld());
         }
@@ -831,7 +832,7 @@ public class ClaimedResidence {
         res.parent = parent;
         Map<String, Object> tploc = (Map<String, Object>) root.get("TPLoc");
         if (tploc != null) {
-            res.tpLoc = new Location(world, (Integer) tploc.get("X"), (Integer) tploc.get("Y"), (Integer) tploc.get("Z"));
+            res.tpLoc = new Position((Integer) tploc.get("X"), (Integer) tploc.get("Y"), (Integer) tploc.get("Z"), world);
         }
         return res;
     }
@@ -947,8 +948,8 @@ public class ClaimedResidence {
 
     public ArrayList<Player> getPlayersInResidence() {
         ArrayList<Player> within = new ArrayList<>();
-        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-            if (this.containsLoc(player.getLocation())) {
+        for (Player player : Server.getInstance().getOnlinePlayers().values()) {
+            if (this.containsLoc(player.getPosition())) {
                 within.add(player);
             }
         }

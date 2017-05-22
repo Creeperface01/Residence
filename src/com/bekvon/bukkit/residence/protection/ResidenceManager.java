@@ -4,6 +4,8 @@
  */
 package com.bekvon.bukkit.residence.protection;
 
+import cn.nukkit.level.Position;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.TextFormat;
 import cn.nukkit.level.Location;
 import cn.nukkit.level.Level;
@@ -27,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -44,7 +45,7 @@ public class ResidenceManager {
         chunkResidences = new HashMap<>();
     }
 
-    public ClaimedResidence getByLoc(Location loc) {
+    public ClaimedResidence getByLoc(Position loc) {
         if (loc == null) {
             return null;
         }
@@ -408,8 +409,8 @@ public class ResidenceManager {
         }
         player.sendMessage(TextFormat.YELLOW + Residence.getLanguage().getPhrase("Total.Size") + ":" + TextFormat.LIGHT_PURPLE + " " + res.getTotalSize());
         if (aid != null) {
-            player.sendMessage(TextFormat.YELLOW + Residence.getLanguage().getPhrase("CoordsT") + ": " + TextFormat.LIGHT_PURPLE + Residence.getLanguage().getPhrase("CoordsTop", res.getAreaByLoc(player.getLocation()).getHighLoc().getBlockX() + "." + res.getAreaByLoc(player.getLocation()).getHighLoc().getBlockY() + "." + res.getAreaByLoc(player.getLocation()).getHighLoc().getBlockZ()));
-            player.sendMessage(TextFormat.YELLOW + Residence.getLanguage().getPhrase("CoordsB") + ": " + TextFormat.LIGHT_PURPLE + Residence.getLanguage().getPhrase("CoordsBottom", res.getAreaByLoc(player.getLocation()).getLowLoc().getBlockX() + "." + res.getAreaByLoc(player.getLocation()).getLowLoc().getBlockY() + "." + res.getAreaByLoc(player.getLocation()).getLowLoc().getBlockZ()));
+            player.sendMessage(TextFormat.YELLOW + Residence.getLanguage().getPhrase("CoordsT") + ": " + TextFormat.LIGHT_PURPLE + Residence.getLanguage().getPhrase("CoordsTop", res.getAreaByLoc(player.getLocation()).getHighLoc().getFloorX() + "." + res.getAreaByLoc(player.getLocation()).getHighLoc().getFloorY() + "." + res.getAreaByLoc(player.getLocation()).getHighLoc().getFloorZ()));
+            player.sendMessage(TextFormat.YELLOW + Residence.getLanguage().getPhrase("CoordsB") + ": " + TextFormat.LIGHT_PURPLE + Residence.getLanguage().getPhrase("CoordsBottom", res.getAreaByLoc(player.getLocation()).getLowLoc().getFloorX() + "." + res.getAreaByLoc(player.getLocation()).getLowLoc().getFloorY() + "." + res.getAreaByLoc(player.getLocation()).getLowLoc().getFloorZ()));
         }
         if (Residence.getConfigManager().useLeases() && Residence.getLeaseManager().leaseExpires(areaname)) {
             player.sendMessage(TextFormat.YELLOW + Residence.getLanguage().getPhrase("LeaseExpire") + ":" + TextFormat.GREEN + " " + Residence.getLeaseManager().getExpireTime(areaname));
@@ -434,19 +435,19 @@ public class ResidenceManager {
 
     public Map<String, Object> save() {
         Map<String, Object> worldmap = new LinkedHashMap<>();
-        for (World world : Residence.getServ().getWorlds()) {
+        for (Level level : Residence.getServ().getLevels().values()) {
             Map<String, Object> resmap = new LinkedHashMap<>();
             for (Entry<String, ClaimedResidence> res : residences.entrySet()) {
-                if (res.getValue().getWorld().equals(world.getName())) {
+                if (res.getValue().getWorld().equals(level.getName())) {
                     try {
                         resmap.put(res.getKey(), res.getValue().save());
                     } catch (Exception ex) {
                         System.out.println("[Residence] Failed to save residence (" + res.getKey() + ")!");
-                        Logger.getLogger(ResidenceManager.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(ResidenceManager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
                     }
                 }
             }
-            worldmap.put(world.getName(), resmap);
+            worldmap.put(level.getName(), resmap);
         }
         return worldmap;
     }
@@ -456,13 +457,13 @@ public class ResidenceManager {
         if (root == null) {
             return resm;
         }
-        for (World world : Residence.getServ().getWorlds()) {
-            Map<String, Object> reslist = (Map<String, Object>) root.get(world.getName());
+        for (Level level : Residence.getServ().getLevels().values()) {
+            Map<String, Object> reslist = (Map<String, Object>) root.get(level.getName());
             if (reslist != null) {
                 try {
-                    resm.chunkResidences.put(world.getName(), loadMap(reslist, resm));
+                    resm.chunkResidences.put(level.getName(), loadMap(reslist, resm));
                 } catch (Exception ex) {
-                    System.out.println("Error in loading save file for world: " + world.getName());
+                    System.out.println("Error in loading save file for world: " + level.getName());
                     if (Residence.getConfigManager().stopOnSaveError()) {
                         throw (ex);
                     }
@@ -489,7 +490,7 @@ public class ResidenceManager {
                     resm.residences.put(res.getKey(), residence);
                 } catch (Exception ex) {
                     System.out.print("[Residence] Failed to load residence (" + res.getKey() + ")! Reason:" + ex.getMessage() + " Error Log:");
-                    Logger.getLogger(ResidenceManager.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(ResidenceManager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
                     if (Residence.getConfigManager().stopOnSaveError()) {
                         throw (ex);
                     }
@@ -666,9 +667,9 @@ public class ResidenceManager {
         private final int z;
         private final int x;
 
-        public ChunkRef(Location loc) {
-            this.x = getChunkCoord(loc.getBlockX());
-            this.z = getChunkCoord(loc.getBlockZ());
+        public ChunkRef(Vector3 loc) {
+            this.x = getChunkCoord(loc.getFloorX());
+            this.z = getChunkCoord(loc.getFloorZ());
         }
 
         public ChunkRef(int x, int z) {

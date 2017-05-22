@@ -17,12 +17,7 @@ public class ResidenceFlagChangeEvent extends CancellableResidencePlayerFlagEven
 
     private static final HandlerList handlers = new HandlerList();
 
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
+    public static HandlerList getHandlers() {
         return handlers;
     }
 

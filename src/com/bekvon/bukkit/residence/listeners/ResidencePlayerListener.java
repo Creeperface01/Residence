@@ -4,34 +4,21 @@
  */
 package com.bekvon.bukkit.residence.listeners;
 
+import cn.nukkit.Server;
+import cn.nukkit.block.BlockRedstoneDiode;
 import cn.nukkit.event.Listener;
-import cn.nukkit.Nukkit;
+import cn.nukkit.event.entity.EntityRegainHealthEvent;
+import cn.nukkit.event.player.*;
+import cn.nukkit.item.Item;
+import cn.nukkit.level.Position;
 import cn.nukkit.utils.TextFormat;
 import cn.nukkit.level.Location;
-import cn.nukkit.Material;
 import cn.nukkit.block.Block;
-import cn.nukkit.entity.Damageable;
 import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.EntityType;
-import cn.nukkit.entity.Hanging;
 import cn.nukkit.Player;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
-import cn.nukkit.event.Listener;
-import cn.nukkit.event.block.Action;
-import cn.nukkit.event.player.AsyncPlayerChatEvent;
-import cn.nukkit.event.player.PlayerBucketEmptyEvent;
-import cn.nukkit.event.player.PlayerBucketFillEvent;
-import cn.nukkit.event.player.PlayerInteractAtEntityEvent;
-import cn.nukkit.event.player.PlayerInteractEntityEvent;
-import cn.nukkit.event.player.PlayerInteractEvent;
-import cn.nukkit.event.player.PlayerJoinEvent;
-import cn.nukkit.event.player.PlayerMoveEvent;
-import cn.nukkit.event.player.PlayerQuitEvent;
-import cn.nukkit.event.player.PlayerRespawnEvent;
-import cn.nukkit.event.player.PlayerTeleportEvent;
 import cn.nukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import cn.nukkit.plugin.Plugin;
 
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.chat.ChatChannel;
@@ -40,8 +27,6 @@ import com.bekvon.bukkit.residence.permissions.PermissionGroup;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
 import com.bekvon.bukkit.residence.utils.ActionBar;
-
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,33 +41,33 @@ import java.util.Map.Entry;
 public class ResidencePlayerListener implements Listener {
 
     protected Map<String, String> currentRes;
-    protected Map<String, Long> lastUpdate;
+    protected Map<Long, Long> lastUpdate;
     protected Map<String, Location> lastOutsideLoc;
     protected int minUpdateTime;
     protected boolean chatenabled;
     protected List<String> playerToggleChat;
 
     public ResidencePlayerListener() {
-        currentRes = new HashMap<String, String>();
-        lastUpdate = new HashMap<String, Long>();
-        lastOutsideLoc = new HashMap<String, Location>();
-        playerToggleChat = new ArrayList<String>();
+        currentRes = new HashMap<>();
+        lastUpdate = new HashMap<>();
+        lastOutsideLoc = new HashMap<>();
+        playerToggleChat = new ArrayList<>();
         minUpdateTime = Residence.getConfigManager().getMinMoveUpdateInterval();
         chatenabled = Residence.getConfigManager().chatEnabled();
-        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-            lastUpdate.put(player.getName(), System.currentTimeMillis());
+        for (Player player : Server.getInstance().getOnlinePlayers().values()) {
+            lastUpdate.put(player.getId(), System.currentTimeMillis());
         }
     }
 
     public void reload() {
-        currentRes = new HashMap<String, String>();
-        lastUpdate = new HashMap<String, Long>();
-        lastOutsideLoc = new HashMap<String, Location>();
-        playerToggleChat = new ArrayList<String>();
+        currentRes = new HashMap<>();
+        lastUpdate = new HashMap<>();
+        lastOutsideLoc = new HashMap<>();
+        playerToggleChat = new ArrayList<>();
         minUpdateTime = Residence.getConfigManager().getMinMoveUpdateInterval();
         chatenabled = Residence.getConfigManager().chatEnabled();
-        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-            lastUpdate.put(player.getName(), System.currentTimeMillis());
+        for (Player player : Server.getInstance().getOnlinePlayers().values()) {
+            lastUpdate.put(player.getId(), System.currentTimeMillis());
         }
     }
 
@@ -90,7 +75,7 @@ public class ResidencePlayerListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         String pname = event.getPlayer().getName();
         currentRes.remove(pname);
-        lastUpdate.remove(pname);
+        lastUpdate.remove(event.getPlayer().getId());
         lastOutsideLoc.remove(pname);
         Residence.getChatManager().removeFromChannel(pname);
     }
@@ -98,7 +83,7 @@ public class ResidencePlayerListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        lastUpdate.put(player.getName(), 0L);
+        lastUpdate.put(player.getId(), 0L);
         if (Residence.getPermissionManager().isResidenceAdmin(player)) {
             Residence.turnResAdminOn(player);
         }
@@ -111,8 +96,7 @@ public class ResidencePlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerSpawn(PlayerRespawnEvent event) {
-        Location loc = event.getRespawnLocation();
-        Boolean bed = event.isBedSpawn();
+        Position loc = event.getRespawnPosition();
         Player player = event.getPlayer();
         ClaimedResidence res = Residence.getResidenceManager().getByLoc(loc);
         if (res == null) {
@@ -121,9 +105,9 @@ public class ResidencePlayerListener implements Listener {
         if (res.getPermissions().playerHas(player.getName(), "move", true)) {
             return;
         }
-        if (bed) {
+        /*if (bed) {
             loc = player.getLevel().getSpawnLocation();
-        }
+        }*/
         res = Residence.getResidenceManager().getByLoc(loc);
         if (res != null) {
             if (!res.getPermissions().playerHas(player.getName(), "move", true)) {
@@ -131,98 +115,98 @@ public class ResidencePlayerListener implements Listener {
             }
         }
         player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("NoSpawn"));
-        event.setRespawnLocation(loc);
+        event.setRespawnPosition(loc);
     }
 
-    private boolean isContainer(Material mat, Block block) {
-        return FlagPermissions.getMaterialUseFlagList().containsKey(mat) && FlagPermissions.getMaterialUseFlagList().get(mat).equals("container") || Residence.getConfigManager().getCustomContainers().contains(Integer.valueOf(block.getTypeId()));
+    private boolean isContainer(int mat, Block block) {
+        return FlagPermissions.getMaterialUseFlagList().containsKey(mat) && FlagPermissions.getMaterialUseFlagList().get(mat).equals("container") || Residence.getConfigManager().getCustomContainers().contains(block.getId());
     }
 
-    private boolean isCanUseEntity_BothClick(Material mat, Block block) {
-        return mat == Material.LEVER || mat == Material.STONE_BUTTON || mat == Material.WOOD_BUTTON
-                || mat == Material.WOODEN_DOOR || mat == Material.SPRUCE_DOOR || mat == Material.BIRCH_DOOR
-                || mat == Material.JUNGLE_DOOR || mat == Material.ACACIA_DOOR || mat == Material.DARK_OAK_DOOR
-                || mat == Material.SPRUCE_FENCE_GATE
-                || mat == Material.BIRCH_FENCE_GATE || mat == Material.JUNGLE_FENCE_GATE || mat == Material.ACACIA_FENCE_GATE
-                || mat == Material.DARK_OAK_FENCE_GATE || mat == Material.TRAP_DOOR || mat == Material.FENCE_GATE
-                || mat == Material.PISTON_BASE || mat == Material.PISTON_STICKY_BASE || mat == Material.DRAGON_EGG
-                || Residence.getConfigManager().getCustomBothClick().contains(Integer.valueOf(block.getTypeId()));
+    private boolean isCanUseEntity_BothClick(int mat, Block block) {
+        return mat == Block.LEVER || mat == Block.STONE_BUTTON || mat == Block.WOODEN_BUTTON
+                || mat == Block.WOODEN_DOOR_BLOCK || mat == Block.SPRUCE_DOOR_BLOCK || mat == Block.BIRCH_DOOR_BLOCK
+                || mat == Block.JUNGLE_DOOR_BLOCK || mat == Block.ACACIA_DOOR_BLOCK || mat == Block.DARK_OAK_DOOR_BLOCK
+                || mat == Block.FENCE_GATE_SPRUCE
+                || mat == Block.FENCE_GATE_BIRCH || mat == Block.FENCE_GATE_JUNGLE || mat == Block.FENCE_GATE_ACACIA
+                || mat == Block.FENCE_GATE_DARK_OAK || mat == Block.TRAPDOOR || mat == Block.IRON_TRAPDOOR || mat == Block.FENCE_GATE
+                || mat == Block.PISTON || mat == Block.STICKY_PISTON || mat == Block.DRAGON_EGG
+                || Residence.getConfigManager().getCustomBothClick().contains(block.getId());
     }
 
-    private boolean isCanUseEntity_RClickOnly(Material mat, Block block) {
-        return mat == Material.ITEM_FRAME || mat == Material.BEACON || mat == Material.FLOWER_POT || mat == Material.COMMAND || mat == Material.ANVIL || mat == Material.CAKE_BLOCK || mat == Material.NOTE_BLOCK
-                || mat == Material.DIODE || mat == Material.DIODE_BLOCK_OFF || mat == Material.DIODE_BLOCK_ON
-                || mat == Material.BED_BLOCK || mat == Material.WORKBENCH || mat == Material.BREWING_STAND
-                || mat == Material.ENCHANTMENT_TABLE
-                || Residence.getConfigManager().getCustomRightClick().contains(Integer.valueOf(block.getTypeId()));
+    private boolean isCanUseEntity_RClickOnly(int mat, Block block) {
+        return mat == Block.ITEM_FRAME_BLOCK || mat == Block.BEACON || mat == Block.FLOWER_POT_BLOCK /*|| mat == Block.COMMAND*/ || mat == Block.ANVIL || mat == Block.CAKE_BLOCK || mat == Block.NOTEBLOCK
+                || block instanceof BlockRedstoneDiode
+                || mat == Block.BED_BLOCK || mat == Block.WORKBENCH || mat == Block.BREWING_STAND_BLOCK
+                || mat == Block.ENCHANTMENT_TABLE
+                || Residence.getConfigManager().getCustomRightClick().contains(block.getId());
     }
 
-    private boolean isCanUseEntity(Material mat, Block block) {
+    private boolean isCanUseEntity(int mat, Block block) {
         return isCanUseEntity_BothClick(mat, block) || isCanUseEntity_RClickOnly(mat, block);
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        Material heldItem = player.getItemInHand().getType();
-        Block block = event.getClickedBlock();
+        Item heldItem = event.getItem();
+        Block block = event.getBlock();
         if (block == null) {
             return;
         }
-        Material mat = block.getType();
-        if (!((isContainer(mat, block) || isCanUseEntity_RClickOnly(mat, block)) && event.getAction() == Action.RIGHT_CLICK_BLOCK || isCanUseEntity_BothClick(mat, block) || event.getAction() == Action.PHYSICAL)) {
-            int typeId = player.getItemInHand().getTypeId();
+        int mat = block.getId();
+        if (!((isContainer(mat, block) || isCanUseEntity_RClickOnly(mat, block)) && event.getAction() == PlayerInteractEvent.RIGHT_CLICK_BLOCK || isCanUseEntity_BothClick(mat, block) || event.getAction() == PlayerInteractEvent.PHYSICAL)) {
+            int typeId = heldItem.getId();
             if (typeId != Residence.getConfigManager().getSelectionTooldID() && typeId != Residence.getConfigManager().getInfoToolID() && typeId != 351 && typeId != 416) {
                 return;
             }
         }
         FlagPermissions perms = Residence.getPermsByLocForPlayer(block.getLocation(), player);
-        String world = player.getWorld().getName();
+        String world = player.getLevel().getName();
         String permgroup = Residence.getPermissionManager().getGroupNameByPlayer(player);
         boolean resadmin = Residence.isResAdminOn(player);
-        if (event.getAction() == Action.PHYSICAL) {
+        if (event.getAction() == PlayerInteractEvent.PHYSICAL) {
             if (!resadmin) {
                 boolean hasuse = perms.playerHas(player.getName(), world, "use", true);
                 boolean haspressure = perms.playerHas(player.getName(), world, "pressure", hasuse);
-                if ((!hasuse && !haspressure || !haspressure) && (mat == Material.STONE_PLATE || mat == Material.WOOD_PLATE)) {
+                if ((!hasuse && !haspressure || !haspressure) && (mat == Block.STONE_PRESSURE_PLATE || mat == Block.WOODEN_PRESSURE_PLATE)) {
                     event.setCancelled(true);
                     return;
                 }
             }
-            if (!perms.playerHas(player.getName(), world, "trample", perms.playerHas(player.getName(), world, "build", true)) && (mat == Material.SOIL || mat == Material.SOUL_SAND)) {
+            if (!perms.playerHas(player.getName(), world, "trample", perms.playerHas(player.getName(), world, "build", true)) && (mat == Block.FARMLAND || mat == Block.SOUL_SAND)) {
                 event.setCancelled(true);
                 return;
             }
             return;
         }
-        if (!resadmin && !Residence.getItemManager().isAllowed(heldItem, permgroup, world)) {
+        if (!resadmin && !Residence.getItemManager().isAllowed(heldItem.getId(), permgroup, world)) {
             player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("ItemBlacklisted"));
             event.setCancelled(true);
             return;
         }
-        if (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (player.getItemInHand().getTypeId() == Residence.getConfigManager().getSelectionTooldID()) {
-                Plugin wep = Bukkit.getPluginManager().getPlugin("WorldEdit");
+        if (event.getAction() == PlayerInteractEvent.LEFT_CLICK_BLOCK || event.getAction() == PlayerInteractEvent.RIGHT_CLICK_BLOCK) {
+            if (heldItem.getId() == Residence.getConfigManager().getSelectionTooldID()) {
+                /*Plugin wep = Server.getInstance().getPluginManager().getPlugin("WorldEdit"); //TODO: WE
                 if (wep != null) {
                     if (((WorldEditPlugin) wep).getConfig().getInt("wand-item") == Residence.getConfigManager().getSelectionTooldID()) {
                         return;
                     }
-                }
+                }*/
                 PermissionGroup group = Residence.getPermissionManager().getGroup(player);
                 if (player.hasPermission("residence.select") || player.hasPermission("residence.create") && !player.isPermissionSet("residence.select") || group.canCreateResidences() && !player.isPermissionSet("residence.create") && !player.isPermissionSet("residence.select") || resadmin) {
-                    if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+                    if (event.getAction() == PlayerInteractEvent.LEFT_CLICK_BLOCK) {
                         Location loc = block.getLocation();
                         Residence.getSelectionManager().placeLoc1(player, loc);
-                        player.sendMessage(TextFormat.GREEN + Residence.getLanguage().getPhrase("SelectPoint", Residence.getLanguage().getPhrase("Primary")) + TextFormat.RED + "(" + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ() + ")" + TextFormat.GREEN + "!");
-                    } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                        player.sendMessage(TextFormat.GREEN + Residence.getLanguage().getPhrase("SelectPoint", Residence.getLanguage().getPhrase("Primary")) + TextFormat.RED + "(" + loc.getFloorX() + "," + loc.getFloorY() + "," + loc.getFloorZ() + ")" + TextFormat.GREEN + "!");
+                    } else if (event.getAction() == PlayerInteractEvent.RIGHT_CLICK_BLOCK) {
                         Location loc = block.getLocation();
                         Residence.getSelectionManager().placeLoc2(player, loc);
-                        player.sendMessage(TextFormat.GREEN + Residence.getLanguage().getPhrase("SelectPoint", Residence.getLanguage().getPhrase("Secondary")) + TextFormat.RED + "(" + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ() + ")" + TextFormat.GREEN + "!");
+                        player.sendMessage(TextFormat.GREEN + Residence.getLanguage().getPhrase("SelectPoint", Residence.getLanguage().getPhrase("Secondary")) + TextFormat.RED + "(" + loc.getFloorX() + "," + loc.getFloorY() + "," + loc.getFloorZ() + ")" + TextFormat.GREEN + "!");
                     }
                 }
             }
-            if (player.getItemInHand().getTypeId() == Residence.getConfigManager().getInfoToolID()) {
-                if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+            if (heldItem.getId() == Residence.getConfigManager().getInfoToolID()) {
+                if (event.getAction() == PlayerInteractEvent.LEFT_CLICK_BLOCK) {
                     Location loc = block.getLocation();
                     String res = Residence.getResidenceManager().getNameByLoc(loc);
                     if (res != null) {
@@ -236,30 +220,36 @@ public class ResidencePlayerListener implements Listener {
                 }
             }
             if (!resadmin) {
-                if (heldItem != null) {
-                    if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                        if (player.getItemInHand().getTypeId() == 351) {
-                            if (player.getItemInHand().getData().getData() == 15 && block.getType() == Material.GRASS || player.getItemInHand().getData().getData() == 3 && block.getTypeId() == 17 && (block.getData() == 3 || block.getData() == 7 || block.getData() == 11 || block.getData() == 15)) {
-                                perms = Residence.getPermsByLocForPlayer(block.getRelative(event.getBlockFace()).getLocation(), player);
+                    if (event.getAction() == PlayerInteractEvent.RIGHT_CLICK_BLOCK) {
+                        if (heldItem.getId() == 351) {
+                            if (heldItem.getDamage() == 15 && block.getId() == Block.GRASS || heldItem.getDamage() == 3 && block.getId() == 17 && (block.getDamage() == 3 || block.getDamage() == 7 || block.getDamage() == 11 || block.getDamage() == 15)) {
+                                perms = Residence.getPermsByLocForPlayer(block.getSide(event.getFace()).getLocation(), player);
                                 if (!perms.playerHas(player.getName(), world, "build", true)) {
                                     event.setCancelled(true);
                                     return;
                                 }
                             }
                         }
-                        if (heldItem == Material.ARMOR_STAND) {
+                        /*if (heldItem == Material.ARMOR_STAND) { //TODO: armor stand
                             perms = Residence.getPermsByLocForPlayer(block.getRelative(event.getBlockFace()).getLocation(), player);
                             if (!perms.playerHas(player.getName(), world, "build", true)) {
                                 player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("NoPermission"));
                                 event.setCancelled(true);
                                 return;
                             }
+                        }*/
+
+                        if(block.getId() == Block.ITEM_FRAME_BLOCK) {
+                            if (!perms.playerHas(player.getName(), world, "container", perms.playerHas(player.getName(), world, "use", true))) {
+                                event.setCancelled(true);
+                                player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("FlagDeny", "container"));
+                            }
                         }
                     }
-                }
+
                 if (isContainer(mat, block) || isCanUseEntity(mat, block)) {
                     boolean hasuse = perms.playerHas(player.getName(), world, "use", true);
-                    for (Entry<Material, String> checkMat : FlagPermissions.getMaterialUseFlagList().entrySet()) {
+                    for (Entry<Integer, String> checkMat : FlagPermissions.getMaterialUseFlagList().entrySet()) {
                         if (mat == checkMat.getKey()) {
                             if (!perms.playerHas(player.getName(), world, checkMat.getValue(), hasuse)) {
                                 if (hasuse || checkMat.getValue().equals("container")) {
@@ -274,22 +264,22 @@ public class ResidencePlayerListener implements Listener {
                             }
                         }
                     }
-                    if (Residence.getConfigManager().getCustomContainers().contains(Integer.valueOf(block.getTypeId()))) {
+                    if (Residence.getConfigManager().getCustomContainers().contains(block.getId())) {
                         if (!perms.playerHas(player.getName(), world, "container", hasuse)) {
                             event.setCancelled(true);
                             player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("FlagDeny", "container"));
                             return;
                         }
                     }
-                    if (Residence.getConfigManager().getCustomBothClick().contains(Integer.valueOf(block.getTypeId()))) {
+                    if (Residence.getConfigManager().getCustomBothClick().contains(block.getId())) {
                         if (!hasuse) {
                             event.setCancelled(true);
                             player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("FlagDeny", "use"));
                             return;
                         }
                     }
-                    if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                        if (Residence.getConfigManager().getCustomRightClick().contains(Integer.valueOf(block.getTypeId()))) {
+                    if (event.getAction() == PlayerInteractEvent.RIGHT_CLICK_BLOCK) {
+                        if (Residence.getConfigManager().getCustomRightClick().contains(block.getId())) {
                             if (!hasuse) {
                                 event.setCancelled(true);
                                 player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("FlagDeny", "use"));
@@ -308,19 +298,19 @@ public class ResidencePlayerListener implements Listener {
         if (Residence.isResAdminOn(player)) {
             return;
         }
-        Entity ent = event.getRightClicked();
+        Entity ent = event.getEntity();
         /* Trade */
-        if (ent.getType() == EntityType.VILLAGER) {
+        /*if (ent.getType() == EntityType.VILLAGER) { //TODO: trade
             ClaimedResidence res = Residence.getResidenceManager().getByLoc(event.getPlayer().getLocation());
 
             if (res != null && !res.getPermissions().playerHas(player.getName(), "trade", true)) {
                 player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("NoPermission"));
                 event.setCancelled(true);
             }
-        }
+        }*/
 
         /* Container - ItemFrame protection */
-        Material heldItem = player.getItemInHand().getType();
+        /*Item heldItem = event.getItem(); //item frame is not entity
         if (!(ent instanceof Hanging)) {
             return;
         }
@@ -339,10 +329,10 @@ public class ResidencePlayerListener implements Listener {
         if (!perms.playerHas(player.getName(), world, "container", perms.playerHas(player.getName(), world, "use", true))) {
             event.setCancelled(true);
             player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("FlagDeny", "container"));
-        }
+        }*/
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    /*@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true) //TODO: armor stands
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
         Player player = event.getPlayer();
         if (Residence.isResAdminOn(player)) {
@@ -361,7 +351,7 @@ public class ResidencePlayerListener implements Listener {
             event.setCancelled(true);
             player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("FlagDeny", "container"));
         }
-    }
+    }*/
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
@@ -381,7 +371,7 @@ public class ResidencePlayerListener implements Listener {
             }
         }
         FlagPermissions perms = Residence.getPermsByLocForPlayer(event.getBlockClicked().getLocation(), player);
-        if (!perms.playerHas(pname, player.getWorld().getName(), "bucket", perms.playerHas(pname, player.getWorld().getName(), "build", true))) {
+        if (!perms.playerHas(pname, player.getLevel().getName(), "bucket", perms.playerHas(pname, player.getLevel().getName(), "build", true))) {
             player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("FlagDeny", "bucket"));
             event.setCancelled(true);
         }
@@ -405,7 +395,7 @@ public class ResidencePlayerListener implements Listener {
             }
         }
         FlagPermissions perms = Residence.getPermsByLocForPlayer(event.getBlockClicked().getLocation(), player);
-        boolean hasbucket = perms.playerHas(pname, player.getWorld().getName(), "bucket", perms.playerHas(pname, player.getWorld().getName(), "build", true));
+        boolean hasbucket = perms.playerHas(pname, player.getLevel().getName(), "bucket", perms.playerHas(pname, player.getLevel().getName(), "build", true));
         if (!hasbucket) {
             player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("FlagDeny", "bucket"));
             event.setCancelled(true);
@@ -452,13 +442,13 @@ public class ResidencePlayerListener implements Listener {
         if (player == null) {
             return;
         }
-        long last = lastUpdate.get(player.getName());
+        long last = lastUpdate.get(player.getId());
         long now = System.currentTimeMillis();
         if (now - last < Residence.getConfigManager().getMinMoveUpdateInterval()) {
             return;
         }
-        lastUpdate.put(player.getName(), now);
-        if (event.getFrom().getWorld() == event.getTo().getWorld()) {
+        lastUpdate.put(player.getId(), now);
+        if (event.getFrom().getLevel().getId() == event.getTo().getLevel().getId()) {
             if (event.getFrom().distance(event.getTo()) == 0) {
                 return;
             }
@@ -597,17 +587,16 @@ public class ResidencePlayerListener implements Listener {
 
     public void doHeals() {
         try {
-            for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+            for (Player player : Server.getInstance().getOnlinePlayers().values()) {
                 String resname = Residence.getPlayerListener().getCurrentResidenceName(player.getName());
                 ClaimedResidence res = null;
                 if (resname != null) {
                     res = Residence.getResidenceManager().getByName(resname);
                 }
                 if (res != null && res.getPermissions().has("healing", false)) {
-                    Damageable damage = player;
-                    double health = damage.getHealth();
-                    if (health < 20 && !player.isDead()) {
-                        player.setHealth(health + 1);
+                    double health = player.getHealth();
+                    if (health < 20 && player.isAlive()) {
+                        player.heal(new EntityRegainHealthEvent(player, 1, EntityRegainHealthEvent.CAUSE_CUSTOM));
                     }
                 }
             }
@@ -616,7 +605,7 @@ public class ResidencePlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onPlayerChat(AsyncPlayerChatEvent event) {
+    public void onPlayerChat(PlayerChatEvent event) {
         String pname = event.getPlayer().getName();
         if (chatenabled && playerToggleChat.contains(pname)) {
             String area = currentRes.get(pname);

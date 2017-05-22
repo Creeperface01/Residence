@@ -23,8 +23,7 @@ public class ResidenceEnterEvent extends ResidencePlayerEvent {
 
     private static final HandlerList handlers = new HandlerList();
 
-    @Override
-    public HandlerList getHandlers() {
+    public static HandlerList getHandlers() {
         return handlers;
     }
 

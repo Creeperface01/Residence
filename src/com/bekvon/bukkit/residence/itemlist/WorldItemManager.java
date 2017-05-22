@@ -24,7 +24,7 @@ public class WorldItemManager {
         this.readLists(config);
     }
 
-    public boolean isAllowed(Item mat, String group, String world) {
+    public boolean isAllowed(int mat, String group, String world) {
         for (WorldItemList list : lists) {
             if (!list.isAllowed(mat, world, group)) {
                 return false;
@@ -33,7 +33,7 @@ public class WorldItemManager {
         return true;
     }
 
-    public boolean isIgnored(Item mat, String group, String world) {
+    public boolean isIgnored(int mat, String group, String world) {
         for (WorldItemList list : lists) {
             if (list.isIgnored(mat, world, group)) {
                 return true;
@@ -43,11 +43,11 @@ public class WorldItemManager {
     }
 
     private void readLists(Config config) {
-        Set<String> keys = config.getConfigSection("ItemList").getKeys(false);
+        Set<String> keys = config.getSection("ItemList").getKeys(false);
         if (keys != null) {
             for (String key : keys) {
                 try {
-                    WorldItemList list = WorldItemList.readList(config.getConfigSection("ItemList." + key));
+                    WorldItemList list = WorldItemList.readList(config.getSection("ItemList." + key));
                     lists.add(list);
                     //System.out.println("Debug: read list " + key + " world: " + list.getWorld() + " group: " + list.getGroup() + " itemcount:" + list.getListSize());
                 } catch (Exception ex) {

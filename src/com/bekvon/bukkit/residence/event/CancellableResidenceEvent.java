@@ -14,24 +14,8 @@ import cn.nukkit.event.Cancellable;
  */
 public class CancellableResidenceEvent extends ResidenceEvent implements Cancellable {
 
-    protected boolean cancelled;
-
     public CancellableResidenceEvent(String eventName, ClaimedResidence resref)
     {
         super(eventName,resref);
     }
-    
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    public void setCancelled(boolean bln) {
-        cancelled = bln;
-    }
-
-    @Override
-    public void setCancelled() {
-        //todo
-    }
-
 }
