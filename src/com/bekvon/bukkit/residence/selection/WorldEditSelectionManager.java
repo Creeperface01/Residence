@@ -4,14 +4,7 @@
  */
 package com.bekvon.bukkit.residence.selection;
 
-import WorldEdit.WorldEdit;
-import WorldEdit.Selection;
-import WorldEdit.PlayerData;
-
-import cn.nukkit.Player;
 import cn.nukkit.Server;
-import cn.nukkit.level.Level;
-import cn.nukkit.level.Location;
 
 /**
  *
@@ -23,8 +16,8 @@ public class WorldEditSelectionManager extends SelectionManager {
         super(serv);
     }
 
-    @Override
-    public boolean worldEdit(Player player) {
+    /*@Override
+    public boolean worldEdit(Player player) { //TODO: WE
         WorldEdit wep = (WorldEdit) server.getPluginManager().getPlugin("WorldEdit");
 
         PlayerData data = wep.getPlayerData(player);
@@ -106,5 +99,5 @@ public class WorldEditSelectionManager extends SelectionManager {
     public void showSelectionInfo(Player player) {
         this.worldEdit(player);
         super.showSelectionInfo(player);
-    }
+    }*/
 }

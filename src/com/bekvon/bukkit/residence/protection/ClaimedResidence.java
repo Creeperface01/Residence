@@ -5,7 +5,6 @@
 package com.bekvon.bukkit.residence.protection;
 
 import cn.nukkit.Server;
-import cn.nukkit.level.Location;
 import cn.nukkit.level.Level;
 import cn.nukkit.Player;
 import cn.nukkit.level.Position;
@@ -94,7 +93,7 @@ public class ClaimedResidence {
                 return false;
             }
         }
-        if (!area.getWorld().getName().equalsIgnoreCase(perms.getWorld())) {
+        if (!area.getWorld().getName().equalsIgnoreCase(perms.getLevel())) {
             if (player != null) {
                 player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("AreaDiffWorld"));
             }
@@ -186,7 +185,7 @@ public class ClaimedResidence {
             return false;
         }
         CuboidArea oldarea = areas.get(name);
-        if (!newarea.getWorld().getName().equalsIgnoreCase(perms.getWorld())) {
+        if (!newarea.getWorld().getName().equalsIgnoreCase(perms.getLevel())) {
             if (player != null) {
                 player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("AreaDiffWorld"));
             }
@@ -347,10 +346,10 @@ public class ClaimedResidence {
         }
         ClaimedResidence newres;
         if (player != null) {
-            newres = new ClaimedResidence(owner, perms.getWorld(), this);
+            newres = new ClaimedResidence(owner, perms.getLevel(), this);
             newres.addArea(player, newArea, name, resadmin);
         } else {
-            newres = new ClaimedResidence(owner, perms.getWorld(), this);
+            newres = new ClaimedResidence(owner, perms.getLevel(), this);
             newres.addArea(newArea, name);
         }
         if (newres.getAreaCount() != 0) {
@@ -563,7 +562,7 @@ public class ClaimedResidence {
                 message = null;
             }
         }
-        PermissionGroup group = Residence.getPermissionManager().getGroup(perms.getOwner(), perms.getWorld());
+        PermissionGroup group = Residence.getPermissionManager().getGroup(perms.getOwner(), perms.getLevel());
         if (!group.canSetEnterLeaveMessages() && !resadmin) {
             player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("OwnerNoPermission"));
             return;
@@ -609,7 +608,7 @@ public class ClaimedResidence {
         if (found) {
             return newLoc;
         } else {
-            Level world = Residence.getServ().getLevelByName(perms.getWorld());
+            Level world = Residence.getServ().getLevelByName(perms.getLevel());
             if (world != null) {
                 return world.getSpawnLocation();
             }
@@ -814,9 +813,9 @@ public class ClaimedResidence {
         }
         Map<String, Object> areamap = (Map<String, Object>) root.get("Areas");
         res.perms = ResidencePermissions.load(res, (Map<String, Object>) root.get("Permissions"));
-        Level world = Residence.getServ().getLevelByName(res.perms.getWorld());
+        Level world = Residence.getServ().getLevelByName(res.perms.getLevel());
         if (world == null) {
-            throw new Exception("Cant Find World: " + res.perms.getWorld());
+            throw new Exception("Cant Find World: " + res.perms.getLevel());
         }
         for (Entry<String, Object> map : areamap.entrySet()) {
             res.areas.put(map.getKey(), CuboidArea.load((Map<String, Object>) map.getValue(), world));
@@ -931,7 +930,7 @@ public class ClaimedResidence {
     }
 
     public String getWorld() {
-        return perms.getWorld();
+        return perms.getLevel();
     }
 
     public String getOwner() {

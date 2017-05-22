@@ -397,7 +397,7 @@ public class ResidenceManager {
         if (Residence.getConfigManager().enabledRentSystem() && Residence.getRentManager().isRented(areaname)) {
             player.sendMessage(TextFormat.YELLOW + Residence.getLanguage().getPhrase("Owner") + ":" + TextFormat.RED + " " + perms.getOwner() + TextFormat.YELLOW + " Rented by: " + TextFormat.RED + Residence.getRentManager().getRentingPlayer(areaname));
         } else {
-            player.sendMessage(TextFormat.YELLOW + Residence.getLanguage().getPhrase("Owner") + ":" + TextFormat.RED + " " + perms.getOwner() + TextFormat.YELLOW + " - " + Residence.getLanguage().getPhrase("World") + ": " + TextFormat.RED + perms.getWorld());
+            player.sendMessage(TextFormat.YELLOW + Residence.getLanguage().getPhrase("Owner") + ":" + TextFormat.RED + " " + perms.getOwner() + TextFormat.YELLOW + " - " + Residence.getLanguage().getPhrase("World") + ": " + TextFormat.RED + perms.getLevel());
         }
         player.sendMessage(TextFormat.YELLOW + Residence.getLanguage().getPhrase("Flags") + ":" + TextFormat.BLUE + " " + perms.listFlags());
         player.sendMessage(TextFormat.YELLOW + Residence.getLanguage().getPhrase("Your.Flags") + ": " + TextFormat.GREEN + perms.listPlayerFlags(player.getName()));

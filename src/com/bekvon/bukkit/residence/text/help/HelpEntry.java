@@ -160,7 +160,7 @@ public class HelpEntry {
         String split[] = key.split("\\.");
         String thisname = split[split.length - 1];
         HelpEntry entry = new HelpEntry(thisname);
-        Config keysnode = node.getConfigurationSection(key);
+        ConfigSection keysnode = node.getSection(key);
         Set<String> keys = null;
         if (keysnode != null) {
             keys = keysnode.getKeys(false);
@@ -179,7 +179,7 @@ public class HelpEntry {
                 entry.desc = node.getString(key + ".Description");
             }
             if (keys.contains("SubCommands")) {
-                Set<String> subcommandkeys = node.getConfigurationSection(key + ".SubCommands").getKeys(false);
+                Set<String> subcommandkeys = node.getSection(key + ".SubCommands").getKeys(false);
                 for (String subkey : subcommandkeys) {
                     entry.subentrys.add(HelpEntry.parseHelp(node, key + ".SubCommands." + subkey));
                 }

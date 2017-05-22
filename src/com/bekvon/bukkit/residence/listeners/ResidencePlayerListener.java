@@ -319,7 +319,7 @@ public class ResidencePlayerListener implements Listener {
             return;
         }
         FlagPermissions perms = Residence.getPermsByLocForPlayer(ent.getLocation(), player);
-        String world = player.getWorld().getName();
+        String world = player.getLevel().getName();
         String permgroup = Residence.getPermissionManager().getGroupNameByPlayer(player);
         if (!Residence.getItemManager().isAllowed(heldItem, permgroup, world)) {
             player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("ItemBlacklisted"));
@@ -345,7 +345,7 @@ public class ResidencePlayerListener implements Listener {
         }
 
         FlagPermissions perms = Residence.getPermsByLocForPlayer(ent.getLocation(), player);
-        String world = player.getWorld().getName();
+        String world = player.getLevel().getName();
 
         if (!perms.playerHas(player.getName(), world, "container", perms.playerHas(player.getName(), world, "use", true))) {
             event.setCancelled(true);

@@ -18,7 +18,7 @@ public class ResidenceEntityListener implements Listener { //TODO: mobs
             return;
         }
         FlagPermissions perms = Residence.getPermsByLoc(event.getBlock().getLocation());
-        FlagPermissions world = Residence.getWorldFlags().getPerms(event.getBlock().getWorld().getName());
+        FlagPermissions world = Residence.getWorldFlags().getPerms(event.getBlock().getLevel().getName());
         if (event.getEntityType() == EntityType.WITHER) {
             if (!perms.has("wither", perms.has("explode", world.has("wither", world.has("explode", true))))) {
                 event.setCancelled(true);
@@ -124,7 +124,7 @@ public class ResidenceEntityListener implements Listener { //TODO: mobs
                 }
                 String pname = player.getName();
                 FlagPermissions perms = Residence.getPermsByLocForPlayer(event.getEntity().getLocation(), player);
-                String world = event.getEntity().getWorld().getName();
+                String world = event.getEntity().getLevel().getName();
                 if (!perms.playerHas(pname, world, "destroy", perms.playerHas(pname, world, "build", true))) {
                     event.setCancelled(true);
                     player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("NoPermission"));
@@ -185,7 +185,7 @@ public class ResidenceEntityListener implements Listener { //TODO: mobs
         Boolean cancel = false;
         EntityType entity = event.getEntityType();
         FlagPermissions perms = Residence.getPermsByLoc(event.getEntity().getLocation());
-        FlagPermissions world = Residence.getWorldFlags().getPerms(event.getEntity().getWorld().getName());
+        FlagPermissions world = Residence.getWorldFlags().getPerms(event.getEntity().getLevel().getName());
         if (entity == EntityType.CREEPER) {
             if (!perms.has("creeper", perms.has("explode", true))) {
                 cancel = true;

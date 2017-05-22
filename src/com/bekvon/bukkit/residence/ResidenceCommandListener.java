@@ -295,7 +295,7 @@ public class ResidenceCommandListener extends Residence {
                 if (!res.getPermissions().hasApplicableFlag(pname, args[2])) {
                     player.sendMessage(language.getPhrase("FlagCheckFalse", TextFormat.YELLOW + args[2] + TextFormat.RED + "." + TextFormat.YELLOW + pname + TextFormat.RED + "." + TextFormat.YELLOW + args[1] + TextFormat.RED));
                 } else {
-                    player.sendMessage(language.getPhrase("FlagCheckTrue", TextFormat.GREEN + args[2] + TextFormat.YELLOW + "." + TextFormat.GREEN + pname + TextFormat.YELLOW + "." + TextFormat.YELLOW + args[1] + TextFormat.RED + "." + (res.getPermissions().playerHas(pname, res.getPermissions().getWorld(), args[2], false) ? TextFormat.GREEN + "TRUE" : TextFormat.RED + "FALSE")));
+                    player.sendMessage(language.getPhrase("FlagCheckTrue", TextFormat.GREEN + args[2] + TextFormat.YELLOW + "." + TextFormat.GREEN + pname + TextFormat.YELLOW + "." + TextFormat.YELLOW + args[1] + TextFormat.RED + "." + (res.getPermissions().playerHas(pname, res.getPermissions().getLevel(), args[2], false) ? TextFormat.GREEN + "TRUE" : TextFormat.RED + "FALSE")));
                 }
                 return true;
             }
@@ -1415,10 +1415,10 @@ public class ResidenceCommandListener extends Residence {
             return true;
         }
         if (rmanager.getByName(args[1]) != null) {
-            if (rmanager.getByName(args[1]).getWorld().equalsIgnoreCase(player.getLevel().getName())) {
+            if (rmanager.getByName(args[1]).getLevel().equalsIgnoreCase(player.getLevel().getName())) {
                 Location low = rmanager.getByName(args[1]).getArea("main").getLowLoc();
                 Location high = rmanager.getByName(args[1]).getArea("main").getHighLoc();
-                Location mid = new Location(low.getWorld(), (low.getBlockX() + high.getBlockX()) / 2, (low.getBlockY() + high.getBlockY()) / 2, (low.getBlockZ() + high.getBlockZ()) / 2);
+                Location mid = new Location(low.getLevel(), (low.getBlockX() + high.getBlockX()) / 2, (low.getBlockY() + high.getBlockY()) / 2, (low.getBlockZ() + high.getBlockZ()) / 2);
                 player.setCompassTarget(mid);
                 player.sendMessage(TextFormat.GREEN + language.getPhrase("CompassTargetSet", TextFormat.YELLOW + args[1] + TextFormat.GREEN));
             }

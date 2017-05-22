@@ -87,7 +87,7 @@ public class LeaseManager {
                 //Account account = iConomy.getBank().getAccount(player.getName());
                 if (econ.canAfford(player.getName(), amount)/*account.hasEnough(amount)*/) {
                     econ.subtract(player.getName(), amount);
-                    econ.add("Lease Money", amount);
+                    econ.addMoney("Lease Money", amount);
                     player.sendMessage(TextFormat.GREEN + Residence.getLanguage().getPhrase("MoneyCharged", TextFormat.YELLOW + String.format("%d", amount) + TextFormat.GREEN + "." + TextFormat.YELLOW + econ.getName() + TextFormat.GREEN));
                 } else {
                     player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("NotEnoughMoney"));
@@ -112,7 +112,7 @@ public class LeaseManager {
     }
 
     public int getRenewCost(ClaimedResidence res) {
-        PermissionGroup limits = Residence.getPermissionManager().getGroup(res.getPermissions().getOwner(), res.getPermissions().getWorld());
+        PermissionGroup limits = Residence.getPermissionManager().getGroup(res.getPermissions().getOwner(), res.getPermissions().getLevel());
         double cost = limits.getLeaseRenewCost();
         int amount = (int) Math.ceil((double) res.getTotalSize() * cost);
         return amount;
@@ -147,7 +147,7 @@ public class LeaseManager {
                 } else {
                     boolean renewed = false;
                     String owner = res.getPermissions().getOwner();
-                    PermissionGroup limits = Residence.getPermissionManager().getGroup(owner, res.getPermissions().getWorld());
+                    PermissionGroup limits = Residence.getPermissionManager().getGroup(owner, res.getPermissions().getLevel());
                     int cost = this.getRenewCost(res);
                     if (Residence.getConfigManager().enableEconomy() && Residence.getConfigManager().autoRenewLeases()) {
                         if (cost == 0) {
@@ -181,7 +181,7 @@ public class LeaseManager {
                         }
                     } else {
                         if (Residence.getConfigManager().enableEconomy() && Residence.getConfigManager().enableLeaseMoneyAccount()) {
-                            Residence.getEconomyManager().add("Lease Money", cost);
+                            Residence.getEconomyManager().addMoney("Lease Money", cost);
                         }
                         if (Residence.getConfigManager().debugEnabled()) {
                             System.out.println("Lease Renew Old: " + next.getValue());
@@ -202,7 +202,7 @@ public class LeaseManager {
         for (String item : list) {
             if (item != null) {
                 ClaimedResidence res = Residence.getResidenceManager().getByName(item);
-                PermissionGroup group = Residence.getPermissionManager().getGroup(res.getPermissions().getOwner(), res.getPermissions().getWorld());
+                PermissionGroup group = Residence.getPermissionManager().getGroup(res.getPermissions().getOwner(), res.getPermissions().getLevel());
                 this.setExpireTime(null, item, group.getLeaseGiveTime());
             }
         }

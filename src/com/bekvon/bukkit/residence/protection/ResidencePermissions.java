@@ -359,7 +359,7 @@ public class ResidencePermissions extends FlagPermissions {
         return owner;
     }
 
-    public String getWorld() {
+    public String getLevel() {
         return world;
     }
 
