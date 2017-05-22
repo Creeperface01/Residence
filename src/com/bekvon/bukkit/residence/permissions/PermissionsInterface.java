@@ -12,7 +12,7 @@ import cn.nukkit.Player;
  */
 public interface PermissionsInterface {
 
-    public String getPlayerGroup(Player player);
+    String getPlayerGroup(Player player);
 
-    public String getPlayerGroup(String player, String world);
+    String getPlayerGroup(String player, String world);
 }
