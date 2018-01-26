@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="nukkit-parent">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../NukkitX/nukkit-parent.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
