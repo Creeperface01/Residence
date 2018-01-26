@@ -4,14 +4,13 @@
  */
 package com.bekvon.bukkit.residence.chat;
 
-import com.bekvon.bukkit.residence.Residence;
 import cn.nukkit.Server;
+import com.bekvon.bukkit.residence.Residence;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
  * @author Administrator
  */
 public class ChatManager {

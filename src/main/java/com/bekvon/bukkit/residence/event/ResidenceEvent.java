@@ -4,11 +4,10 @@
  */
 package com.bekvon.bukkit.residence.event;
 
-import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import cn.nukkit.event.Event;
+import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 
 /**
- *
  * @author Administrator
  */
 public class ResidenceEvent extends Event {

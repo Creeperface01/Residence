@@ -7,7 +7,6 @@ package com.bekvon.bukkit.residence.listeners;
 import cn.nukkit.event.Listener;
 
 /**
- *
  * @author Administrator
  */
 public class ResidenceEntityListener implements Listener { //TODO: mobs

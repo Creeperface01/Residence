@@ -4,12 +4,11 @@
  */
 package com.bekvon.bukkit.residence.event;
 
+import cn.nukkit.Player;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
-import cn.nukkit.Player;
 
 /**
- *
  * @author Administrator
  */
 public abstract class ResidencePlayerEvent extends ResidenceEvent implements ResidencePlayerEventInterface {

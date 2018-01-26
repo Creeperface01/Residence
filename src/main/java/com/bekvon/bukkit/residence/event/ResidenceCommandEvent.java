@@ -10,7 +10,6 @@ import cn.nukkit.event.Event;
 import cn.nukkit.event.HandlerList;
 
 /**
- *
  * @author Administrator
  */
 public class ResidenceCommandEvent extends Event implements Cancellable {

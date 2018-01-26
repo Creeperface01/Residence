@@ -4,11 +4,9 @@
  */
 package com.bekvon.bukkit.residence.itemlist;
 
-import cn.nukkit.item.Item;
 import cn.nukkit.utils.ConfigSection;
 
 /**
- *
  * @author Administrator
  */
 public class WorldItemList extends ItemList {

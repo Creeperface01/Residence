@@ -4,11 +4,10 @@
  */
 package com.bekvon.bukkit.residence.text.help;
 
-import cn.nukkit.utils.Config;
-import cn.nukkit.utils.TextFormat;
 import cn.nukkit.command.CommandSender;
+import cn.nukkit.utils.Config;
 import cn.nukkit.utils.ConfigSection;
-
+import cn.nukkit.utils.TextFormat;
 import com.bekvon.bukkit.residence.Residence;
 
 import java.util.ArrayList;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 
 /**
- *
  * @author Administrator
  */
 public class HelpEntry {

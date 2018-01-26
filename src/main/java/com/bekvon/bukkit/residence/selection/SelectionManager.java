@@ -4,13 +4,11 @@
  */
 package com.bekvon.bukkit.residence.selection;
 
+import cn.nukkit.Player;
 import cn.nukkit.Server;
-import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.utils.TextFormat;
-import cn.nukkit.Player;
-
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.permissions.PermissionGroup;
 import com.bekvon.bukkit.residence.protection.CuboidArea;
@@ -20,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
  * @author Administrator
  */
 public class SelectionManager {

@@ -4,18 +4,17 @@
  */
 package com.bekvon.bukkit.residence.chat;
 
+import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.utils.MainLogger;
+import cn.nukkit.utils.TextFormat;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.event.ResidenceChatEvent;
-import cn.nukkit.utils.TextFormat;
-import cn.nukkit.Server;
-import cn.nukkit.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author Administrator
  */
 public class ChatChannel {

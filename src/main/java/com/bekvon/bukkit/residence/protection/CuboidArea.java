@@ -3,13 +3,12 @@
  * and open the template in the editor.
  */
 package com.bekvon.bukkit.residence.protection;
+
+import cn.nukkit.Server;
+import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.protection.ResidenceManager.ChunkRef;
-
-import cn.nukkit.level.Location;
-import cn.nukkit.Server;
-import cn.nukkit.level.Level;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -20,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
  * @author Administrator
  */
 public class CuboidArea {

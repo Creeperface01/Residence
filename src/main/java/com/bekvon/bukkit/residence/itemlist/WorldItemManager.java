@@ -4,7 +4,6 @@
  */
 package com.bekvon.bukkit.residence.itemlist;
 
-import cn.nukkit.item.Item;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.MainLogger;
 
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.Set;
 
 /**
- *
  * @author Administrator
  */
 public class WorldItemManager {

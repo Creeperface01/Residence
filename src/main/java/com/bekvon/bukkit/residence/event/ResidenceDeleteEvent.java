@@ -4,12 +4,11 @@
  */
 package com.bekvon.bukkit.residence.event;
 
-import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import cn.nukkit.Player;
 import cn.nukkit.event.HandlerList;
+import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 
 /**
- *
  * @author Administrator
  */
 public class ResidenceDeleteEvent extends CancellableResidencePlayerEvent {

@@ -1,9 +1,7 @@
 package com.bekvon.bukkit.residence.event;
 
 import cn.nukkit.Player;
-import cn.nukkit.block.Block;
 import cn.nukkit.event.HandlerList;
-
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 
 /**
@@ -28,7 +26,6 @@ import com.bekvon.bukkit.residence.protection.ClaimedResidence;
  * in a residence upon logging in.
  *
  * @author frelling
- *
  */
 public class ResidenceChangedEvent extends ResidencePlayerEvent {
 
@@ -45,10 +42,10 @@ public class ResidenceChangedEvent extends ResidencePlayerEvent {
      * Constructs a {@link ResidenceChangedEvent} to identify a residence
      * transition for the given player
      *
-     * @param from the residence that the player left or {@code null} if coming
-     * from an unprotected area.
-     * @param to the residence that the player entered or {@code null} if
-     * entering an unprotected area.
+     * @param from   the residence that the player left or {@code null} if coming
+     *               from an unprotected area.
+     * @param to     the residence that the player entered or {@code null} if
+     *               entering an unprotected area.
      * @param player player involved in the transition
      */
     public ResidenceChangedEvent(ClaimedResidence from, ClaimedResidence to, Player player) {

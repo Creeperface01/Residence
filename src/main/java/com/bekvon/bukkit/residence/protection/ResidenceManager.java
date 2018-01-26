@@ -4,15 +4,14 @@
  */
 package com.bekvon.bukkit.residence.protection;
 
+import cn.nukkit.Player;
+import cn.nukkit.command.CommandSender;
+import cn.nukkit.level.Level;
+import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.MainLogger;
 import cn.nukkit.utils.TextFormat;
-import cn.nukkit.level.Location;
-import cn.nukkit.level.Level;
-import cn.nukkit.command.CommandSender;
-import cn.nukkit.Player;
-
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.event.ResidenceCreationEvent;
 import com.bekvon.bukkit.residence.event.ResidenceDeleteEvent;
@@ -21,19 +20,10 @@ import com.bekvon.bukkit.residence.event.ResidenceRenameEvent;
 import com.bekvon.bukkit.residence.permissions.PermissionGroup;
 import com.bekvon.bukkit.residence.text.help.InformationPager;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.logging.Logger;
 
 /**
- *
  * @author Administrator
  */
 public class ResidenceManager {
@@ -665,6 +655,7 @@ public class ResidenceManager {
             // For more info, see CraftBukkit.CraftWorld.getChunkAt( Location )
             return val >> 4;
         }
+
         private final int z;
         private final int x;
 

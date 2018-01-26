@@ -8,15 +8,14 @@ import cn.nukkit.item.Item;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.ConfigSection;
 import cn.nukkit.utils.TextFormat;
-
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /**
- *
  * @author Administrator
  */
 public class ConfigManager {

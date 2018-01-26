@@ -4,24 +4,16 @@
  */
 package com.bekvon.bukkit.residence.protection;
 
+import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.utils.ConfigSection;
-import cn.nukkit.Player;
-
 import cn.nukkit.utils.TextFormat;
 import com.bekvon.bukkit.residence.Residence;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 /**
- *
  * @author Administrator
  */
 public class FlagPermissions {

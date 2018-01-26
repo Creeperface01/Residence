@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
  * @author Administrator
  */
 public class RentedLand {

@@ -7,7 +7,6 @@ package com.bekvon.bukkit.residence.permissions;
 import cn.nukkit.Player;
 import cn.nukkit.utils.ConfigSection;
 import cn.nukkit.utils.TextFormat;
-
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.protection.CuboidArea;
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
@@ -20,9 +19,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- *
  * @author Administrator
- *
+ * <p>
  * changed by inori 03/17/2012 line 91:limits MaxHeight changed to 255
  */
 public class PermissionGroup {

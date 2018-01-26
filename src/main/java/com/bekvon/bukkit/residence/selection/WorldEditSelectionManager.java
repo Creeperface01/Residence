@@ -7,7 +7,6 @@ package com.bekvon.bukkit.residence.selection;
 import cn.nukkit.Server;
 
 /**
- *
  * @author Administrator
  */
 public class WorldEditSelectionManager extends SelectionManager {

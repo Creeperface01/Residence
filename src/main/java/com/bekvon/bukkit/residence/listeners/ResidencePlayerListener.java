@@ -4,26 +4,27 @@
  */
 package com.bekvon.bukkit.residence.listeners;
 
+import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockRedstoneDiode;
+import cn.nukkit.entity.Entity;
+import cn.nukkit.event.EventHandler;
+import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.EntityRegainHealthEvent;
 import cn.nukkit.event.player.*;
 import cn.nukkit.event.player.PlayerInteractEvent.Action;
+import cn.nukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
 import cn.nukkit.utils.TextFormat;
-import cn.nukkit.level.Location;
-import cn.nukkit.block.Block;
-import cn.nukkit.entity.Entity;
-import cn.nukkit.Player;
-import cn.nukkit.event.EventHandler;
-import cn.nukkit.event.EventPriority;
-import cn.nukkit.event.player.PlayerTeleportEvent.TeleportCause;
-
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.chat.ChatChannel;
-import com.bekvon.bukkit.residence.event.*;
+import com.bekvon.bukkit.residence.event.ResidenceChangedEvent;
+import com.bekvon.bukkit.residence.event.ResidenceEnterEvent;
+import com.bekvon.bukkit.residence.event.ResidenceLeaveEvent;
 import com.bekvon.bukkit.residence.permissions.PermissionGroup;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
@@ -36,7 +37,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- *
  * @author Administrator
  */
 public class ResidencePlayerListener implements Listener {
@@ -225,16 +225,16 @@ public class ResidencePlayerListener implements Listener {
                 }
             }
             if (!resadmin) {
-                    if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                        if (heldItem.getId() == 351) {
-                            if (heldItem.getDamage() == 15 && block.getId() == Block.GRASS || heldItem.getDamage() == 3 && block.getId() == 17 && (block.getDamage() == 3 || block.getDamage() == 7 || block.getDamage() == 11 || block.getDamage() == 15)) {
-                                perms = Residence.getPermsByLocForPlayer(block.getSide(event.getFace()).getLocation(), player);
-                                if (!perms.playerHas(player.getName(), world, "build", true)) {
-                                    event.setCancelled(true);
-                                    return;
-                                }
+                if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                    if (heldItem.getId() == 351) {
+                        if (heldItem.getDamage() == 15 && block.getId() == Block.GRASS || heldItem.getDamage() == 3 && block.getId() == 17 && (block.getDamage() == 3 || block.getDamage() == 7 || block.getDamage() == 11 || block.getDamage() == 15)) {
+                            perms = Residence.getPermsByLocForPlayer(block.getSide(event.getFace()).getLocation(), player);
+                            if (!perms.playerHas(player.getName(), world, "build", true)) {
+                                event.setCancelled(true);
+                                return;
                             }
                         }
+                    }
                         /*if (heldItem == Material.ARMOR_STAND) { //TODO: armor stand
                             perms = Residence.getPermsByLocForPlayer(block.getRelative(event.getBlockFace()).getLocation(), player);
                             if (!perms.playerHas(player.getName(), world, "build", true)) {
@@ -244,13 +244,13 @@ public class ResidencePlayerListener implements Listener {
                             }
                         }*/
 
-                        if(block.getId() == Block.ITEM_FRAME_BLOCK) {
-                            if (!perms.playerHas(player.getName(), world, "container", perms.playerHas(player.getName(), world, "use", true))) {
-                                event.setCancelled(true);
-                                player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("FlagDeny", "container"));
-                            }
+                    if (block.getId() == Block.ITEM_FRAME_BLOCK) {
+                        if (!perms.playerHas(player.getName(), world, "container", perms.playerHas(player.getName(), world, "use", true))) {
+                            event.setCancelled(true);
+                            player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("FlagDeny", "container"));
                         }
                     }
+                }
 
                 if (isContainer(mat, block) || isCanUseEntity(mat, block)) {
                     boolean hasuse = perms.playerHas(player.getName(), world, "use", true);

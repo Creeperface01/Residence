@@ -4,14 +4,12 @@
  */
 package com.bekvon.bukkit.residence.event;
 
-import cn.nukkit.level.Position;
-import com.bekvon.bukkit.residence.protection.ClaimedResidence;
-import cn.nukkit.level.Location;
 import cn.nukkit.Player;
 import cn.nukkit.event.HandlerList;
+import cn.nukkit.level.Position;
+import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 
 /**
- *
  * @author Administrator
  */
 public class ResidenceTPEvent extends CancellableResidencePlayerEvent {

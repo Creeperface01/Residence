@@ -1,13 +1,6 @@
 package com.bekvon.bukkit.residence.utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-
-import cn.nukkit.utils.TextFormat;
 import cn.nukkit.Player;
-
 import com.bekvon.bukkit.residence.Residence;
 
 public class VersionChecker {

@@ -4,13 +4,12 @@
  */
 package com.bekvon.bukkit.residence.event;
 
-import com.bekvon.bukkit.residence.protection.ClaimedResidence;
-import cn.nukkit.utils.TextFormat;
 import cn.nukkit.Player;
 import cn.nukkit.event.HandlerList;
+import cn.nukkit.utils.TextFormat;
+import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 
 /**
- *
  * @author Administrator
  */
 public class ResidenceChatEvent extends CancellableResidencePlayerEvent {

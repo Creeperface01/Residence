@@ -4,17 +4,14 @@
  */
 package com.bekvon.bukkit.residence.text;
 
+import cn.nukkit.utils.Config;
+import cn.nukkit.utils.ConfigSection;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-
-import cn.nukkit.utils.Config;
-import cn.nukkit.utils.ConfigSection;
-import cn.nukkit.utils.VarInt;
 
 /**
- *
  * @author Administrator
  */
 public class Language {
@@ -80,7 +77,7 @@ public class Language {
 
         ConfigSection section = node.getSection(topkey);
 
-        for(Entry<String, Object> entry : section.getAllMap().entrySet()) {
+        for (Entry<String, Object> entry : section.getAllMap().entrySet()) {
             newholder.text.put(entry.getKey(), entry.getValue().toString());
         }
 

@@ -7,7 +7,6 @@ package com.bekvon.bukkit.residence.permissions;
 import cn.nukkit.Player;
 
 /**
- *
  * @author Administrator
  */
 public interface PermissionsInterface {

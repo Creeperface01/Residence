@@ -1,10 +1,9 @@
 package com.bekvon.bukkit.residence.utils;
 
-import cn.nukkit.network.protocol.SetTitlePacket;
 import cn.nukkit.Player;
+import cn.nukkit.network.protocol.SetTitlePacket;
 
 /**
- *
  * @author hamzaxx
  */
 public class ActionBar {

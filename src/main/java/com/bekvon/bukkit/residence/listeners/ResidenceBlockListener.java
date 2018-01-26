@@ -9,30 +9,15 @@ import cn.nukkit.block.Block;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
-import cn.nukkit.event.block.BlockBreakEvent;
+import cn.nukkit.event.block.*;
 import cn.nukkit.event.block.BlockIgniteEvent.BlockIgniteCause;
-import cn.nukkit.item.ItemBlock;
-import cn.nukkit.utils.TextFormat;
 import cn.nukkit.level.Location;
-import cn.nukkit.item.Item;
-import cn.nukkit.event.EventHandler;
-import cn.nukkit.event.EventPriority;
-import cn.nukkit.event.Listener;
-import cn.nukkit.event.block.BlockSpreadEvent;
-
-import com.bekvon.bukkit.residence.permissions.PermissionGroup;
-import com.bekvon.bukkit.residence.protection.FlagPermissions;
-
-import cn.nukkit.event.block.BlockBurnEvent;
-import cn.nukkit.event.block.BlockFromToEvent;
-import cn.nukkit.event.block.BlockIgniteEvent;
-import cn.nukkit.event.block.BlockPlaceEvent;
-
+import cn.nukkit.utils.TextFormat;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
+import com.bekvon.bukkit.residence.protection.FlagPermissions;
 
 /**
- *
  * @author Administrator
  */
 public class ResidenceBlockListener implements Listener {

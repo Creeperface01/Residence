@@ -4,13 +4,12 @@
  */
 package com.bekvon.bukkit.residence.event;
 
-import com.bekvon.bukkit.residence.protection.ClaimedResidence;
-import com.bekvon.bukkit.residence.protection.FlagPermissions.FlagState;
 import cn.nukkit.Player;
 import cn.nukkit.event.HandlerList;
+import com.bekvon.bukkit.residence.protection.ClaimedResidence;
+import com.bekvon.bukkit.residence.protection.FlagPermissions.FlagState;
 
 /**
- *
  * @author Administrator
  */
 public class ResidenceFlagChangeEvent extends CancellableResidencePlayerFlagEvent {

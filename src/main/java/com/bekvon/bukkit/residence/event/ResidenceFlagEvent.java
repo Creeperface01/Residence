@@ -6,10 +6,8 @@ package com.bekvon.bukkit.residence.event;
 
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.FlagPermissions.FlagState;
-import cn.nukkit.event.HandlerList;
 
 /**
- *
  * @author Administrator
  */
 public class ResidenceFlagEvent extends ResidenceEvent {

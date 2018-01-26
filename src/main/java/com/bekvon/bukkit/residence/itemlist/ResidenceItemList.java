@@ -4,18 +4,15 @@
  */
 package com.bekvon.bukkit.residence.itemlist;
 
+import cn.nukkit.Player;
+import cn.nukkit.utils.TextFormat;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.permissions.PermissionGroup;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 
-import cn.nukkit.Player;
-import cn.nukkit.utils.TextFormat;
-import cn.nukkit.item.Item;
-
 import java.util.Map;
 
 /**
- *
  * @author Administrator
  */
 public class ResidenceItemList extends ItemList {

@@ -4,14 +4,12 @@
  */
 package com.bekvon.bukkit.residence.economy;
 
+import cn.nukkit.Player;
+import cn.nukkit.utils.TextFormat;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 
-import cn.nukkit.Player;
-import cn.nukkit.utils.TextFormat;
-
 /**
- *
  * @author Administrator
  */
 public class ResidenceBank {

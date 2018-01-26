@@ -4,7 +4,9 @@
  */
 package com.bekvon.bukkit.residence.economy.rent;
 
+import cn.nukkit.Player;
 import cn.nukkit.utils.MainLogger;
+import cn.nukkit.utils.TextFormat;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.event.ResidenceRentEvent;
 import com.bekvon.bukkit.residence.event.ResidenceRentEvent.RentEventType;
@@ -12,18 +14,10 @@ import com.bekvon.bukkit.residence.permissions.PermissionGroup;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.FlagPermissions.FlagState;
 
-import cn.nukkit.Player;
-import cn.nukkit.utils.TextFormat;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 /**
- *
  * @author Administrator
  */
 public class RentManager {

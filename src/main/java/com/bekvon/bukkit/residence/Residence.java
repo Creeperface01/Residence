@@ -12,10 +12,9 @@ import cn.nukkit.plugin.Plugin;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.plugin.PluginManager;
 import cn.nukkit.utils.Config;
-import cn.nukkit.utils.LogLevel;
-
 import cn.nukkit.utils.MainLogger;
 import com.bekvon.bukkit.residence.chat.ChatManager;
+import com.bekvon.bukkit.residence.economy.EconomyAPIAdapter;
 import com.bekvon.bukkit.residence.economy.EconomyInterface;
 import com.bekvon.bukkit.residence.economy.TransactionManager;
 import com.bekvon.bukkit.residence.economy.rent.RentManager;
@@ -25,12 +24,7 @@ import com.bekvon.bukkit.residence.listeners.ResidenceEntityListener;
 import com.bekvon.bukkit.residence.listeners.ResidencePlayerListener;
 import com.bekvon.bukkit.residence.permissions.PermissionManager;
 import com.bekvon.bukkit.residence.persistance.YMLSaveHelper;
-import com.bekvon.bukkit.residence.protection.ClaimedResidence;
-import com.bekvon.bukkit.residence.protection.FlagPermissions;
-import com.bekvon.bukkit.residence.protection.LeaseManager;
-import com.bekvon.bukkit.residence.protection.PermissionListManager;
-import com.bekvon.bukkit.residence.protection.ResidenceManager;
-import com.bekvon.bukkit.residence.protection.WorldFlagManager;
+import com.bekvon.bukkit.residence.protection.*;
 import com.bekvon.bukkit.residence.selection.SelectionManager;
 import com.bekvon.bukkit.residence.selection.WorldEditSelectionManager;
 import com.bekvon.bukkit.residence.text.Language;
@@ -40,7 +34,10 @@ import com.bekvon.bukkit.residence.utils.VersionChecker;
 import com.residence.zip.ZipLibrary;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -48,9 +45,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author Gary Smoak - bekvon
- *
  */
 public class Residence extends PluginBase {
 
@@ -209,30 +204,12 @@ public class Residence extends PluginBase {
             economy = null;
             if (this.getConfig().getBoolean("Global.EnableEconomy", false)) {
                 MainLogger.getLogger().info("[Residence] Scanning for economy systems...");
-                /*if (gmanager.getPermissionsPlugin() instanceof ResidenceVaultAdapter) {
-                    ResidenceVaultAdapter vault = (ResidenceVaultAdapter) gmanager.getPermissionsPlugin();
-                    if (vault.economyOK()) {
-                        economy = vault;
-                        System.out.println("[Residence] Found Vault using economy system: " + vault.getEconomyName());
-                    }
-                }*/
-                /*if (economy == null) {
-                    this.loadVaultEconomy();
-                }*/
 
-                //TODO: economy
+                //TODO: more economy
                 if (economy == null) {
-                    this.loadBOSEconomy();
+                    this.loadEconomyApi();
                 }
-                if (economy == null) {
-                    this.loadEssentialsEconomy();
-                }
-                if (economy == null) {
-                    this.loadRealEconomy();
-                }
-                if (economy == null) {
-                    this.loadIConomy();
-                }
+
                 if (economy == null) {
                     this.getLogger().warning("[Residence] Unable to find an economy system...");
                 }
@@ -449,67 +426,16 @@ public class Residence extends PluginBase {
         }
     }
 
-    private void loadIConomy() {
-        /*Plugin p = getServer().getPluginManager().getPlugin("iConomy");
+    private void loadEconomyApi() {
+        Plugin p = getServer().getPluginManager().getPlugin("EconomyAPI");
         if (p != null) {
-            if (p.getDescription().getVersion().startsWith("6")) {
-                economy = new IConomy6Adapter((com.iCo6.iConomy) p);
-            } else if (p.getDescription().getVersion().startsWith("5")) {
-                economy = new IConomy5Adapter();
-            } else {
-                Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] UNKNOWN iConomy version!");
-                return;
-            }
-            Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Successfully linked with iConomy! Version: " + p.getDescription().getVersion());
+            economy = new EconomyAPIAdapter();
+            Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Successfully linked with EconomyAPI!");
         } else {
-            Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] iConomy NOT found!");
-        }*/
-    }
-
-    private void loadBOSEconomy() {
-        /*Plugin p = getServer().getPluginManager().getPlugin("BOSEconomy");
-        if (p != null) {
-            economy = new BOSEAdapter((BOSEconomy) p);
-            Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Successfully linked with BOSEconomy!");
-        } else {
-            Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] BOSEconomy NOT found!");
-        }*/
-    }
-
-    private void loadEssentialsEconomy() {
-        /*Plugin p = getServer().getPluginManager().getPlugin("Essentials");
-        if (p != null) {
-            economy = new EssentialsEcoAdapter((Essentials) p);
-            Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Successfully linked with Essentials Economy!");
-        } else {
-            Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Essentials Economy NOT found!");
-        }*/
-    }
-
-    private void loadRealEconomy() {
-        /*Plugin p = getServer().getPluginManager().getPlugin("RealPlugin");
-        if (p != null) {
-            economy = new RealShopEconomy(new RealEconomy((RealPlugin) p));
-            Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Successfully linked with RealShop Economy!");
-        } else {
-            Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] RealShop Economy NOT found!");
-        }*/
-    }
-
-    /*private void loadVaultEconomy() {
-        Plugin p = getServer().getPluginManager().getPlugin("Vault");
-        if (p != null) {
-            ResidenceVaultAdapter vault = new ResidenceVaultAdapter(getServer());
-            if (vault.economyOK()) {
-                Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Found Vault using economy: " + vault.getEconomyName());
-                economy = vault;
-            } else {
-                Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Found Vault, but Vault reported no usable economy system...");
-            }
-        } else {
-            Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Vault NOT found!");
+            Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] EconomyAPI NOT found!");
         }
-    }*/
+    }
+
     public static boolean isResAdminOn(Player player) {
         if (resadminToggle.contains(player.getName())) {
             return true;

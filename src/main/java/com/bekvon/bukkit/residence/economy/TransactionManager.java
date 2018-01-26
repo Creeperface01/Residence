@@ -4,27 +4,21 @@
  */
 package com.bekvon.bukkit.residence.economy;
 
-import cn.nukkit.utils.MainLogger;
-import com.bekvon.bukkit.residence.protection.CuboidArea;
-import com.bekvon.bukkit.residence.Residence;
-import com.bekvon.bukkit.residence.protection.ResidenceManager;
-import com.bekvon.bukkit.residence.permissions.PermissionManager;
-import com.bekvon.bukkit.residence.permissions.PermissionGroup;
-import com.bekvon.bukkit.residence.protection.ClaimedResidence;
-
-import cn.nukkit.Server;
 import cn.nukkit.Player;
+import cn.nukkit.Server;
+import cn.nukkit.utils.MainLogger;
 import cn.nukkit.utils.TextFormat;
+import com.bekvon.bukkit.residence.Residence;
+import com.bekvon.bukkit.residence.permissions.PermissionGroup;
+import com.bekvon.bukkit.residence.permissions.PermissionManager;
+import com.bekvon.bukkit.residence.protection.ClaimedResidence;
+import com.bekvon.bukkit.residence.protection.CuboidArea;
+import com.bekvon.bukkit.residence.protection.ResidenceManager;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 /**
- *
  * @author Administrator
  */
 public class TransactionManager {

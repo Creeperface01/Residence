@@ -5,9 +5,9 @@
 package com.bekvon.bukkit.residence.itemlist;
 
 import cn.nukkit.Player;
-import cn.nukkit.utils.TextFormat;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.ConfigSection;
+import cn.nukkit.utils.TextFormat;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
  * @author Administrator
  */
 public class ItemList {
@@ -164,8 +163,8 @@ public class ItemList {
 
     private static String[] nameLookup = new String[Item.list.length];
 
-    public static String getNameFromId(int id){
-        if(id < 0 || id >= nameLookup.length){
+    public static String getNameFromId(int id) {
+        if (id < 0 || id >= nameLookup.length) {
             return null;
         }
 
@@ -173,7 +172,7 @@ public class ItemList {
     }
 
     static {
-        for(int i = 0; i < Item.list.length; i++) {
+        for (int i = 0; i < Item.list.length; i++) {
             nameLookup[i] = Item.get(i).getName();
         }
     }

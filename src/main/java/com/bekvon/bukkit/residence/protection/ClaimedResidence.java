@@ -4,12 +4,11 @@
  */
 package com.bekvon.bukkit.residence.protection;
 
+import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.level.Level;
-import cn.nukkit.Player;
 import cn.nukkit.level.Position;
 import cn.nukkit.utils.TextFormat;
-
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.economy.ResidenceBank;
 import com.bekvon.bukkit.residence.economy.TransactionManager;
@@ -18,17 +17,12 @@ import com.bekvon.bukkit.residence.itemlist.ItemList.ListType;
 import com.bekvon.bukkit.residence.itemlist.ResidenceItemList;
 import com.bekvon.bukkit.residence.permissions.PermissionGroup;
 import com.bekvon.bukkit.residence.text.help.InformationPager;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 /**
- *
  * @author Administrator
- *
  */
 public class ClaimedResidence {
 

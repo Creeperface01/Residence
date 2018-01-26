@@ -4,16 +4,14 @@
  */
 package com.bekvon.bukkit.residence;
 
-import cn.nukkit.level.Position;
-import cn.nukkit.utils.MainLogger;
-import cn.nukkit.utils.TextFormat;
-import cn.nukkit.level.Location;
-import cn.nukkit.item.Item;
+import cn.nukkit.Player;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.ConsoleCommandSender;
-import cn.nukkit.Player;
-
+import cn.nukkit.item.Item;
+import cn.nukkit.level.Position;
+import cn.nukkit.utils.MainLogger;
+import cn.nukkit.utils.TextFormat;
 import com.bekvon.bukkit.residence.chat.ChatChannel;
 import com.bekvon.bukkit.residence.event.ResidenceCommandEvent;
 import com.bekvon.bukkit.residence.permissions.PermissionGroup;
@@ -21,8 +19,6 @@ import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.CuboidArea;
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.List;
 
 public class ResidenceCommandListener extends Residence {

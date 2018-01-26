@@ -4,26 +4,19 @@
  */
 package com.bekvon.bukkit.residence.protection;
 
+import cn.nukkit.Player;
 import cn.nukkit.utils.MainLogger;
+import cn.nukkit.utils.TextFormat;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.economy.EconomyInterface;
 import com.bekvon.bukkit.residence.event.ResidenceDeleteEvent;
 import com.bekvon.bukkit.residence.event.ResidenceDeleteEvent.DeleteCause;
 import com.bekvon.bukkit.residence.permissions.PermissionGroup;
 
-import cn.nukkit.Player;
-import cn.nukkit.utils.TextFormat;
-
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 /**
- *
  * @author Administrator
  */
 public class LeaseManager {

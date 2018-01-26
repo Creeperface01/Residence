@@ -6,7 +6,6 @@ package com.bekvon.bukkit.residence.protection;
 
 import cn.nukkit.Player;
 import cn.nukkit.utils.Config;
-
 import cn.nukkit.utils.MainLogger;
 import com.bekvon.bukkit.residence.Residence;
 
@@ -14,11 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- *
  * @author Administrator
  */
 public class WorldFlagManager {

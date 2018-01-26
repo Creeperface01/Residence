@@ -1,7 +1,8 @@
-#Eclipse and netbeans
+#Eclipse and netbeans and IntelliJ
 .classpath
 .project
 .settings
+.idea
 /nbproject
 
 #build

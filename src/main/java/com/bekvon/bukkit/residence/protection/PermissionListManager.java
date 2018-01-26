@@ -7,8 +7,8 @@ package com.bekvon.bukkit.residence.protection;
 import cn.nukkit.Player;
 import cn.nukkit.utils.MainLogger;
 import cn.nukkit.utils.TextFormat;
-
 import com.bekvon.bukkit.residence.Residence;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- *
  * @author Administrator
  */
 public class PermissionListManager {

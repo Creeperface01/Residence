@@ -12,12 +12,10 @@ import cn.nukkit.utils.ConfigSection;
 import cn.nukkit.utils.MainLogger;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
+
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- *
  * @author Administrator
  */
 public class PermissionManager {
@@ -100,9 +98,16 @@ public class PermissionManager {
         Server server = Residence.getServ();
         Plugin plugin = server.getPluginManager().getPlugin("MadPerms");
 
-        if(plugin != null) {
+        if (plugin != null) {
             perms = new MadPermsAdapter();
             MainLogger.getLogger().notice("[Residence] Found MadPerms Plugin!");
+            return;
+        }
+
+        plugin = server.getPluginManager().getPlugin("Multipass");
+        if (plugin != null) {
+            perms = new MultiPassAdapter();
+            MainLogger.getLogger().notice("[Residence] Found Multipass Plugin!");
             return;
         }
 
