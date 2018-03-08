@@ -31,9 +31,6 @@ import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
 import com.bekvon.bukkit.residence.utils.ActionBar;
 import com.bekvon.bukkit.residence.utils.Optimization;
-import com.boydti.fawe.FaweAPI;
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.world.World;
 
 import java.util.ArrayList;
 import java.util.HashMap;

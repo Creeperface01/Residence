@@ -13,7 +13,7 @@ public class Optimization {
     public static Config faweConfig;
 
     public static Config getBasicFAWEConfig(Plugin plugin) {
-        if(faweConfig == null) {
+        if (faweConfig == null) {
             faweConfig = new Config(new File(plugin.getDataFolder(), "config-basic.yml"), Config.YAML);
         }
 
