@@ -216,4 +216,22 @@ public class ResidenceBlockListener implements Listener {
             }
         }
     }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onItemFrameDrop(ItemFrameDropItemEvent e) {
+        Player p = e.getPlayer();
+        Block b = e.getBlock();
+
+        ClaimedResidence res = Residence.getResidenceManager().getByLoc(b);
+
+        if (res != null) {
+            if (Residence.isResAdminOn(p)) {
+                return;
+            }
+
+            if (!res.getPermissions().playerHas(p.getName(), "container", true)) {
+                e.setCancelled();
+            }
+        }
+    }
 }

@@ -4,15 +4,32 @@
  */
 package com.bekvon.bukkit.residence.listeners;
 
+import cn.nukkit.Player;
+import cn.nukkit.block.Block;
+import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.item.EntityFallingBlock;
+import cn.nukkit.entity.item.EntityMinecartTNT;
+import cn.nukkit.entity.item.EntityPrimedTNT;
+import cn.nukkit.entity.mob.EntityCreeper;
+import cn.nukkit.event.EventHandler;
+import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
+import cn.nukkit.event.entity.*;
+import cn.nukkit.utils.TextFormat;
+import com.bekvon.bukkit.residence.Residence;
+import com.bekvon.bukkit.residence.protection.ClaimedResidence;
+import com.bekvon.bukkit.residence.protection.FlagPermissions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Administrator
  */
-public class ResidenceEntityListener implements Listener { //TODO: mobs
+public class ResidenceEntityListener implements Listener {
 
     /*@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onEndermanChangeBlock(EntityChangeBlockEvent event) {
+    public void onEndermanChangeBlock(EntityBlockChangeEvent event) {
         if (event.getEntityType() != EntityType.ENDERMAN && event.getEntityType() != EntityType.WITHER) {
             return;
         }
@@ -25,16 +42,16 @@ public class ResidenceEntityListener implements Listener { //TODO: mobs
         } else if (!perms.has("build", true)) {
             event.setCancelled(true);
         }
-    }
+    }*/
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onEntityInteract(EntityInteractEvent event) {
         Block block = event.getBlock();
-        Material mat = block.getType();
+
         Entity entity = event.getEntity();
         FlagPermissions perms = Residence.getPermsByLoc(block.getLocation());
         boolean hastrample = perms.has("trample", perms.has("hasbuild", true));
-        if (!hastrample && !(entity.getType() == EntityType.FALLING_BLOCK) && (mat == Material.SOIL || mat == Material.SOUL_SAND)) {
+        if (!hastrample && !(entity instanceof EntityFallingBlock) && (block.getId() == Block.FARMLAND || block.getId() == Block.SOUL_SAND)) {
             event.setCancelled(true);
         }
     }
@@ -53,19 +70,11 @@ public class ResidenceEntityListener implements Listener { //TODO: mobs
     public void AnimalKilling(EntityDamageByEntityEvent event) {
         Entity damager = event.getDamager();
 
-        if ((!(damager instanceof Arrow)) && (!(damager instanceof Player))) {
+        if (!(damager instanceof Player)) {
             return;
         }
 
-        Player cause;
-        if ((damager instanceof Arrow) && (!(((Arrow) damager).getShooter() instanceof Player))) {
-            return;
-
-        } else if (damager instanceof Player) {
-            cause = (Player) damager;
-        } else {
-            cause = (Player) ((Arrow) damager).getShooter();
-        }
+        Player cause = (Player) damager;
 
         if (Residence.isResAdminOn(cause)) {
             return;
@@ -82,7 +91,7 @@ public class ResidenceEntityListener implements Listener { //TODO: mobs
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    /*@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onCreatureSpawn(CreatureSpawnEvent event) {
         FlagPermissions perms = Residence.getPermsByLoc(event.getLocation());
         Entity ent = event.getEntity();
@@ -130,7 +139,7 @@ public class ResidenceEntityListener implements Listener { //TODO: mobs
                 }
             }
         }
-    }
+    }*/
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onEntityCombust(EntityCombustEvent event) {
@@ -142,21 +151,22 @@ public class ResidenceEntityListener implements Listener { //TODO: mobs
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onExplosionPrime(ExplosionPrimeEvent event) {
-        EntityType entity = event.getEntityType();
+        int entity = event.getEntity().getNetworkId();
+
         FlagPermissions perms = Residence.getPermsByLoc(event.getEntity().getLocation());
-        if (entity == EntityType.CREEPER) {
+        if (entity == EntityCreeper.NETWORK_ID) {
             if (!perms.has("creeper", perms.has("explode", true))) {
                 event.setCancelled(true);
-                event.getEntity().remove();
+                event.getEntity().close();
             }
         }
-        if (entity == EntityType.PRIMED_TNT || entity == EntityType.MINECART_TNT) {
+        if (entity == EntityPrimedTNT.NETWORK_ID || entity == EntityMinecartTNT.NETWORK_ID) {
             if (!perms.has("tnt", perms.has("explode", true))) {
                 event.setCancelled(true);
-                event.getEntity().remove();
+                event.getEntity().close();
             }
         }
-        if (entity == EntityType.FIREBALL) {
+        /*if (entity == EntityType.FIREBALL) {
             if (!perms.has("fireball", perms.has("explode", true))) {
                 event.setCancelled(true);
                 event.getEntity().remove();
@@ -173,7 +183,7 @@ public class ResidenceEntityListener implements Listener { //TODO: mobs
                 event.setCancelled(true);
                 event.getEntity().remove();
             }
-        }
+        }*/
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
@@ -181,56 +191,55 @@ public class ResidenceEntityListener implements Listener { //TODO: mobs
         if (event.isCancelled() || event.getEntity() == null) {
             return;
         }
-        Boolean cancel = false;
-        EntityType entity = event.getEntityType();
+        boolean cancel = false;
+        int entity = event.getEntity().getNetworkId();
+
         FlagPermissions perms = Residence.getPermsByLoc(event.getEntity().getLocation());
         FlagPermissions world = Residence.getWorldFlags().getPerms(event.getEntity().getLevel().getName());
-        if (entity == EntityType.CREEPER) {
+        if (entity == EntityCreeper.NETWORK_ID) {
             if (!perms.has("creeper", perms.has("explode", true))) {
                 cancel = true;
             }
         }
-        if (entity == EntityType.PRIMED_TNT || entity == EntityType.MINECART_TNT) {
+        if (entity == EntityPrimedTNT.NETWORK_ID || entity == EntityMinecartTNT.NETWORK_ID) {
             if (!perms.has("tnt", perms.has("explode", true))) {
                 cancel = true;
             }
         }
-        if (entity == EntityType.FIREBALL) {
+        /*if (entity == EntityFireBall.NETWORK_ID) {
             if (!perms.has("fireball", perms.has("explode", true))) {
                 cancel = true;
             }
-        }
-        if (entity == EntityType.SMALL_FIREBALL) {
+        }*/
+        /*if (entity == EntityType.SMALL_FIREBALL) {
             if (!perms.has("fireball", perms.has("explode", true))) {
                 cancel = true;
             }
-        }
-        if (entity == EntityType.WITHER_SKULL || entity == EntityType.WITHER) {
+        }*/
+        /*if (entity == EntityType.WITHER_SKULL || entity == EntityType.WITHER) {
             if (!perms.has("wither", perms.has("explode", world.has("wither", world.has("explode", true))))) {
                 cancel = true;
             }
-        }
+        }*/
         if (cancel) {
-            event.setCancelled(true);
-            event.getEntity().remove();
+            event.setCancelled();
         } else {
-            List<Block> preserve = new ArrayList<Block>();
-            for (Block block : event.blockList()) {
+            List<Block> preserve = new ArrayList<>();
+            for (Block block : event.getBlockList()) {
                 FlagPermissions blockperms = Residence.getPermsByLoc(block.getLocation());
-                if ((!blockperms.has("wither", blockperms.has("explode", world.has("wither", world.has("explode", true)))) && (entity == EntityType.WITHER || entity == EntityType.WITHER_SKULL) || (!blockperms.has("fireball", blockperms.has("explode", true)) && (entity == EntityType.FIREBALL || entity == EntityType.SMALL_FIREBALL)) || (!blockperms.has("tnt", blockperms.has("explode", true)) && (entity == EntityType.PRIMED_TNT || entity == EntityType.MINECART_TNT)) || (!blockperms.has("creeper", blockperms.has("explode", true)) && entity == EntityType.CREEPER))) {
-                    if (block != null) {
-                        preserve.add(block);
-                    }
+                if ((!blockperms.has("wither", blockperms.has("explode", world.has("wither", world.has("explode", true)))) && (false/*entity == EntityType.WITHER || entity == EntityType.WITHER_SKULL*/) || (!blockperms.has("fireball", blockperms.has("explode", true)) && (false/*entity == EntityType.FIREBALL || entity == EntityType.SMALL_FIREBALL*/)) || (!blockperms.has("tnt", blockperms.has("explode", true)) && (entity == EntityPrimedTNT.NETWORK_ID || entity == EntityMinecartTNT.NETWORK_ID)) || (!blockperms.has("creeper", blockperms.has("explode", true)) && entity == EntityCreeper.NETWORK_ID))) {
+                    preserve.add(block);
                 }
             }
+
             for (Block block : preserve) {
-                event.blockList().remove(block);
+                event.getBlockList().remove(block);
             }
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onSplashPotion(PotionSplashEvent event) {
+    /*@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onSplashPotion(PotionSplashEvent event) { //TODO: splash potion
         if (event.isCancelled()) {
             return;
         }
@@ -249,8 +258,8 @@ public class ResidenceEntityListener implements Listener { //TODO: mobs
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
-        if (event.getEntityType() == EntityType.ITEM_FRAME || event.getEntityType() == EntityType.ARMOR_STAND) {
+    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) { //TODO: armor stand
+        if (event.getEntityType() == EntityType.ARMOR_STAND) {
             Entity dmgr = event.getDamager();
 
             Location loc = event.getEntity().getLocation();
@@ -286,7 +295,7 @@ public class ResidenceEntityListener implements Listener { //TODO: mobs
                 }
             }
         }
-    }
+    }*/
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent event) {
@@ -294,7 +303,7 @@ public class ResidenceEntityListener implements Listener { //TODO: mobs
         if (ent.hasMetadata("NPC")) {
             return;
         }
-        boolean tamedWolf = ent instanceof Wolf ? ((Wolf) ent).isTamed() : false;
+        boolean tamedWolf = /*ent instanceof EntityWolf ? ((Wolf) ent).isTamed() :*/ false;
         ClaimedResidence area = Residence.getResidenceManager().getByLoc(ent.getLocation());
         // Living Entities
         if (event instanceof EntityDamageByEntityEvent) {
@@ -309,13 +318,9 @@ public class ResidenceEntityListener implements Listener { //TODO: mobs
                 srcpvp = srcarea.getPermissions().has("pvp", true);
             }
             ent = attackevent.getEntity();
-            if ((ent instanceof Player || tamedWolf) && (damager instanceof Player || (damager instanceof Arrow && (((Arrow) damager).getShooter() instanceof Player)))) {
-                Player attacker = null;
-                if (damager instanceof Player) {
-                    attacker = (Player) damager;
-                } else if (damager instanceof Arrow) {
-                    attacker = (Player) ((Arrow) damager).getShooter();
-                }
+            if ((ent instanceof Player || tamedWolf) && damager instanceof Player) {
+                Player attacker = (Player) damager;
+
                 if (!srcpvp) {
                     attacker.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("NoPVPZone"));
                     event.setCancelled(true);
@@ -336,7 +341,7 @@ public class ResidenceEntityListener implements Listener { //TODO: mobs
                     }
                 }
                 return;
-            } else if ((ent instanceof Player || tamedWolf) && (damager instanceof Creeper)) {
+            } else if ((ent instanceof Player || tamedWolf) && (damager instanceof EntityCreeper)) {
                 if (area == null) {
                     if (!Residence.getWorldFlags().getPerms(damager.getLevel().getName()).has("creeper", true)) {
                         event.setCancelled(true);
@@ -362,8 +367,8 @@ public class ResidenceEntityListener implements Listener { //TODO: mobs
             if ((ent instanceof Player || tamedWolf)
                     && (event.getCause() == EntityDamageEvent.DamageCause.FIRE
                     || event.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK)) {
-                ent.setFireTicks(0);
+                ent.setOnFire(0);
             }
         }
-    }*/
+    }
 }
