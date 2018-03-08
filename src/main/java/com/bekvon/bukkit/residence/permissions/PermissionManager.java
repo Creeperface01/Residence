@@ -96,7 +96,15 @@ public class PermissionManager {
 
     private void checkPermissions() {
         Server server = Residence.getServ();
-        Plugin plugin = server.getPluginManager().getPlugin("MadPerms");
+
+        Plugin plugin = server.getPluginManager().getPlugin("LuckPerms");
+        if (plugin != null) {
+            perms = new LuckPermsAdapter();
+            MainLogger.getLogger().notice("[Residence] Found LuckPerms Plugin!");
+            return;
+        }
+
+        plugin = server.getPluginManager().getPlugin("MadPerms");
 
         if (plugin != null) {
             perms = new MadPermsAdapter();

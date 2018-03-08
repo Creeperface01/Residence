@@ -237,7 +237,7 @@ public class Residence extends PluginBase {
                     return;
                 }
                 FlagPermissions.initValidFlags();
-                Plugin p = server.getPluginManager().getPlugin("WorldEdit");
+                Plugin p = server.getPluginManager().getPlugin("FastAsyncWorldEdit");
                 if (p != null) {
                     smanager = new WorldEditSelectionManager(server);
                     MainLogger.getLogger().notice("[Residence] Found WorldEdit");

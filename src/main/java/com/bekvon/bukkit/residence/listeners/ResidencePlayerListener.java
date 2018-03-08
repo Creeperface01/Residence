@@ -19,6 +19,7 @@ import cn.nukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
+import cn.nukkit.plugin.Plugin;
 import cn.nukkit.utils.TextFormat;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.chat.ChatChannel;
@@ -29,6 +30,10 @@ import com.bekvon.bukkit.residence.permissions.PermissionGroup;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
 import com.bekvon.bukkit.residence.utils.ActionBar;
+import com.bekvon.bukkit.residence.utils.Optimization;
+import com.boydti.fawe.FaweAPI;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.world.World;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -189,12 +194,12 @@ public class ResidencePlayerListener implements Listener {
         }
         if (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (heldItem.getId() == Residence.getConfigManager().getSelectionTooldID()) {
-                /*Plugin wep = Server.getInstance().getPluginManager().getPlugin("WorldEdit"); //TODO: WE
+                Plugin wep = Server.getInstance().getPluginManager().getPlugin("FastAsyncWorldEdit");
                 if (wep != null) {
-                    if (((WorldEditPlugin) wep).getConfig().getInt("wand-item") == Residence.getConfigManager().getSelectionTooldID()) {
+                    if (Optimization.getBasicFAWEConfig(wep).getInt("wand-item") == Residence.getConfigManager().getSelectionTooldID()) {
                         return;
                     }
-                }*/
+                }
                 PermissionGroup group = Residence.getPermissionManager().getGroup(player);
                 if (player.hasPermission("residence.select") || player.hasPermission("residence.create") && !player.isPermissionSet("residence.select") || group.canCreateResidences() && !player.isPermissionSet("residence.create") && !player.isPermissionSet("residence.select") || resadmin) {
                     if (event.getAction() == Action.LEFT_CLICK_BLOCK) {

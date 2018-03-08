@@ -4,7 +4,19 @@
  */
 package com.bekvon.bukkit.residence.selection;
 
+import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.level.Level;
+import cn.nukkit.level.Position;
+import cn.nukkit.math.Vector3;
+import com.boydti.fawe.nukkit.core.NukkitWorld;
+import com.boydti.fawe.object.FawePlayer;
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldedit.regions.RegionSelector;
+import com.sk89q.worldedit.regions.selector.CuboidRegionSelector;
+import com.sk89q.worldedit.world.World;
 
 /**
  * @author Administrator
@@ -15,52 +27,55 @@ public class WorldEditSelectionManager extends SelectionManager {
         super(serv);
     }
 
-    /*@Override
-    public boolean worldEdit(Player player) { //TODO: WE
-        WorldEdit wep = (WorldEdit) server.getPluginManager().getPlugin("WorldEdit");
-
-        PlayerData data = wep.getPlayerData(player);
-        Selection sel = null;
+    @Override
+    public boolean worldEdit(Player player) {
+        FawePlayer<Player> data = FawePlayer.wrap(player);
 
         if (data != null) {
-            sel = data.getSelection();
+            RegionSelector manager = data.getSession().getRegionSelector(data.getWorld());
+
+            if (manager instanceof CuboidRegionSelector) {
+                CuboidRegionSelector sel = new CuboidRegionSelector(data.getWorld());
+
+                if(sel.position1 != null) {
+                    this.playerLoc1.put(player.getName(), new Position(sel.position1.getX(), sel.position1.getY(), sel.position1.getZ(), player.getLevel()));
+                }
+
+                if(sel.position2 != null) {
+                    this.playerLoc2.put(player.getName(), new Position(sel.position2.getX(), sel.position2.getY(), sel.position2.getZ(), player.getLevel()));
+                }
+            }
         }
 
-        if (sel != null) {
-
-            Location pos1 = new Location(Math.min(sel.pos1.x, sel.pos2.x), Math.min(sel.pos1.y, sel.pos2.y), Math.min(sel.pos1.z, sel.pos2.z), 0, 0, sel.pos1.getLevel());
-            Location pos2 = new Location(Math.max(sel.pos1.x, sel.pos2.x), Math.max(sel.pos1.y, sel.pos2.y), Math.max(sel.pos1.z, sel.pos2.z), 0, 0, sel.pos1.getLevel());
-
-            this.playerLoc1.put(player.getName(), pos1);
-            this.playerLoc2.put(player.getName(), pos2);
-            return true;
-        }
         return false;
     }
 
     private void afterSelectionUpdate(Player player) {
         if (hasPlacedBoth(player.getName())) {
-            WorldEdit wep = (WorldEdit) server.getPluginManager().getPlugin("WorldEdit");
-            Level level = playerLoc1.get(player.getName()).getLevel();
-
-            PlayerData data = wep.getPlayerData(player);
+            FawePlayer<Player> data = FawePlayer.wrap(player);
 
             if (data != null) {
-                data.getSelection().pos1 = playerLoc1.get(player.getName()).clone();
-                data.getSelection().pos2 = playerLoc2.get(player.getName()).clone();
+                RegionSelector manager = data.getSession().getRegionSelector(data.getWorld());
+
+                if (!(manager instanceof CuboidRegionSelector)) {
+                    manager = new CuboidRegionSelector(data.getWorld());
+                }
+
+                manager.selectPrimary(wrapVector(playerLoc1.get(player.getName()).clone()), null);
+                manager.selectSecondary(wrapVector(playerLoc2.get(player.getName()).clone()), null);
             }
         }
     }
 
     @Override
-    public void placeLoc1(Player player, Location loc) {
+    public void placeLoc1(Player player, Position loc) {
         this.worldEdit(player);
         super.placeLoc1(player, loc);
         this.afterSelectionUpdate(player);
     }
 
     @Override
-    public void placeLoc2(Player player, Location loc) {
+    public void placeLoc2(Player player, Position loc) {
         this.worldEdit(player);
         super.placeLoc2(player, loc);
         this.afterSelectionUpdate(player);
@@ -98,5 +113,9 @@ public class WorldEditSelectionManager extends SelectionManager {
     public void showSelectionInfo(Player player) {
         this.worldEdit(player);
         super.showSelectionInfo(player);
-    }*/
+    }
+
+    private Vector wrapVector(Vector3 v) {
+        return new Vector(v.x, v.y, v.z);
+    }
 }
