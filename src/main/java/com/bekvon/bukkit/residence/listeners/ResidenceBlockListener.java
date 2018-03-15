@@ -106,14 +106,14 @@ public class ResidenceBlockListener implements Listener {
         if (res != null) {
             if (!res.getItemBlacklist().isAllowed(b.getId())) {
                 player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("ItemBlacklisted"));
-                event.setCancelled(true);
+                event.setCancelled();
                 return;
             }
         }
         FlagPermissions perms = Residence.getPermsByLocForPlayer(event.getBlock().getLocation(), player);
         boolean hasplace = perms.playerHas(pname, player.getLevel().getName(), "place", perms.playerHas(pname, player.getLevel().getName(), "build", true));
         if (!hasplace) {
-            event.setCancelled(true);
+            event.setCancelled();
             player.sendMessage(TextFormat.RED + Residence.getLanguage().getPhrase("NoPermission"));
             return;
         }
@@ -124,7 +124,25 @@ public class ResidenceBlockListener implements Listener {
         Location loc = event.getBlock().getLocation();
         FlagPermissions perms = Residence.getPermsByLoc(loc);
         if (!perms.has("spread", true)) {
-            event.setCancelled(true);
+            event.setCancelled();
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onLeavesDecay(LeavesDecayEvent e) {
+        Location loc = e.getBlock().getLocation();
+        FlagPermissions perms = Residence.getPermsByLoc(loc);
+        if (!perms.has("decay", false)) {
+            e.setCancelled();
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onBlockGrow(BlockGrowEvent e) {
+        Location loc = e.getBlock().getLocation();
+        FlagPermissions perms = Residence.getPermsByLoc(loc);
+        if (!perms.has("grow", true)) {
+            e.setCancelled();
         }
     }
 

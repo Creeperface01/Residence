@@ -113,6 +113,8 @@ Global:
         burn: true
         explode: false
         fireball: true
+        grow: true
+        decay: false
     # These are default flags applied to all residences from any user group.
     ResidenceDefault:
         build: false
