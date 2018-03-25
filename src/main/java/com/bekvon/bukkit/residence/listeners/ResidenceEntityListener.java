@@ -166,24 +166,19 @@ public class ResidenceEntityListener implements Listener {
                 event.getEntity().close();
             }
         }
-        /*if (entity == EntityType.FIREBALL) {
+        if (entity == 85 || entity == 94) { //fireball
             if (!perms.has("fireball", perms.has("explode", true))) {
                 event.setCancelled(true);
-                event.getEntity().remove();
+                event.getEntity().close();
             }
         }
-        if (entity == EntityType.SMALL_FIREBALL) {
-            if (!perms.has("fireball", perms.has("explode", true))) {
-                event.setCancelled(true);
-                event.getEntity().remove();
-            }
-        }
-        if (entity == EntityType.WITHER_SKULL) {
+
+        if (entity == 89 || entity == 91) { //wither
             if (!perms.has("witherdamage", perms.has("damage", true))) {
                 event.setCancelled(true);
-                event.getEntity().remove();
+                event.getEntity().close();
             }
-        }*/
+        }
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
@@ -206,28 +201,24 @@ public class ResidenceEntityListener implements Listener {
                 cancel = true;
             }
         }
-        /*if (entity == EntityFireBall.NETWORK_ID) {
+        if (entity == 85 || entity == 94) { //fireball
             if (!perms.has("fireball", perms.has("explode", true))) {
                 cancel = true;
             }
-        }*/
-        /*if (entity == EntityType.SMALL_FIREBALL) {
-            if (!perms.has("fireball", perms.has("explode", true))) {
-                cancel = true;
-            }
-        }*/
-        /*if (entity == EntityType.WITHER_SKULL || entity == EntityType.WITHER) {
+        }
+
+        if (entity == 91 || entity == 89 || entity == 52) { //wither
             if (!perms.has("wither", perms.has("explode", world.has("wither", world.has("explode", true))))) {
                 cancel = true;
             }
-        }*/
+        }
         if (cancel) {
             event.setCancelled();
         } else {
             List<Block> preserve = new ArrayList<>();
             for (Block block : event.getBlockList()) {
                 FlagPermissions blockperms = Residence.getPermsByLoc(block.getLocation());
-                if ((!blockperms.has("wither", blockperms.has("explode", world.has("wither", world.has("explode", true)))) && (false/*entity == EntityType.WITHER || entity == EntityType.WITHER_SKULL*/) || (!blockperms.has("fireball", blockperms.has("explode", true)) && (false/*entity == EntityType.FIREBALL || entity == EntityType.SMALL_FIREBALL*/)) || (!blockperms.has("tnt", blockperms.has("explode", true)) && (entity == EntityPrimedTNT.NETWORK_ID || entity == EntityMinecartTNT.NETWORK_ID)) || (!blockperms.has("creeper", blockperms.has("explode", true)) && entity == EntityCreeper.NETWORK_ID))) {
+                if ((!blockperms.has("wither", blockperms.has("explode", world.has("wither", world.has("explode", true)))) && (entity == 52 || entity == 89 || entity == 91) || (!blockperms.has("fireball", blockperms.has("explode", true)) && (entity == 85 || entity == 94)) || (!blockperms.has("tnt", blockperms.has("explode", true)) && (entity == EntityPrimedTNT.NETWORK_ID || entity == EntityMinecartTNT.NETWORK_ID)) || (!blockperms.has("creeper", blockperms.has("explode", true)) && entity == EntityCreeper.NETWORK_ID))) {
                     preserve.add(block);
                 }
             }
