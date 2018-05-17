@@ -184,9 +184,10 @@ public class ResidenceBlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockFromTo(BlockFromToEvent event) {
-        FlagPermissions perms = Residence.getPermsByLoc(event.getTo().getLocation());
-        boolean hasflow = perms.has("flow", true);
         Block b = event.getBlock();
+        FlagPermissions perms = Residence.getPermsByLoc(b.getLocation());
+        boolean hasflow = perms.has("flow", true);
+
         if (!hasflow) {
             event.setCancelled(true);
             return;
