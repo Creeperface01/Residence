@@ -5,6 +5,7 @@
 package com.bekvon.bukkit.residence.listeners;
 
 import cn.nukkit.Player;
+import cn.nukkit.PlayerFood;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockRedstoneDiode;
@@ -361,6 +362,21 @@ public class ResidencePlayerListener implements Listener {
     }*/
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onPlayerFoodChange(PlayerFoodLevelChangeEvent e) {
+        Player p = e.getPlayer();
+
+        if (e.getFoodLevel() >= p.getFoodData().getLevel()) {
+            return;
+        }
+
+        FlagPermissions perms = Residence.getPermsByLocForPlayer(p, p);
+
+        if (!perms.has("starvation", true)) {
+            e.setCancelled();
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
         Player player = event.getPlayer();
         if (Residence.isResAdminOn(player)) {
@@ -600,10 +616,22 @@ public class ResidencePlayerListener implements Listener {
                 if (resname != null) {
                     res = Residence.getResidenceManager().getByName(resname);
                 }
-                if (res != null && res.getPermissions().has("healing", false)) {
-                    double health = player.getHealth();
-                    if (health < 20 && player.isAlive()) {
-                        player.heal(new EntityRegainHealthEvent(player, 1, EntityRegainHealthEvent.CAUSE_CUSTOM));
+                if (res != null) {
+                    if (res.getPermissions().has("healing", false)) {
+                        double health = player.getHealth();
+                        if (health < 20 && player.isAlive()) {
+                            player.heal(new EntityRegainHealthEvent(player, 1, EntityRegainHealthEvent.CAUSE_CUSTOM));
+                        }
+                    }
+
+                    if (res.getPermissions().has("feeding", false)) {
+                        PlayerFood food = player.getFoodData();
+
+                        double current = food.getLevel();
+
+                        if (current < food.getMaxLevel() && player.isAlive()) {
+                            food.addFoodLevel(1, 1);
+                        }
                     }
                 }
             }

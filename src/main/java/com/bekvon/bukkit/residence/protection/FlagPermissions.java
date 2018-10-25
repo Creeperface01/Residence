@@ -146,6 +146,8 @@ public class FlagPermissions {
         addResidenceOnlyFlag("wither");
         addResidenceOnlyFlag("flow");
         addResidenceOnlyFlag("healing");
+        addResidenceOnlyFlag("starvation");
+        addResidenceOnlyFlag("feeding");
         addResidenceOnlyFlag("animals");
         addResidenceOnlyFlag("lavaflow");
         addResidenceOnlyFlag("waterflow");

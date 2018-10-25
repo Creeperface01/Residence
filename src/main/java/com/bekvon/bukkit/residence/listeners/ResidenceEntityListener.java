@@ -11,6 +11,8 @@ import cn.nukkit.entity.item.EntityFallingBlock;
 import cn.nukkit.entity.item.EntityMinecartTNT;
 import cn.nukkit.entity.item.EntityPrimedTNT;
 import cn.nukkit.entity.mob.EntityCreeper;
+import cn.nukkit.entity.mob.EntityEnderman;
+import cn.nukkit.entity.mob.EntityWither;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
@@ -28,21 +30,23 @@ import java.util.List;
  */
 public class ResidenceEntityListener implements Listener {
 
-    /*@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onEndermanChangeBlock(EntityBlockChangeEvent event) {
-        if (event.getEntityType() != EntityType.ENDERMAN && event.getEntityType() != EntityType.WITHER) {
+        Entity e = event.getEntity();
+
+        if (e.getNetworkId() != EntityEnderman.NETWORK_ID && e.getNetworkId() != EntityWither.NETWORK_ID) {
             return;
         }
-        FlagPermissions perms = Residence.getPermsByLoc(event.getBlock().getLocation());
-        FlagPermissions world = Residence.getWorldFlags().getPerms(event.getBlock().getLevel().getName());
-        if (event.getEntityType() == EntityType.WITHER) {
+        FlagPermissions perms = Residence.getPermsByLoc(event.getFrom().getLocation());
+        FlagPermissions world = Residence.getWorldFlags().getPerms(event.getTo().getLevel().getName());
+        if (e.getNetworkId() == EntityWither.NETWORK_ID) {
             if (!perms.has("wither", perms.has("explode", world.has("wither", world.has("explode", true))))) {
                 event.setCancelled(true);
             }
         } else if (!perms.has("build", true)) {
             event.setCancelled(true);
         }
-    }*/
+    }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onEntityInteract(EntityInteractEvent event) {
@@ -57,13 +61,27 @@ public class ResidenceEntityListener implements Listener {
     }
 
     private boolean isMonster(Entity ent) {
-        //return (ent instanceof Monster || ent instanceof Slime || ent instanceof Ghast);
-        return false;
+        int id = ent.getNetworkId();
+        return id >= 32 && id <= 58;
     }
 
     private boolean isAnimal(Entity ent) {
+        int id = ent.getNetworkId();
+
+        if (id >= 10 && id <= 31) {
+            return true;
+        }
+
+        switch (id) {
+            case 74: //turtle
+            case 108: //pufferfish
+            case 109: //salmon
+            case 111: //tropicalfish
+            case 112: //cod
+                return true;
+        }
+
         return false;
-        //return (ent instanceof Horse || ent instanceof Bat || ent instanceof Snowman || ent instanceof IronGolem || ent instanceof Ocelot || ent instanceof Pig || ent instanceof Sheep || ent instanceof Chicken || ent instanceof Wolf || ent instanceof Cow || ent instanceof Squid || ent instanceof Villager || ent instanceof Rabbit);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -91,9 +109,9 @@ public class ResidenceEntityListener implements Listener {
         }
     }
 
-    /*@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onCreatureSpawn(CreatureSpawnEvent event) {
-        FlagPermissions perms = Residence.getPermsByLoc(event.getLocation());
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onCreatureSpawn(EntitySpawnEvent event) {
+        FlagPermissions perms = Residence.getPermsByLoc(event.getPosition().getLocation());
         Entity ent = event.getEntity();
         if (isAnimal(ent)) {
             if (!perms.has("animals", true)) {
@@ -106,7 +124,7 @@ public class ResidenceEntityListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    /*@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onHangingPlace(HangingPlaceEvent event) {
         Player player = event.getPlayer();
         if (Residence.isResAdminOn(player)) {
@@ -229,26 +247,27 @@ public class ResidenceEntityListener implements Listener {
         }
     }
 
-    /*@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onSplashPotion(PotionSplashEvent event) { //TODO: splash potion
-        if (event.isCancelled()) {
-            return;
-        }
-        Entity ent = event.getEntity();
-        boolean srcpvp = Residence.getPermsByLoc(ent.getLocation()).has("pvp", true);
-        Iterator<LivingEntity> it = event.getAffectedEntities().iterator();
-        while (it.hasNext()) {
-            LivingEntity target = it.next();
-            if (target.getType() == EntityType.PLAYER) {
-                Boolean tgtpvp = Residence.getPermsByLoc(target.getLocation()).has("pvp", true);
-                if (!srcpvp || !tgtpvp) {
-                    event.setIntensity(target, 0);
-                }
-            }
-        }
-    }
+//    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+//    public void onSplashPotion(PotionCollideEvent event) {
+//        if (event.isCancelled()) {
+//            return;
+//        }
+//        EntityPotion ent = event.getThrownPotion();
+//        boolean srcpvp = Residence.getPermsByLoc(ent.getLocation()).has("pvp", true);
+//        event.
+//        Iterator<LivingEntity> it = event.getAffectedEntities().iterator();
+//        while (it.hasNext()) {
+//            LivingEntity target = it.next();
+//            if (target.getType() == EntityType.PLAYER) {
+//                Boolean tgtpvp = Residence.getPermsByLoc(target.getLocation()).has("pvp", true);
+//                if (!srcpvp || !tgtpvp) {
+//                    event.setIntensity(target, 0);
+//                }
+//            }
+//        }
+//    }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    /*@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) { //TODO: armor stand
         if (event.getEntityType() == EntityType.ARMOR_STAND) {
             Entity dmgr = event.getDamager();
