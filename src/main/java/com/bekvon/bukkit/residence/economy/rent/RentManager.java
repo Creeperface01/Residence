@@ -121,7 +121,7 @@ public class RentManager {
                 newrent.autoRefresh = repeat;
                 rentedLand.put(landName, newrent);
                 res.getPermissions().copyUserPermissions(res.getPermissions().getOwner(), player.getName());
-                res.getPermissions().clearPlayersFlags(res.getPermissions().getOwner());
+                res.getPermissions().removeAllPlayerFlags(res.getPermissions().getOwner());
                 res.getPermissions().setPlayerFlag(player.getName(), "admin", FlagState.TRUE);
                 String[] split = landName.split("\\.");
                 if (split.length != 0) {
