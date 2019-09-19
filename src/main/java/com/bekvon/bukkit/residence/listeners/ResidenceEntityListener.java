@@ -61,13 +61,18 @@ public class ResidenceEntityListener implements Listener {
     }
 
     private boolean isMonster(Entity ent) {
-        int id = ent.getNetworkId();
+        return isMonster(ent.getNetworkId());
+    }
+
+    private boolean isMonster(int id) {
         return id >= 32 && id <= 58;
     }
 
     private boolean isAnimal(Entity ent) {
-        int id = ent.getNetworkId();
+        return isAnimal(ent.getNetworkId());
+    }
 
+    private boolean isAnimal(int id) {
         if (id >= 10 && id <= 31) {
             return true;
         }
@@ -110,9 +115,9 @@ public class ResidenceEntityListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onCreatureSpawn(EntitySpawnEvent event) {
-        FlagPermissions perms = Residence.getPermsByLoc(event.getPosition().getLocation());
-        Entity ent = event.getEntity();
+    public void onCreatureSpawn(CreatureSpawnEvent event) {
+        FlagPermissions perms = Residence.getPermsByLoc(event.getPosition());
+        int ent = event.getEntityNetworkId();
         if (isAnimal(ent)) {
             if (!perms.has("animals", true)) {
                 event.setCancelled(true);

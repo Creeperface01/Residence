@@ -6,7 +6,6 @@ package com.bekvon.bukkit.residence;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
-import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.plugin.PluginBase;
@@ -404,7 +403,7 @@ public class Residence extends PluginBase {
         return language;
     }
 
-    public static FlagPermissions getPermsByLoc(Location loc) {
+    public static FlagPermissions getPermsByLoc(Position loc) {
         ClaimedResidence res = rmanager.getByLoc(loc);
         if (res != null) {
             return res.getPermissions();
@@ -437,10 +436,7 @@ public class Residence extends PluginBase {
     }
 
     public static boolean isResAdminOn(Player player) {
-        if (resadminToggle.contains(player.getName())) {
-            return true;
-        }
-        return false;
+        return resadminToggle.contains(player.getName());
     }
 
     public static void turnResAdminOn(Player player) {
@@ -448,10 +444,7 @@ public class Residence extends PluginBase {
     }
 
     public static boolean isResAdminOn(String player) {
-        if (resadminToggle.contains(player.toLowerCase())) {
-            return true;
-        }
-        return false;
+        return resadminToggle.contains(player.toLowerCase());
     }
 
     private void saveYml() throws IOException {
