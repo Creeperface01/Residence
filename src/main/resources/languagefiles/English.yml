@@ -62,7 +62,7 @@ Language:
     SelectionSky: Selection expanded to your highest allowed limit.
     SelectionArea: 'Selected area %1 of residence %2'
     SelectDiabled: You don't have access to selections commands.
-    NoPermission: You dont have permission for this.
+    NoPermission: You don't have permission for this.
     OwnerNoPermission: The owner does not have permission for this.
     ParentNoPermission: You don't have permission to make changes to the parent zone.
     MessageChange: Message Set...
@@ -80,8 +80,8 @@ Language:
     MarketList: Market List
     SelectionTool: Selection Tool
     InfoTool: Info Tool
-    NoBankAccess: You dont have bank access.
-    NotEnoughMoney: You dont have enough money.
+    NoBankAccess: You don't have bank access.
+    NotEnoughMoney: You don't have enough money.
     BankNoMoney: Not enough money in the bank.
     BankDeposit: 'You deposit %1 into the residence bank.'
     BankWithdraw: 'You withdraw %1 from the residence bank.'
@@ -132,15 +132,15 @@ Language:
     RentedModifyDeny: Cannot modify a rented residence.
     WorldPVPDisabled: World PVP is disabled.
     NoPVPZone: No PVP zone.
-    FlagDeny: 'You dont have %1 permission<s> here.'
+    FlagDeny: "You don't have %1 permission<s> here."
     FlagSetDeny: 'Owner does not have access to flag %1'
     SelectPoint: 'Placed %1 Selection Point'
     ResidenceChat: 'Residence chat toggled %1'
-    ResidenceMoveDeny: 'You dont have movement permission for Residence %1'
-    TeleportDeny: You dont have teleport access.
+    ResidenceMoveDeny: "You don't have movement permission for Residence %1"
+    TeleportDeny: You don't have teleport access.
     TeleportSuccess: 'Teleported!'
     TeleportNear: Teleported to near residence.
-    TeleportNoFlag: You dont have teleport access for that residence.
+    TeleportNoFlag: You don't have teleport access for that residence.
     SetTeleportLocation: Teleport Location Set...
     HelpPageHeader: 'Help Pages - %1 - Page <%2 of %3>'
     ListExists: List already exists...
@@ -215,8 +215,8 @@ Language:
     Moved: Moved
     Status: Status
     Available: Available
-    On: On
-    Off: Off
+    'On': 'On'
+    'Off': 'Off'
     Name: Name
     Lists: Lists
     Residences: Residences
@@ -494,7 +494,7 @@ CommandHelp: #this is just a holder node, that holds the entire help
                     Description: List All Residences
                     Info:
                         - 'Usage: /res listall <page>'
-                        - 'Lists all residences on the server. (except hidden ones that you dont own)'
+                        - "Lists all residences on the server. (except hidden ones that you don't own)"
                 listallhidden:
                     Description: List All Hidden Residences (ADMIN ONLY)
                     Info:
