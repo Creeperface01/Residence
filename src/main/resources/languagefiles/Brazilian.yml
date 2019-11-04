@@ -214,8 +214,8 @@ Language:
     Moved: Movido
     Status: Status
     Available: Disponivel
-    On: On
-    Off: Off
+    On: "On"
+    Off: "Off"
     Name: Nome
     Lists: Listas
     Residences: Residencias

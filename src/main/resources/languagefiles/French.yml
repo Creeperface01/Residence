@@ -215,8 +215,8 @@ Language:
     Moved: Déplacé
     Status: Statut
     Available: Disponible
-    On: On
-    Off: Off
+    On: "On"
+    Off: "Off"
     Name: Nom
     Lists: Listes
     Residences: Résidences
