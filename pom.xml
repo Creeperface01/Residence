@@ -37,13 +37,6 @@
             <systemPath>${project.basedir}/lib/FAWE.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>luckperms</groupId>
-            <artifactId>luckperms</artifactId>
-            <scope>system</scope>
-            <version>0</version>
-            <systemPath>${project.basedir}/lib/LuckPerms-Nukkit-4.1.21.jar</systemPath>
-        </dependency>
-        <dependency>
             <groupId>madperms</groupId>
             <artifactId>madperms</artifactId>
             <scope>system</scope>
@@ -56,6 +49,13 @@
             <scope>system</scope>
             <version>0</version>
             <systemPath>${project.basedir}/lib/Multipass-1.0-SNAPSHOT.jar</systemPath>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/me.lucko.luckperms/luckperms-api -->
+        <dependency>
+            <groupId>me.lucko.luckperms</groupId>
+            <artifactId>luckperms-api</artifactId>
+            <version>4.4</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
