@@ -35,20 +35,28 @@ public class YMLSaveHelper {
     }
 
     public void save() throws IOException {
-        if (f.isFile()) {
-            f.delete();
+        try {
+            if (f.isFile()) {
+                f.delete();
+            }
+            FileOutputStream fout = new FileOutputStream(f);
+            OutputStreamWriter osw = new OutputStreamWriter(fout, "UTF8");
+            yml.dump(root, osw);
+            osw.close();
+        } catch (Exception e) {
+            throw new RuntimeException("Error during saving file " + f.getAbsolutePath());
         }
-        FileOutputStream fout = new FileOutputStream(f);
-        OutputStreamWriter osw = new OutputStreamWriter(fout, "UTF8");
-        yml.dump(root, osw);
-        osw.close();
     }
 
     public void load() throws IOException {
-        FileInputStream fis = new FileInputStream(f);
-        InputStreamReader isr = new InputStreamReader(fis, "UTF8");
-        root = (Map<String, Object>) yml.load(isr);
-        isr.close();
+        try {
+            FileInputStream fis = new FileInputStream(f);
+            InputStreamReader isr = new InputStreamReader(fis, "UTF8");
+            root = (Map<String, Object>) yml.load(isr);
+            isr.close();
+        } catch (Exception e) {
+            throw new RuntimeException("Error during loading file " + f.getAbsolutePath());
+        }
     }
 
     public Map<String, Object> getRoot() {

@@ -160,15 +160,9 @@ public class ResidenceCommandListener extends Residence {
             sender.sendMessage(TextFormat.RED + "This server running " + TextFormat.GOLD + "Residence" + TextFormat.RED + " version: " + TextFormat.BLUE + this.getDescription().getVersion());
             sender.sendMessage(TextFormat.GREEN + "Created by: " + TextFormat.YELLOW + "bekvon");
             sender.sendMessage(TextFormat.GREEN + "Updated to 1.8 by: " + TextFormat.YELLOW + "DartCZ");
-            String names = null;
             List<String> authlist = this.getDescription().getAuthors();
-            for (String auth : authlist) {
-                if (names == null) {
-                    names = auth;
-                } else {
-                    names = names + ", " + auth;
-                }
-            }
+            String names = String.join(", ", authlist);
+
             sender.sendMessage(TextFormat.GREEN + "Authors: " + TextFormat.YELLOW + names);
             sender.sendMessage(TextFormat.DARK_AQUA + "For a command list, and help, see the wiki:");
             sender.sendMessage(TextFormat.GREEN + "http://residencebukkitmod.wikispaces.com/");
