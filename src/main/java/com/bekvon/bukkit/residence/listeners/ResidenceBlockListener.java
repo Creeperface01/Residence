@@ -132,7 +132,7 @@ public class ResidenceBlockListener implements Listener {
     public void onLeavesDecay(LeavesDecayEvent e) {
         Location loc = e.getBlock().getLocation();
         FlagPermissions perms = Residence.getPermsByLoc(loc);
-        if (!perms.has("decay", false)) {
+        if (!perms.has("decay", true)) {
             e.setCancelled();
         }
     }
