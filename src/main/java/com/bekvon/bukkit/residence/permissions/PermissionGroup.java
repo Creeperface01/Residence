@@ -13,10 +13,10 @@ import com.bekvon.bukkit.residence.protection.FlagPermissions;
 import com.bekvon.bukkit.residence.protection.FlagPermissions.FlagState;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Administrator
@@ -106,57 +106,43 @@ public class PermissionGroup {
         selectCommandAccess = limits.getBoolean("Residence.SelectCommandAccess", true);
         itemListAccess = limits.getBoolean("Residence.ItemListAccess", true);
         ConfigSection node = limits.getSection("Flags.Permission");
-        Set<String> flags = null;
         if (node != null) {
-            flags = node.getKeys(false);
+            node.forEach((flagname, value) -> flagPerms.setFlag(flagname, (boolean) value ? FlagState.TRUE : FlagState.FALSE));
         }
-        if (flags != null) {
-            Iterator<String> flagit = flags.iterator();
-            while (flagit.hasNext()) {
-                String flagname = flagit.next();
-                boolean access = limits.getBoolean("Flags.Permission." + flagname, false);
-                flagPerms.setFlag(flagname, access ? FlagState.TRUE : FlagState.FALSE);
-            }
-        }
+
         node = limits.getSection("Flags.CreatorDefault");
         if (node != null) {
-            flags = node.getKeys(false);
+            node.forEach((flagname, value) -> creatorDefaultFlags.put(flagname, (boolean) value));
         }
-        if (flags != null) {
-            Iterator<String> flagit = flags.iterator();
-            while (flagit.hasNext()) {
-                String flagname = flagit.next();
-                boolean access = limits.getBoolean("Flags.CreatorDefault." + flagname, false);
-                creatorDefaultFlags.put(flagname, access);
-            }
 
-        }
         node = limits.getSection("Flags.Default");
         if (node != null) {
-            flags = node.getKeys(false);
+            node.forEach((flagname, value) -> residenceDefaultFlags.put(flagname, (boolean) value));
         }
-        if (flags != null) {
-            Iterator<String> flagit = flags.iterator();
-            while (flagit.hasNext()) {
-                String flagname = flagit.next();
-                boolean access = limits.getBoolean("Flags.Default." + flagname, false);
-                residenceDefaultFlags.put(flagname, access);
-            }
-        }
+
         node = limits.getSection("Flags.GroupDefault");
+
+        if (node != null) {
+            node.forEach((groupName, value) -> {
+                if (!(value instanceof ConfigSection)) {
+                    return;
+                }
+
+                ConfigSection flags = (ConfigSection) value;
+                groupDefaultFlags.put(groupName, flags.entrySet()
+                        .stream().collect(Collectors.toMap(Entry::getKey, v -> (boolean) v.getValue())));
+            });
+        }
+
         Set<String> groupDef = null;
         if (node != null) {
             groupDef = node.getKeys(false);
         }
         if (groupDef != null) {
-            Iterator<String> groupit = groupDef.iterator();
-            while (groupit.hasNext()) {
-                String name = groupit.next();
+            for (String name : groupDef) {
                 Map<String, Boolean> gflags = new HashMap<String, Boolean>();
-                flags = limits.getSection("Flags.GroupDefault." + name).getKeys(false);
-                Iterator<String> flagit = flags.iterator();
-                while (flagit.hasNext()) {
-                    String flagname = flagit.next();
+                Set<String> flags = limits.getSection("Flags.GroupDefault." + name).getKeys(false);
+                for (String flagname : flags) {
                     boolean access = limits.getBoolean("Flags.GroupDefault." + name + "." + flagname, false);
                     gflags.put(flagname, access);
                 }
