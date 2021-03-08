@@ -15,6 +15,7 @@ import cn.nukkit.utils.MainLogger;
 import com.bekvon.bukkit.residence.chat.ChatManager;
 import com.bekvon.bukkit.residence.economy.EconomyAPIAdapter;
 import com.bekvon.bukkit.residence.economy.EconomyInterface;
+import com.bekvon.bukkit.residence.economy.LlamaEconomyAdapter;
 import com.bekvon.bukkit.residence.economy.TransactionManager;
 import com.bekvon.bukkit.residence.economy.rent.RentManager;
 import com.bekvon.bukkit.residence.itemlist.WorldItemManager;
@@ -204,7 +205,10 @@ public class Residence extends PluginBase {
             if (this.getConfig().getBoolean("Global.EnableEconomy", false)) {
                 MainLogger.getLogger().info("[Residence] Scanning for economy systems...");
 
-                //TODO: more economy
+                if (economy == null) {
+                    this.loadLlamaEconomy();
+                }
+
                 if (economy == null) {
                     this.loadEconomyApi();
                 }
@@ -422,6 +426,16 @@ public class Residence extends PluginBase {
             } else {
                 return wmanager.getPerms(loc.getLevel().getName());
             }
+        }
+    }
+
+    private void loadLlamaEconomy() {
+        Plugin p = getServer().getPluginManager().getPlugin("LlamaEconomy");
+        if (p != null) {
+            economy = new LlamaEconomyAdapter();
+            Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Successfully linked with LlamaEconomy!");
+        } else {
+            Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] LlamaEconomy NOT found!");
         }
     }
 
